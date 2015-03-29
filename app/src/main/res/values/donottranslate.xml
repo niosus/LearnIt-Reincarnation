@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2014  Igor Bogoslavskyi
+  ~ This file is part of LearnIt.
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="str_learn_it">Learn it!</string>
+    <string name="str_love_it">Love it!</string>
+    <string name="str_try_it">Try it!</string>
+
+    <string name="app_name">LearnIt</string>
+    <string name="layout_current">normal</string>
+
+    <string name="key_first_run">first_run</string>
+    <string name="key_pref_use_online_dict">use_online_dict</string>
+    <string name="key_pref_notif_active">notification_enabled</string>
+    <string name="key_notification_frequency">notification_frequency</string>
+    <string name="key_way_to_learn">way_to_learn</string>
+    <string name="key_num_of_words">num_of_words</string>
+    <string name="key_direction_of_trans">direction_of_trans</string>
+    <string name="key_language_from">language_to_learn</string>
+    <string name="key_language_to">language_you_know</string>
+    <string name="key_time_to_start">time_to_start</string>
+    <string name="key_prefs_main">prefs_main</string>
+    <string name="version">0.95.0</string>
+
+    <string-array name="values_freq">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="array_num_of_notif">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="values_languages_from">
+        <item>@string/tag_german</item>
+        <item>@string/tag_english</item>
+        <item>@string/tag_spanish</item>
+        <item>@string/tag_french</item>
+        <item>@string/tag_italian</item>
+        <item>@string/tag_polish</item>
+        <item>@string/tag_russian</item>
+        <item>@string/tag_swedish</item>
+        <item>@string/tag_ukrainian</item>
+    </string-array>
+
+    <string name="tag_german">de</string>
+    <string name="tag_english">en</string>
+    <string name="tag_spanish">es</string>
+    <string name="tag_french">fr</string>
+    <string name="tag_italian">it</string>
+    <string name="tag_polish">pl</string>
+    <string name="tag_russian">ru</string>
+    <string name="tag_swedish">swe</string>
+    <string name="tag_ukrainian">uk</string>
+    <string name="tag_auto">auto</string>
+
+
+
+    <string-array name="values_languages_to">
+        <item>@string/tag_auto</item>
+        <item>@string/tag_german</item>
+        <item>@string/tag_english</item>
+        <item>@string/tag_spanish</item>
+        <item>@string/tag_french</item>
+        <item>@string/tag_italian</item>
+        <item>@string/tag_polish</item>
+        <item>@string/tag_russian</item>
+        <item>@string/tag_swedish</item>
+        <item>@string/tag_ukrainian</item>
+    </string-array>
+
+    <string name="val_way_to_learn_trans_only">1</string>
+    <string name="val_way_to_learn_articles_only">2</string>
+    <string name="val_way_to_learn_mixed">3</string>
+
+    <string-array name="values_way_to_learn">
+        <item>@string/val_way_to_learn_trans_only</item>
+        <item>@string/val_way_to_learn_articles_only</item>
+        <item>@string/val_way_to_learn_mixed</item>
+    </string-array>
+
+
+    <string name="val_direction_of_trans_show_word">1</string>
+    <string name="val_direction_of_trans_show_trans">2</string>
+    <string name="val_direction_of_trans_mixed">3</string>
+
+    <string-array name="values_direction_of_trans">
+        <item>@string/val_direction_of_trans_show_word</item>
+        <item>@string/val_direction_of_trans_show_trans</item>
+        <item>@string/val_direction_of_trans_mixed</item>
+    </string-array>
+
+    <string name="val_default_direction_of_trans">@string/val_direction_of_trans_mixed</string>
+    <string name="val_default_way_to_learn">@string/val_way_to_learn_trans_only</string>
+
+    <string name="help_words_de">sich</string>
+
+    <string-array name="dummy_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+
+</resources>
