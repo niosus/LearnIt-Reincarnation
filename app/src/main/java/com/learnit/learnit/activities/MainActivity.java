@@ -1,13 +1,7 @@
 package com.learnit.learnit.activities;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -17,16 +11,17 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.learnit.learnit.R;
+import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
-import com.learnit.learnit.views.AddWordsCardFragment;
-import com.learnit.learnit.views.SuperAwesomeCardFragment;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
@@ -39,8 +34,6 @@ public class MainActivity extends ActionBarActivity
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager) ViewPager pager;
 
-    private Drawable oldBackground = null;
-    private int currentColor;
     private int mOldScroll;
     private SystemBarTintManager mTintManager;
 
@@ -64,14 +57,13 @@ public class MainActivity extends ActionBarActivity
         mTintManager = new SystemBarTintManager(this);
         // enable status bar tint
         mTintManager.setStatusBarTintEnabled(true);
-        MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager());
+        TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
         pager.setAdapter(adapter);
         tabs.setViewPager(pager);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         pager.setPageMargin(pageMargin);
         pager.setCurrentItem(0);
-//        changeColor(getResources().getColor(R.color.highlight));
         tabs.setOnTabReselectedListener(new PagerSlidingTabStrip.OnTabReselectedListener() {
             @Override
             public void onTabReselected(int position) {
@@ -81,8 +73,8 @@ public class MainActivity extends ActionBarActivity
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.d(Constants.LOG_TAG, "pos offset " + positionOffset);
-                if (positionOffset > 0.999) {
+                if (positionOffset == 0.0
+                        && (position == 1 || position == 2)) {
                     ActionBar ab = getSupportActionBar();
                     if (ab == null) {
                         return;
@@ -123,93 +115,43 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void changeColor(int newColor) {
-        tabs.setBackgroundColor(newColor);
-        mTintManager.setTintColor(newColor);
-        // change ActionBar color just if an ActionBar is available
-        Drawable colorDrawable = new ColorDrawable(newColor);
-        Drawable bottomDrawable = new ColorDrawable(getResources().getColor(android.R.color.transparent));
-        LayerDrawable ld = new LayerDrawable(new Drawable[]{colorDrawable, bottomDrawable});
-        if (oldBackground == null) {
-            getSupportActionBar().setBackgroundDrawable(ld);
-        } else {
-            TransitionDrawable td = new TransitionDrawable(new Drawable[]{oldBackground, ld});
-            getSupportActionBar().setBackgroundDrawable(td);
-            td.startTransition(200);
+    private static void hideKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if(view == null) {
+            view = new View(activity);
         }
-
-        oldBackground = ld;
-        currentColor = newColor;
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override
     public void onScrollChanged(int newScroll, boolean b, boolean b2) {
-//        Log.d(Constants.LOG_TAG, "scroll changed " + newScroll + " oldscroll " + mOldScroll + " " + b + " " + b2);
         ActionBar ab = getSupportActionBar();
         if (ab == null) {
             return;
         }
+
+        // The damping is needed to account for the implicit scroll that
+        // occurs when the list view changes its size.
         if (newScroll - mOldScroll > toolbar.getHeight()) {
+            hideKeyboard(this);
             mOldScroll = newScroll;
             if (ab.isShowing()) {
                 ab.hide();
             }
         }
         if (newScroll - mOldScroll < -toolbar.getHeight()) {
+            hideKeyboard(this);
             mOldScroll = newScroll;
             if (!ab.isShowing()) {
                 ab.show();
             }
         }
     }
-
     @Override
-    public void onDownMotionEvent() {
-        Log.d(Constants.LOG_TAG, "down motion event");
-    }
-
+    public void onDownMotionEvent() {}
     @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-        Log.d(Constants.LOG_TAG, "up motion event");
-    }
-
-
-    public class MyPagerAdapter extends FragmentPagerAdapter {
-        private static final int ADD_WORDS_ITEM = 0;
-        private static final int DICT_ITEM = 1;
-        private static final int LEARN_WORDS_ITEM = 2;
-
-        private final String[] TITLES = {
-                getString(R.string.add_words_frag_title),
-                getString(R.string.dictionary_frag_title),
-                getString(R.string.learn_words_frag_title) };
-
-        public MyPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return TITLES[position];
-        }
-
-        @Override
-        public int getCount() {
-            return TITLES.length;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            Log.d(Constants.LOG_TAG, "asking frag at pos " + position);
-            switch (position) {
-                case ADD_WORDS_ITEM:
-                    return AddWordsCardFragment.newInstance(position);
-                case DICT_ITEM:
-                    return SuperAwesomeCardFragment.newInstance(position);
-                case LEARN_WORDS_ITEM:
-                    return SuperAwesomeCardFragment.newInstance(position);
-            }
-            return SuperAwesomeCardFragment.newInstance(position);
-        }
-    }
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {}
 }

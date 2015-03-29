@@ -38,8 +38,6 @@ public class AddWordsCardFragment extends Fragment {
 
     @InjectView(R.id.addWordsListView) ObservableListView addWordsListView;
 
-    private int position;
-
     public static AddWordsCardFragment newInstance(int position) {
         AddWordsCardFragment f = new AddWordsCardFragment();
         Bundle b = new Bundle();
@@ -52,7 +50,6 @@ public class AddWordsCardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(Constants.LOG_TAG, "creating fragment");
-        position = getArguments().getInt(ARG_POSITION);
     }
 
     @Override
@@ -70,7 +67,7 @@ public class AddWordsCardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(Constants.LOG_TAG, "creating view");
-        View rootView = inflater.inflate(R.layout.fragment_card_add_words,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_add_words,container,false);
         ButterKnife.inject(this, rootView);
         if (mScrollCallback != null) {
             Log.d(Constants.LOG_TAG, "setting scroll callback.");
