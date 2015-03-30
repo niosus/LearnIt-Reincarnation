@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import com.astuetz.PagerSlidingTabStrip;
 import com.learnit.learnit.R;
 import com.learnit.learnit.utils.Constants;
-import com.learnit.learnit.views.AddWordsCardFragment;
-import com.learnit.learnit.views.SuperAwesomeCardFragment;
+import com.learnit.learnit.fragments.AddWordsCardFragment;
+import com.learnit.learnit.fragments.CardFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter implements PagerSlidingTabStrip.CustomTabProvider {
     private static final int ADD_WORDS_ITEM = 0;
@@ -49,11 +49,11 @@ public class TabsPagerAdapter extends FragmentPagerAdapter implements PagerSlidi
             case ADD_WORDS_ITEM:
                 return AddWordsCardFragment.newInstance(position);
             case DICT_ITEM:
-                return SuperAwesomeCardFragment.newInstance(position);
+                return CardFragment.newInstance(position);
             case LEARN_WORDS_ITEM:
-                return SuperAwesomeCardFragment.newInstance(position);
+                return CardFragment.newInstance(position);
         }
-        return SuperAwesomeCardFragment.newInstance(position);
+        return CardFragment.newInstance(position);
     }
 
     @Override

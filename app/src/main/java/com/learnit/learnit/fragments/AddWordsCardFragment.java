@@ -1,4 +1,4 @@
-package com.learnit.learnit.views;/*
+package com.learnit.learnit.fragments;/*
  * Copyright (C) 2013 Andreas Stuetz <andreas.stuetz@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,4 +1,4 @@
-package com.learnit.learnit.views;/*
+package com.learnit.learnit.fragments;/*
  * Copyright (C) 2013 Andreas Stuetz <andreas.stuetz@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import com.learnit.learnit.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SuperAwesomeCardFragment extends Fragment {
+public class CardFragment extends Fragment {
 
     private static final String ARG_POSITION = "position";
 
@@ -36,8 +36,8 @@ public class SuperAwesomeCardFragment extends Fragment {
 
     private int position;
 
-    public static SuperAwesomeCardFragment newInstance(int position) {
-        SuperAwesomeCardFragment f = new SuperAwesomeCardFragment();
+    public static CardFragment newInstance(int position) {
+        CardFragment f = new CardFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         f.setArguments(b);
