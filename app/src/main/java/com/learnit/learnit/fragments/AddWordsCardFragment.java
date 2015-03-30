@@ -28,6 +28,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.learnit.learnit.R;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
 import com.learnit.learnit.utils.Constants;
@@ -49,8 +50,8 @@ implements IAddWordsFragmentUiEvents {
     private static final String ARG_POSITION = "position";
 
     @InjectView(R.id.addWordsListView) ObservableListView addWordsListView;
-    @InjectView(R.id.addWord) MaterialAutoCompleteTextView addWord;
-    @InjectView(R.id.addTranslation) MaterialEditText addTranslation;
+    @InjectView(R.id.addWord) MaterialAutoCompleteTextView edtWord;
+    @InjectView(R.id.addTranslation) MaterialEditText edtTrans;
     @InjectView(R.id.btnDeleteWord) CircleButton btnDeleteWord;
     @InjectView(R.id.btnDeleteTrans) CircleButton btnDeleteTrans;
 
@@ -90,17 +91,21 @@ implements IAddWordsFragmentUiEvents {
             addWordsListView.setScrollViewCallbacks(mScrollCallback);
         }
         ViewCompat.setElevation(rootView, 50);
-        addWord.addTextChangedListener(new TextChangeListener(this, addWord.getId()));
+        edtWord.addTextChangedListener(new TextChangeListener(this, edtWord.getId()));
         btnDeleteWord.setVisibility(View.INVISIBLE);
-        addTranslation.addTextChangedListener(new TextChangeListener(this, addTranslation.getId()));
+        edtTrans.addTextChangedListener(new TextChangeListener(this, edtTrans.getId()));
         btnDeleteTrans.setVisibility(View.INVISIBLE);
+
+        View.OnClickListener myOnClickListener = new ClearBtnOnClickListener(this);
+        btnDeleteWord.setOnClickListener(myOnClickListener);
+        btnDeleteTrans.setOnClickListener(myOnClickListener);
         return rootView;
     }
 
     @Override
     public void wordTextChanged() {
         Log.d(Constants.LOG_TAG, "changed add_word text");
-        if (addWord.getText().toString().isEmpty()) {
+        if (edtWord.getText().toString().isEmpty()) {
             this.startAnimation(btnDeleteWord.getId(), View.INVISIBLE);
         } else if (btnDeleteWord.getVisibility() == View.INVISIBLE) {
             this.startAnimation(btnDeleteWord.getId(), View.VISIBLE);
@@ -110,7 +115,7 @@ implements IAddWordsFragmentUiEvents {
     @Override
     public void translationTextChanged() {
         Log.d(Constants.LOG_TAG, "changed add_trans text");
-        if (addTranslation.getText().toString().isEmpty()) {
+        if (edtTrans.getText().toString().isEmpty()) {
             this.startAnimation(btnDeleteTrans.getId(), View.INVISIBLE);
         } else if (btnDeleteTrans.getVisibility() == View.INVISIBLE) {
             this.startAnimation(btnDeleteTrans.getId(), View.VISIBLE);
@@ -131,6 +136,16 @@ implements IAddWordsFragmentUiEvents {
             default:
                 Log.e(Constants.LOG_TAG, "unhandled switch setViewVisibilityState");
         }
+    }
+
+    @Override
+    public void clearWord() {
+        edtWord.setText("");
+    }
+
+    @Override
+    public void clearTrans() {
+        edtTrans.setText("");
     }
 
     private void updateTranslationSnackBar() {
