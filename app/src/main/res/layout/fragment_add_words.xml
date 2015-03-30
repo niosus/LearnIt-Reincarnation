@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.v7.widget.CardView
@@ -19,24 +20,68 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:orientation="vertical">
-            <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/addWord"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/add_word_hint"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                app:primaryColor="@color/highlight"/>
-            <com.rengwuxian.materialedittext.MaterialEditText
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/addTranslation"
+                android:layout_height="wrap_content">
+                <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/addWord"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_word_hint"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:maxLines="1"
+                    android:paddingRight="48dip"
+                    app:primaryColor="@color/highlight"/>
+                <io.codetail.widget.RevealFrameLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="48dip"
+                    android:layout_height="48dip"
+                    android:layout_alignRight="@id/addWord"
+                    android:layout_alignEnd="@id/addWord"
+                    android:layout_centerVertical="true">
+                    <at.markushi.ui.CircleButton
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/btnDeleteWord"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_delete"
+                        app:cb_color="@android:color/holo_red_dark"
+                        app:cb_pressedRingWidth="8dip" />
+                </io.codetail.widget.RevealFrameLayout>
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/add_translation_hint"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                app:primaryColor="@color/highlight"/>
+                android:layout_height="wrap_content">
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/addTranslation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_translation_hint"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:maxLines="1"
+                    android:paddingRight="48dip"
+                    app:primaryColor="@color/highlight"/>
+                <io.codetail.widget.RevealFrameLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="48dip"
+                    android:layout_height="48dip"
+                    android:layout_alignRight="@id/addTranslation"
+                    android:layout_alignEnd="@id/addTranslation"
+                    android:layout_centerVertical="true">
+                    <at.markushi.ui.CircleButton
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/btnDeleteTrans"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_delete"
+                        app:cb_color="@android:color/holo_red_dark"
+                        app:cb_pressedRingWidth="8dip" />
+                </io.codetail.widget.RevealFrameLayout>
+            </RelativeLayout>
         </LinearLayout>
         </android.support.v7.widget.CardView>
         <android.support.v7.widget.CardView
