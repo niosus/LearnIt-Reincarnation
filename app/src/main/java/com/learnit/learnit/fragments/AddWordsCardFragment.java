@@ -1,5 +1,5 @@
 package com.learnit.learnit.fragments;/*
- * Copyright (C) 2013 Andreas Stuetz <andreas.stuetz@gmail.com>
+ * Copyright (C) 2013 Igor Bogoslavskyi <igor.bogoslavskyi@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
