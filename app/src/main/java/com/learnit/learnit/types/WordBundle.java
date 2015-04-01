@@ -3,7 +3,7 @@ package com.learnit.learnit.types;
 import com.learnit.learnit.utils.StringUtils;
 
 public class WordBundle {
-    private static final String TRANS_DIVIDER = "___,___";
+    public static final String TRANS_DIVIDER = "___,___";
 
     private int mId;
     private String mArticle;
