@@ -12,8 +12,8 @@ public class WordBundleTest extends TestCase {
         String trans2 = "trans2.1, trans2.2; trans2.3";
         String[] fullTrans = new String[] {trans1, trans2};
         String tempTransString = fullTrans[0] + WordBundle.TRANS_DIVIDER + fullTrans[1];
-        testWordBundle.transFromString(tempTransString);
-        assertThat(testWordBundle.trans(), is(fullTrans));
+        testWordBundle.setTransFromString(tempTransString);
+        assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
     public void testTrans() throws Exception {
@@ -21,7 +21,7 @@ public class WordBundleTest extends TestCase {
         String trans1 = "trans1.1, trans1.2";
         String trans2 = "trans2.1, trans2.2; trans2.3";
         String[] fullTrans = new String[] {trans1, trans2};
-        testWordBundle.trans(fullTrans);
-        assertThat(testWordBundle.trans(), is(fullTrans));
+        testWordBundle.setTransFromStringArray(fullTrans);
+        assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 }

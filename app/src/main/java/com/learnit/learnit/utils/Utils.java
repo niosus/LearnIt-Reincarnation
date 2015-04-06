@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-/**
- * Created by igor on 28/03/15.
- */
 public class Utils {
     private static final String PREFS_NAME = "my_awesome_prefs";
 
@@ -20,7 +17,12 @@ public class Utils {
             return true;
         }
         return false;
-//        return true;
+    }
+
+    public static boolean isArticle(final String article, final Constants.LanguageName languageName) {
+
+        return Constants.ARTICLES.containsKey(languageName)
+                && (Constants.ARTICLES.get(languageName).contains(article.toLowerCase()));
     }
 
 }

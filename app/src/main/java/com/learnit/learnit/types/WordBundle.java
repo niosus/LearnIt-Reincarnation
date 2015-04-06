@@ -21,43 +21,14 @@ public class WordBundle {
         mWeight = -1;
     }
 
-    public WordBundle id(final int id) {
-        this.mId = id;
-        return this;
-    }
-
-    public WordBundle article(final String article) {
-        this.mArticle = article;
-        return this;
-    }
-
-    public WordBundle prefix(final String prefix) {
-        this.mPrefix = prefix;
-        return this;
-    }
-
-    public WordBundle word(final String word) {
-        this.mWord = word;
-        return this;
-    }
-
-    public WordBundle transFromString(final String trans) {
+    public WordBundle setTransFromString(final String trans) {
         this.mTrans = trans.split(TRANS_DIVIDER);
         return this;
     }
 
-    public WordBundle trans(final String[] trans) {
+    public WordBundle setTransFromStringArray(final String[] trans) {
         this.mTrans = trans;
         return this;
-    }
-
-    public WordBundle weight(final float weight) {
-        this.mWeight = weight;
-        return this;
-    }
-
-    public boolean isValid() {
-        return mId >= 0;
     }
 
     public String word() {
@@ -68,7 +39,7 @@ public class WordBundle {
         return StringUtils.join(mTrans, TRANS_DIVIDER);
     }
 
-    public String[] trans() {
+    public String[] transAsArray() {
         return mTrans;
     }
 
