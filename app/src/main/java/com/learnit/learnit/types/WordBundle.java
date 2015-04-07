@@ -21,6 +21,31 @@ public class WordBundle {
         mWeight = -1;
     }
 
+    public WordBundle setWord(final String word) {
+        this.mWord = word;
+        return this;
+    }
+
+    public WordBundle setArticle(final String article) {
+        this.mArticle = article;
+        return this;
+    }
+
+    public WordBundle setPrefix(final String prefix) {
+        this.mPrefix = prefix;
+        return this;
+    }
+
+    public WordBundle setWeight(final float weight) {
+        this.mWeight = weight;
+        return this;
+    }
+
+    public WordBundle setId(final int id) {
+        this.mId = id;
+        return this;
+    }
+
     public WordBundle setTransFromString(final String trans) {
         this.mTrans = trans.split(TRANS_DIVIDER);
         return this;

@@ -2,12 +2,16 @@ package com.learnit.learnit.types;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.learnit.learnit.interfaces.IDatabaseInteractions;
 import com.learnit.learnit.utils.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper
     implements IDatabaseInteractions {
@@ -25,6 +29,15 @@ public class DbHelper extends SQLiteOpenHelper
     final public String WEIGHT_COLUMN_NAME = "weight";
     final public String PREFIX_COLUMN_NAME = "prefix";
     final public String TRANSLATION_COLUMN_NAME = "translation";
+
+    final String[] ALL_COLUMNS = new String[] {
+            ID_COLUMN_NAME,
+            WORD_COLUMN_NAME,
+            TRANSLATION_COLUMN_NAME,
+            ARTICLE_COLUMN_NAME,
+            PREFIX_COLUMN_NAME,
+            WEIGHT_COLUMN_NAME
+    };
 
     // names of DB_STAR_DICT database fields
     final public String DICT_OFFSET_COLUMN_NAME = "start_offset";
@@ -81,8 +94,32 @@ public class DbHelper extends SQLiteOpenHelper
     }
 
     @Override
-    public WordBundle queryWord(String word) {
+    public List<WordBundle> queryWord(String word) {
         // TODO: fetch the full bundle of the @param{word} from database
-        return null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(getDatabaseName(), ALL_COLUMNS, "?s=?s",
+                new String[]{WORD_COLUMN_NAME, word},
+                null, null, null);
+        if (!cursor.moveToFirst()) {
+            return null;
+        } else {
+            ArrayList<WordBundle> wordBundles = new ArrayList<>();
+            do {
+                wordBundles.add(wordBundleFromCursor(cursor));
+            } while (cursor.moveToNext());
+            cursor.close();
+            return wordBundles;
+        }
+    }
+
+    private WordBundle wordBundleFromCursor(final Cursor cursor) {
+        WordBundle wordBundle = new WordBundle();
+        wordBundle.setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
+                .setTransFromString(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)))
+                .setArticle(cursor.getString(cursor.getColumnIndex(ARTICLE_COLUMN_NAME)))
+                .setPrefix(cursor.getString(cursor.getColumnIndex(PREFIX_COLUMN_NAME)))
+                .setWeight(cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)))
+                .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)));
+        return wordBundle;
     }
 }
