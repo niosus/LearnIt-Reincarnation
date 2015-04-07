@@ -28,14 +28,14 @@ public class DbHelper extends SQLiteOpenHelper
     final public static String DB_STAR_DICT = "star_dict";
 
     // names of DB_USER_DICT database fields
-    final public String WORD_COLUMN_NAME = "word";
-    final public String ID_COLUMN_NAME = "id";
-    final public String ARTICLE_COLUMN_NAME = "article";
-    final public String WEIGHT_COLUMN_NAME = "weight";
-    final public String PREFIX_COLUMN_NAME = "prefix";
-    final public String TRANSLATION_COLUMN_NAME = "translation";
+    final public static String WORD_COLUMN_NAME = "word";
+    final public static String ID_COLUMN_NAME = "id";
+    final public static String ARTICLE_COLUMN_NAME = "article";
+    final public static String WEIGHT_COLUMN_NAME = "weight";
+    final public static String PREFIX_COLUMN_NAME = "prefix";
+    final public static String TRANSLATION_COLUMN_NAME = "translation";
 
-    final String[] ALL_COLUMNS = new String[] {
+    final public static String[] ALL_COLUMNS = new String[] {
             ID_COLUMN_NAME,
             WORD_COLUMN_NAME,
             TRANSLATION_COLUMN_NAME,
@@ -106,11 +106,14 @@ public class DbHelper extends SQLiteOpenHelper
     }
 
     @Override
-    public List<WordBundle> queryWord(String word) {
+    public List<WordBundle> queryWord(final String word) {
         // TODO: fetch the full bundle of the @param{word} from database
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(getDatabaseName(), ALL_COLUMNS, "?s=?s",
-                new String[]{WORD_COLUMN_NAME, word},
+        return queryFromDB(word, this.getDatabaseName(), this.getReadableDatabase());
+    }
+
+    protected List<WordBundle> queryFromDB(final String word, final String dbName, final SQLiteDatabase db) {
+        Cursor cursor = db.query(dbName, ALL_COLUMNS, WORD_COLUMN_NAME + " = ?",
+                new String[]{word},
                 null, null, null);
         if (!cursor.moveToFirst()) {
             return null;
