@@ -34,8 +34,14 @@ public class DbHelperTest {
         if (context == null) {
             return;
         }
-        String filePath = context.getPackageResourcePath() + "/res/sample.db";
-
+        String filePath;
+        if (context.getPackageResourcePath().contains("test")) {
+            // means that we run from android studio
+            filePath = context.getPackageResourcePath() + "/res/sample.db";
+        } else {
+            // we run from command line
+            filePath = context.getPackageResourcePath() + "/src/test/res/sample.db";
+        }
         database = SQLiteDatabase.openDatabase(
                 (new File(filePath)).getAbsolutePath(),
                 null,

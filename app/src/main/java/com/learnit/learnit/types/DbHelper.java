@@ -15,6 +15,11 @@ import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper
     implements IDatabaseInteractions {
+    public static enum AddWordStatus {
+        SUCCESS,
+        WORD_UPDATED
+    }
+
     // name of the database that stores the user-defined words.
     // used for learning new words.
     final public static String DB_USER_DICT = "user_dict";
@@ -79,7 +84,7 @@ public class DbHelper extends SQLiteOpenHelper
     }
 
     @Override
-    public void addWord(WordBundle wordBundle) {
+    public AddWordStatus addWord(WordBundle wordBundle) {
         Log.d(Constants.LOG_TAG, "DbHelper: adding word '" + wordBundle.word() + "'");
         ContentValues cv = new ContentValues();
         cv.put(ARTICLE_COLUMN_NAME, wordBundle.article());
@@ -88,6 +93,13 @@ public class DbHelper extends SQLiteOpenHelper
         cv.put(TRANSLATION_COLUMN_NAME, wordBundle.transAsString());
         cv.put(WEIGHT_COLUMN_NAME, wordBundle.weight());
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        long code = db.insertWithOnConflict(this.getDatabaseName(), null, cv, SQLiteDatabase.CONFLICT_ABORT);
+        if (code < 0) {
+            Log.d(Constants.LOG_TAG, "value already present in database");
+            return AddWordStatus.WORD_UPDATED;
+        }
+        return AddWordStatus.SUCCESS;
         // TODO: check if the word is present in the database
         // if it is - either do nothing or update
         // if it is not - add it
