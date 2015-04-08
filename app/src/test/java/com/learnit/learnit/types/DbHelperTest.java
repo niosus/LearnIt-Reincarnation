@@ -28,7 +28,17 @@ public class DbHelperTest extends DbHelper{
     }
 
     @Test
-    public void testReadFromDb() {
+    public void testExactWrongReadFromDb() {
+        // Check for failure
+        // The word is written in lower case, while it is in upper case in the database.
+        // The result should be null.
+        String wordToQuery = "apfel";
+        List<WordBundle> res = queryFromDB(wordToQuery, "test_words", database);
+        assertThat(res == null, is(true));
+    }
+
+    @Test
+    public void testExactReadFromDb() {
         assertThat(database == null, is(false));
         String wordToQuery = "fallen";
         String transToExpect = "fall";
@@ -44,6 +54,28 @@ public class DbHelperTest extends DbHelper{
         }
         assertThat(res.size(), is(1));
         WordBundle resultBundle = res.get(0);
+        assertThat(resultBundle.id(), is(bundle.id()));
+        assertThat(resultBundle.weight(), is(bundle.weight()));
+        assertThat(resultBundle.word(), is(bundle.word()));
+        assertThat(resultBundle.transAsString(), is(bundle.transAsString()));
+        assertThat(resultBundle.article(), is(bundle.article()));
+
+        // and another word
+        wordToQuery = "Apfel";
+        transToExpect = "apple";
+        bundle = new WordBundle();
+        bundle.setId(1)
+                .setWord(wordToQuery)
+                .setTransFromString(transToExpect)
+                .setArticle("der")
+                .setWeight(0.5f);
+        res = queryFromDB(wordToQuery, "test_words", database);
+        assertThat(res == null, is(false));
+        if (res == null) {
+            return;
+        }
+        assertThat(res.size(), is(1));
+        resultBundle = res.get(0);
         assertThat(resultBundle.id(), is(bundle.id()));
         assertThat(resultBundle.weight(), is(bundle.weight()));
         assertThat(resultBundle.word(), is(bundle.word()));
