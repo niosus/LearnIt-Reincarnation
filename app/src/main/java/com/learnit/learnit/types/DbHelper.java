@@ -15,18 +15,11 @@ import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper
     implements IDatabaseInteractions {
-    public static enum AddWordStatus {
-        SUCCESS,
-        WORD_UPDATED
-    }
-
     // name of the database that stores the user-defined words.
     // used for learning new words.
     final public static String DB_USER_DICT = "user_dict";
-
     // database that stores the data generated from a star-dict dictionary.
     final public static String DB_STAR_DICT = "star_dict";
-
     // names of DB_USER_DICT database fields
     final public static String WORD_COLUMN_NAME = "word";
     final public static String ID_COLUMN_NAME = "id";
@@ -34,7 +27,6 @@ public class DbHelper extends SQLiteOpenHelper
     final public static String WEIGHT_COLUMN_NAME = "weight";
     final public static String PREFIX_COLUMN_NAME = "prefix";
     final public static String TRANSLATION_COLUMN_NAME = "translation";
-
     final public static String[] ALL_COLUMNS = new String[] {
             ID_COLUMN_NAME,
             WORD_COLUMN_NAME,
@@ -43,11 +35,9 @@ public class DbHelper extends SQLiteOpenHelper
             PREFIX_COLUMN_NAME,
             WEIGHT_COLUMN_NAME
     };
-
     // names of DB_STAR_DICT database fields
     final public String DICT_OFFSET_COLUMN_NAME = "start_offset";
     final public String DICT_CHUNK_SIZE_COLUMN_NAME = "end_offset";
-
 
     public DbHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory,
@@ -84,7 +74,7 @@ public class DbHelper extends SQLiteOpenHelper
     }
 
     @Override
-    public AddWordStatus addWord(WordBundle wordBundle) {
+    public AddWordReturnCode addWord(WordBundle wordBundle) {
         Log.d(Constants.LOG_TAG, "DbHelper: adding word '" + wordBundle.word() + "'");
         ContentValues cv = new ContentValues();
         cv.put(ARTICLE_COLUMN_NAME, wordBundle.article());
@@ -97,12 +87,9 @@ public class DbHelper extends SQLiteOpenHelper
         long code = db.insertWithOnConflict(this.getDatabaseName(), null, cv, SQLiteDatabase.CONFLICT_ABORT);
         if (code < 0) {
             Log.d(Constants.LOG_TAG, "value already present in database");
-            return AddWordStatus.WORD_UPDATED;
+            return AddWordReturnCode.WORD_UPDATED;
         }
-        return AddWordStatus.SUCCESS;
-        // TODO: check if the word is present in the database
-        // if it is - either do nothing or update
-        // if it is not - add it
+        return AddWordReturnCode.SUCCESS;
     }
 
     @Override
@@ -136,5 +123,10 @@ public class DbHelper extends SQLiteOpenHelper
                 .setWeight(cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)))
                 .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)));
         return wordBundle;
+    }
+
+    public static enum AddWordReturnCode {
+        SUCCESS,
+        WORD_UPDATED
     }
 }
