@@ -1,6 +1,7 @@
 package com.learnit.learnit.types;
 
 import com.learnit.learnit.utils.StringUtils;
+import com.learnit.learnit.utils.Utils;
 
 public class WordBundle {
     public static final String TRANS_DIVIDER = "___,___";
@@ -82,6 +83,33 @@ public class WordBundle {
 
     public int id() {
         return mId;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof WordBundle) {
+            WordBundle other = (WordBundle) object;
+            if (this.mWord != null || other.word() != null) {
+                if (!this.mWord.equals(other.word())) {
+                    return false;
+                }
+            }
+            if (this.mWord != null || other.word() != null) {
+                if (!this.mWord.equals(other.word())) {
+                    return false;
+                }
+            }
+            boolean wordsEqual = (Utils.areBothNull(this.mWord, other.word()))
+                    || this.mWord.equals(other.word());
+            boolean transEqual = (Utils.areBothNull(this.transAsString(), other.transAsString()))
+                    || this.transAsString().equals(other.transAsString());
+            boolean articlesEqual = (Utils.areBothNull(this.mArticle, other.article()))
+                    || this.mArticle.equals(other.article());
+            boolean prefixesEqual = (Utils.areBothNull(this.mPrefix, other.prefix()))
+                    || this.mPrefix.equals(other.prefix());
+            return wordsEqual && transEqual && prefixesEqual && articlesEqual;
+        }
+        return false;
     }
 
 }

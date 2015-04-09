@@ -83,18 +83,24 @@ public class DbHelper extends SQLiteOpenHelper
         cv.put(TRANSLATION_COLUMN_NAME, wordBundle.transAsString());
         cv.put(WEIGHT_COLUMN_NAME, wordBundle.weight());
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        long code = db.insertWithOnConflict(this.getDatabaseName(), null, cv, SQLiteDatabase.CONFLICT_ABORT);
-        if (code < 0) {
-            Log.d(Constants.LOG_TAG, "value already present in database");
-            return AddWordReturnCode.WORD_UPDATED;
+        List<WordBundle> nowInDb = this.queryFromDB(wordBundle.word(), getDatabaseName(), getReadableDatabase());
+        if (nowInDb == null || nowInDb.isEmpty()) {
+            // there is no such word in the database
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.insert(this.getDatabaseName(), null, cv);
+            return AddWordReturnCode.SUCCESS;
         }
-        return AddWordReturnCode.SUCCESS;
+        if (nowInDb.contains(wordBundle)) {
+            return AddWordReturnCode.WORD_EXISTS;
+        }
+        // if we reach this place - there is something similar in the db, but not the same.
+        // Requires investigation and update.
+        // TODO: actually implement the logic behind the word updated
+        return AddWordReturnCode.WORD_UPDATED;
     }
 
     @Override
     public List<WordBundle> queryWord(final String word) {
-        // TODO: fetch the full bundle of the @param{word} from database
         return queryFromDB(word, this.getDatabaseName(), this.getReadableDatabase());
     }
 
@@ -127,6 +133,7 @@ public class DbHelper extends SQLiteOpenHelper
 
     public static enum AddWordReturnCode {
         SUCCESS,
-        WORD_UPDATED
+        WORD_UPDATED,
+        WORD_EXISTS
     }
 }

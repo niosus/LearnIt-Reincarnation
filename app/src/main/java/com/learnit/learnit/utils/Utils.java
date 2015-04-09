@@ -25,4 +25,8 @@ public class Utils {
                 && (Constants.ARTICLES.get(languageName).contains(article.toLowerCase()));
     }
 
+    public static boolean areBothNull(final Object obj1, final Object obj2) {
+        return obj1 == null && obj2 == null;
+    }
+
 }

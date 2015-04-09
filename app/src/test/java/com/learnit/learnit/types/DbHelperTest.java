@@ -27,6 +27,58 @@ public class DbHelperTest extends DbHelper{
         super(null, null, null, 100);
     }
 
+    @Before
+    public void setUp() throws Exception {
+        Context context = RuntimeEnvironment.application;
+        assertThat(context == null, is(false));
+        if (context == null) {
+            return;
+        }
+        String filePath;
+        if (context.getPackageResourcePath().contains("test")) {
+            // means that we run from android studio
+            filePath = context.getPackageResourcePath() + "/res/sample.db";
+        } else {
+            // we run from command line
+            filePath = context.getPackageResourcePath() + "/src/test/res/sample.db";
+        }
+        database = SQLiteDatabase.openDatabase(
+                (new File(filePath)).getAbsolutePath(),
+                null,
+                SQLiteDatabase.OPEN_READONLY);
+    }
+
+    @Test
+    public void testAddWord() {
+        DbHelper helper = new DbHelper(RuntimeEnvironment.application, DbHelper.DB_USER_DICT, null, 1);
+        String wordToQuery = "test_word";
+        String transToExpect = "test_trans";
+        WordBundle bundle = new WordBundle();
+        bundle.setWord(wordToQuery)
+                .setTransFromString(transToExpect)
+                .setWeight(0.9f);
+        DbHelper.AddWordReturnCode returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(AddWordReturnCode.SUCCESS));
+
+        // test that the word is correctly inserted
+        List<WordBundle> res = helper.queryWord(wordToQuery);
+        assertThat(res.size(), is(1));
+        WordBundle resultBundle = res.get(0);
+        assertThat(resultBundle.weight(), is(bundle.weight()));
+        assertThat(resultBundle.word(), is(bundle.word()));
+        assertThat(resultBundle.transAsString(), is(bundle.transAsString()));
+        assertThat(resultBundle.article(), is(bundle.article()));
+
+        // test that we don't insert the word twice
+        returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(AddWordReturnCode.WORD_EXISTS));
+
+        // test that we update similar words
+        bundle.setTransFromString(transToExpect + WordBundle.TRANS_DIVIDER + "something new");
+        returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(AddWordReturnCode.WORD_UPDATED));
+    }
+
     @Test
     public void testExactWrongReadFromDb() {
         // Check for failure
@@ -81,26 +133,5 @@ public class DbHelperTest extends DbHelper{
         assertThat(resultBundle.word(), is(bundle.word()));
         assertThat(resultBundle.transAsString(), is(bundle.transAsString()));
         assertThat(resultBundle.article(), is(bundle.article()));
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        Context context = RuntimeEnvironment.application;
-        assertThat(context == null, is(false));
-        if (context == null) {
-            return;
-        }
-        String filePath;
-        if (context.getPackageResourcePath().contains("test")) {
-            // means that we run from android studio
-            filePath = context.getPackageResourcePath() + "/res/sample.db";
-        } else {
-            // we run from command line
-            filePath = context.getPackageResourcePath() + "/src/test/res/sample.db";
-        }
-        database = SQLiteDatabase.openDatabase(
-                (new File(filePath)).getAbsolutePath(),
-                null,
-                SQLiteDatabase.OPEN_READONLY);
     }
 }
