@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
@@ -32,6 +38,7 @@ public abstract class MySmartAsyncTask<InType, OutType> extends AsyncTask<InType
     @Override
     protected void onPostExecute(OutType result) {
         super.onPostExecute(result);
+        mAsyncEventHandler.onProgressUpdate(100f);
         mAsyncEventHandler.onFinish(result);
     }
 

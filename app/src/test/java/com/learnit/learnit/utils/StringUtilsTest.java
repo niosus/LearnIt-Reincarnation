@@ -1,10 +1,15 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.utils;
 
 import junit.framework.TestCase;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import com.learnit.learnit.utils.Constants.LanguageName;
 
 public class StringUtilsTest extends TestCase {
 
@@ -17,18 +22,23 @@ public class StringUtilsTest extends TestCase {
         assertThat(StringUtils.join(testArray, connector), is(a + connector + b + connector + c));
     }
 
-    public void testIsArticle() throws Exception {
-        LanguageName langEn = LanguageName.ENGLISH;
-        LanguageName langDe = LanguageName.GERMAN;
-        assertThat(Utils.isArticle("der", langDe), is(true));
-        assertThat(Utils.isArticle("die", langDe), is(true));
-        assertThat(Utils.isArticle("das", langDe), is(true));
+    public void testSplitTxt() throws Exception {
+        String line = "air route\t(n) авіалінія; повітряна траса";
+        String[] expectedResult = new String[]{"air route", "(n) авіалінія; повітряна траса"};
+        String[] result = StringUtils.splitWordFromMeaning(line);
+        assertThat(result[0], is(expectedResult[0]));
+        assertThat(result[1], is(expectedResult[1]));
 
-        assertThat(Utils.isArticle("blah", langDe), is(false));
-        assertThat(Utils.isArticle("a", langDe), is(false));
+        String badLine = "##sourceLang\tEnglish";
+        result = StringUtils.splitWordFromMeaning(badLine);
+        assertNull(result);
 
-        assertThat(Utils.isArticle("der", langEn), is(false));
-        assertThat(Utils.isArticle("die", langEn), is(false));
-        assertThat(Utils.isArticle("das", langEn), is(false));
+        badLine = "test null\t";
+        result = StringUtils.splitWordFromMeaning(badLine);
+        assertNull(result);
+
+        badLine = "test null";
+        result = StringUtils.splitWordFromMeaning(badLine);
+        assertNull(result);
     }
 }
