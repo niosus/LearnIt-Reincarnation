@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricTestRunner.class)
-public class DbHelperTest extends DbHelper{
+public class DbHelperTest extends DbHelper {
     SQLiteDatabase database;
 
     public DbHelperTest() {

@@ -19,7 +19,7 @@ public class DbHelper extends SQLiteOpenHelper
     // used for learning new words.
     final public static String DB_USER_DICT = "user_dict";
     // database that stores the data generated from a star-dict dictionary.
-    final public static String DB_STAR_DICT = "star_dict";
+    final public static String DB_HELPER_DICT = "helper_dict";
     // names of DB_USER_DICT database fields
     final public static String WORD_COLUMN_NAME = "word";
     final public static String ID_COLUMN_NAME = "id";
@@ -37,9 +37,11 @@ public class DbHelper extends SQLiteOpenHelper
             WEIGHT_COLUMN_NAME,
             WORD_TYPE_COLUMN_NAME
     };
-    // names of DB_STAR_DICT database fields
-    final public String DICT_OFFSET_COLUMN_NAME = "start_offset";
-    final public String DICT_CHUNK_SIZE_COLUMN_NAME = "end_offset";
+
+    // names of DB_HELPER_DICT database fields
+    final public static String HELPER_ID_COLUMN_NAME = "s_id";
+    final public static String HELPER_WORD_COLUMN_NAME = "wname";
+    final public static String HELPER_MEANING_COLUMN_NAME = "wmean";
 
     public DbHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory,
@@ -61,12 +63,11 @@ public class DbHelper extends SQLiteOpenHelper
                         + PREFIX_COLUMN_NAME + " TEXT,"
                         + WORD_TYPE_COLUMN_NAME + " INTEGER" + ");");
                 break;
-            case DB_STAR_DICT:
+            case DB_HELPER_DICT:
                 sqLiteDatabase.execSQL("CREATE TABLE " + getDatabaseName() + " ("
-                        + ID_COLUMN_NAME + " INTEGER primary key autoincrement,"
-                        + DICT_OFFSET_COLUMN_NAME + " LONG,"
-                        + DICT_CHUNK_SIZE_COLUMN_NAME + " LONG,"
-                        + WORD_COLUMN_NAME + " TEXT" + ");");
+                        + HELPER_ID_COLUMN_NAME + " INTEGER primary key autoincrement,"
+                        + HELPER_WORD_COLUMN_NAME + " TEXT,"
+                        + HELPER_MEANING_COLUMN_NAME + " TEXT" + ");");
                 break;
         }
     }
