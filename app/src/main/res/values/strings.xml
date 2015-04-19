@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2014  Igor Bogoslavskyi
-  ~ This file is part of LearnIt.
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+  ~ Copyright (c) 2015.
+  ~ This code is written by Igor Bogoslavskyi. If you experience any issues with
+  ~ it please contact me via email: igor.bogoslavskyi@gmail.com
+  -->
 <resources>
 
     <string name="intro_get_help_dict">Help \n dictionary \n available</string>
@@ -30,7 +19,6 @@
     <string name="intro_enable_notifications">Enable notifications!</string>
     <string name="intro_add_words">Add some words!</string>
 
-    <string name="articles"></string>
     <string name="please_wait">Please wait…</string>
 
     <!-- fragment titles -->
@@ -237,5 +225,11 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="entries_actions_drawer">
+        <item>Settings</item>
+        <item>Export</item>
+        <item>Import</item>
+    </string-array>
 
 </resources>

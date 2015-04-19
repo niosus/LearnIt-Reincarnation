@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.types;
 
 import android.view.View;
@@ -18,9 +24,6 @@ public class ClearBtnOnClickListener implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btnDeleteWord:
                 mCallback.clearWord();
-                break;
-            case R.id.btnDeleteTrans:
-                mCallback.clearTrans();
                 break;
         }
     }

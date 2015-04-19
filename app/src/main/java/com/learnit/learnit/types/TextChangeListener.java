@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.types;
 
 import android.text.Editable;
@@ -30,9 +36,6 @@ public class TextChangeListener implements TextWatcher {
         switch (mViewId) {
             case R.id.addWord:
                 mCallback.wordTextChanged();
-                break;
-            case R.id.addTranslation:
-                mCallback.translationTextChanged();
                 break;
         }
     }
