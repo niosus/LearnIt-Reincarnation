@@ -98,7 +98,8 @@ public class DbHelperTest extends DbHelper{
         bundle.setId(2)
                 .setWord(wordToQuery)
                 .setTransFromString(transToExpect)
-                .setWeight(0.5f);
+                .setWeight(0.5f)
+                .setWordType(WordBundle.WordType.VERB);
         List<WordBundle> res = queryFromDB(wordToQuery, "test_words", database);
         assertThat(res == null, is(false));
         if (res == null) {
@@ -106,11 +107,8 @@ public class DbHelperTest extends DbHelper{
         }
         assertThat(res.size(), is(1));
         WordBundle resultBundle = res.get(0);
-        assertThat(resultBundle.id(), is(bundle.id()));
-        assertThat(resultBundle.weight(), is(bundle.weight()));
-        assertThat(resultBundle.word(), is(bundle.word()));
-        assertThat(resultBundle.transAsString(), is(bundle.transAsString()));
-        assertThat(resultBundle.article(), is(bundle.article()));
+        assertThat(resultBundle, is(bundle));
+        assertThat(resultBundle.wordType(), is(WordBundle.WordType.VERB));
 
         // and another word
         wordToQuery = "Apfel";
@@ -128,10 +126,6 @@ public class DbHelperTest extends DbHelper{
         }
         assertThat(res.size(), is(1));
         resultBundle = res.get(0);
-        assertThat(resultBundle.id(), is(bundle.id()));
-        assertThat(resultBundle.weight(), is(bundle.weight()));
-        assertThat(resultBundle.word(), is(bundle.word()));
-        assertThat(resultBundle.transAsString(), is(bundle.transAsString()));
-        assertThat(resultBundle.article(), is(bundle.article()));
+        assertThat(resultBundle, is(bundle));
     }
 }

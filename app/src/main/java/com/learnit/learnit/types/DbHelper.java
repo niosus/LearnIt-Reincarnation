@@ -27,13 +27,15 @@ public class DbHelper extends SQLiteOpenHelper
     final public static String WEIGHT_COLUMN_NAME = "weight";
     final public static String PREFIX_COLUMN_NAME = "prefix";
     final public static String TRANSLATION_COLUMN_NAME = "translation";
+    final public static String WORD_TYPE_COLUMN_NAME = "word_type";
     final public static String[] ALL_COLUMNS = new String[] {
             ID_COLUMN_NAME,
             WORD_COLUMN_NAME,
             TRANSLATION_COLUMN_NAME,
             ARTICLE_COLUMN_NAME,
             PREFIX_COLUMN_NAME,
-            WEIGHT_COLUMN_NAME
+            WEIGHT_COLUMN_NAME,
+            WORD_TYPE_COLUMN_NAME
     };
     // names of DB_STAR_DICT database fields
     final public String DICT_OFFSET_COLUMN_NAME = "start_offset";
@@ -56,7 +58,8 @@ public class DbHelper extends SQLiteOpenHelper
                         + WORD_COLUMN_NAME + " TEXT,"
                         + TRANSLATION_COLUMN_NAME + " TEXT,"
                         + WEIGHT_COLUMN_NAME + " REAL,"
-                        + PREFIX_COLUMN_NAME + " TEXT" + ");");
+                        + PREFIX_COLUMN_NAME + " TEXT,"
+                        + WORD_TYPE_COLUMN_NAME + " INTEGER" + ");");
                 break;
             case DB_STAR_DICT:
                 sqLiteDatabase.execSQL("CREATE TABLE " + getDatabaseName() + " ("
@@ -82,6 +85,7 @@ public class DbHelper extends SQLiteOpenHelper
         cv.put(WORD_COLUMN_NAME, wordBundle.word());
         cv.put(TRANSLATION_COLUMN_NAME, wordBundle.transAsString());
         cv.put(WEIGHT_COLUMN_NAME, wordBundle.weight());
+        cv.put(WORD_TYPE_COLUMN_NAME, wordBundle.wordType());
 
         List<WordBundle> nowInDb = this.queryFromDB(wordBundle.word(), getDatabaseName(), getReadableDatabase());
         if (nowInDb == null || nowInDb.isEmpty()) {
@@ -127,7 +131,8 @@ public class DbHelper extends SQLiteOpenHelper
                 .setArticle(cursor.getString(cursor.getColumnIndex(ARTICLE_COLUMN_NAME)))
                 .setPrefix(cursor.getString(cursor.getColumnIndex(PREFIX_COLUMN_NAME)))
                 .setWeight(cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)))
-                .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)));
+                .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)))
+                .setWordType(cursor.getInt(cursor.getColumnIndex(WORD_TYPE_COLUMN_NAME)));
         return wordBundle;
     }
 

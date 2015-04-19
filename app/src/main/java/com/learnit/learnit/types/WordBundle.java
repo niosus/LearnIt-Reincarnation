@@ -5,8 +5,8 @@ import com.learnit.learnit.utils.Utils;
 
 public class WordBundle {
     public static final String TRANS_DIVIDER = "___,___";
-
     private int mId;
+    private int mWordType;
     private String mArticle;
     private String mPrefix;
     private String mWord;
@@ -20,6 +20,7 @@ public class WordBundle {
         mWord = null;
         mTrans = null;
         mWeight = -1;
+        mWordType = WordType.NONE;
     }
 
     public WordBundle setWord(final String word) {
@@ -57,6 +58,11 @@ public class WordBundle {
         return this;
     }
 
+    public WordBundle setWordType(final int wordType) {
+        this.mWordType = wordType;
+        return this;
+    }
+
     public String word() {
         return mWord;
     }
@@ -85,20 +91,14 @@ public class WordBundle {
         return mId;
     }
 
+    public int wordType() {
+        return mWordType;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object instanceof WordBundle) {
             WordBundle other = (WordBundle) object;
-            if (this.mWord != null || other.word() != null) {
-                if (!this.mWord.equals(other.word())) {
-                    return false;
-                }
-            }
-            if (this.mWord != null || other.word() != null) {
-                if (!this.mWord.equals(other.word())) {
-                    return false;
-                }
-            }
             boolean wordsEqual = (Utils.areBothNull(this.mWord, other.word()))
                     || this.mWord.equals(other.word());
             boolean transEqual = (Utils.areBothNull(this.transAsString(), other.transAsString()))
@@ -107,9 +107,19 @@ public class WordBundle {
                     || this.mArticle.equals(other.article());
             boolean prefixesEqual = (Utils.areBothNull(this.mPrefix, other.prefix()))
                     || this.mPrefix.equals(other.prefix());
-            return wordsEqual && transEqual && prefixesEqual && articlesEqual;
+            boolean wordTypesEqual = this.mWordType == other.wordType();
+            return wordsEqual && transEqual && prefixesEqual && articlesEqual && wordTypesEqual;
         }
         return false;
+    }
+
+    public final class WordType {
+        public static final int NOUN = 0;
+        public static final int VERB = 1;
+        public static final int ADJECTIVE = 2;
+        public static final int ADVERB = 3;
+        public static final int PREPOSITION = 4;
+        public static final int NONE = 666;
     }
 
 }

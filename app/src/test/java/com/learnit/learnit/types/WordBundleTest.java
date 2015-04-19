@@ -51,5 +51,14 @@ public class WordBundleTest extends TestCase {
         assertThat(bundle, is(not(bundle_diff)));
         assertThat(bundle_diff, is(bundle_diff));
 
+        // test that word type plays a difference
+        bundle_diff = new WordBundle();
+        bundle_diff.setId(2)
+                .setWord("fallen")
+                .setTransFromString("fall")
+                .setWeight(0.5f)
+                .setArticle("blah")
+                .setWordType(WordBundle.WordType.NOUN);
+        assertThat(bundle, is(not(bundle_diff)));
     }
 }
