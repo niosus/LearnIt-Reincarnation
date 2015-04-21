@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright (c) 2015.
+  ~ This code is written by Igor Bogoslavskyi. If you experience any issues with
+  ~ it please contact me via email: igor.bogoslavskyi@gmail.com
+  -->
+
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="com.learnit.learnit.activities.SettingsActivity$GeneralPreferenceFragment"
+        android:title="@string/pref_header_general" />
+
+    <header
+        android:fragment="com.learnit.learnit.activities.SettingsActivity$NotificationPreferenceFragment"
+        android:title="@string/pref_header_notifications" />
+
+    <header
+        android:fragment="com.learnit.learnit.activities.SettingsActivity$DataSyncPreferenceFragment"
+        android:title="@string/pref_header_data_sync" />
+
+</preference-headers>

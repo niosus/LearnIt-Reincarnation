@@ -21,7 +21,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -43,6 +46,8 @@ public class MainActivity extends ActionBarActivity
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @InjectView(R.id.nav_drawer_list)
+    ListView mDrawerListView;
 
     private int mOldScroll;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -144,6 +149,21 @@ public class MainActivity extends ActionBarActivity
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view instanceof TextView) {
+                    String[] menuEntries = getResources().getStringArray(R.array.entries_actions_drawer);
+                    TextView textView = (TextView) view;
+                    if (textView.getText().toString().equals(menuEntries[0])) {
+                        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                        startActivity(intent);
+                    }
+                }
+                Log.d(Constants.LOG_TAG, String.format("clicked view:%s, at pos:%s.", view.toString(), i));
+            }
+        });
     }
 
     @Override

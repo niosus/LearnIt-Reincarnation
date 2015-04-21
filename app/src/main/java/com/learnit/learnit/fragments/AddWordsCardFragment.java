@@ -138,6 +138,7 @@ public class AddWordsCardFragment extends Fragment
         if (myView == null) {
             return;
         }
+
         // get the center for the clipping circle
         int cx = (myView.getLeft() + myView.getRight()) / 2;
         int cy = (myView.getTop() + myView.getBottom()) / 2;
