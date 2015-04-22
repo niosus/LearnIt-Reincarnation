@@ -1,19 +1,21 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.utils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.pixplicity.easyprefs.library.Prefs;
+
 public class Utils {
-    private static final String PREFS_NAME = "my_awesome_prefs";
-
-    public static boolean isRunFirstTime(Context context, String activityName) {
-        SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
-
-        if (settings.getBoolean(activityName, true)) {
+    public static boolean isRunFirstTime(String activityName) {
+        if (Prefs.getBoolean(activityName, true)) {
             Log.d(Constants.LOG_TAG, "setting the value of " + activityName + " to 'false'");
             // record the fact that the app has been started at least once
-            settings.edit().putBoolean(activityName, false).apply();
+            Prefs.putBoolean(activityName, false);
             return true;
         }
         return false;

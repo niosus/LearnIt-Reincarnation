@@ -1,19 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (C) 2014  Igor Bogoslavskyi
-  ~ This file is part of LearnIt.
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015.
+  ~ This code is written by Igor Bogoslavskyi. If you experience any issues with
+  ~ it please contact me via email: igor.bogoslavskyi@gmail.com
   -->
 
 <resources>
@@ -31,8 +19,8 @@
     <string name="key_way_to_learn">way_to_learn</string>
     <string name="key_num_of_words">num_of_words</string>
     <string name="key_direction_of_trans">direction_of_trans</string>
-    <string name="key_language_from">language_to_learn</string>
-    <string name="key_language_to">language_you_know</string>
+    <string name="key_language_to_learn">language_to_learn</string>
+    <string name="key_language_you_know">language_you_know</string>
     <string name="key_time_to_start">time_to_start</string>
     <string name="key_prefs_main">prefs_main</string>
     <string name="version">0.95.0</string>
@@ -58,7 +46,7 @@
         <item>10</item>
     </string-array>
 
-    <string-array name="values_languages_from">
+    <string-array name="values_languages_to_learn">
         <item>@string/tag_german</item>
         <item>@string/tag_english</item>
         <item>@string/tag_spanish</item>
@@ -82,8 +70,7 @@
     <string name="tag_auto">auto</string>
 
 
-
-    <string-array name="values_languages_to">
+    <string-array name="values_languages_you_know">
         <item>@string/tag_auto</item>
         <item>@string/tag_german</item>
         <item>@string/tag_english</item>

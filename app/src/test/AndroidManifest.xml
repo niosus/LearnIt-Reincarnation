@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2015.
+  ~ This code is written by Igor Bogoslavskyi. If you experience any issues with
+  ~ it please contact me via email: igor.bogoslavskyi@gmail.com
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.learnit.learnit" >
 
     <application
+        android:name=".PrefsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

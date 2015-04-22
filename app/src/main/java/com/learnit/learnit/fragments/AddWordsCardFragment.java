@@ -103,11 +103,15 @@ public class AddWordsCardFragment extends Fragment
 
     @Override
     public void wordTextChanged() {
-        Log.d(Constants.LOG_TAG, "changed add_word text");
-        if (edtWord.getText().toString().isEmpty()) {
-            this.startAnimation(btnDeleteWord.getId(), View.INVISIBLE);
-        } else if (btnDeleteWord.getVisibility() == View.INVISIBLE) {
-            this.startAnimation(btnDeleteWord.getId(), View.VISIBLE);
+        try {
+            if (edtWord.getText().toString().isEmpty()
+                    && btnDeleteWord.getVisibility() == View.VISIBLE) {
+                this.startAnimation(btnDeleteWord.getId(), View.INVISIBLE);
+            } else if (btnDeleteWord.getVisibility() == View.INVISIBLE) {
+                this.startAnimation(btnDeleteWord.getId(), View.VISIBLE);
+            }
+        } catch (IllegalStateException e) {
+            Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
         }
     }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015.
+  ~ This code is written by Igor Bogoslavskyi. If you experience any issues with
+  ~ it please contact me via email: igor.bogoslavskyi@gmail.com
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_general">
+        <com.jenzz.materialpreference.Preference
+            android:key="@string/key_language_to_learn"
+            android:title="@string/pref_language_to_learn" />
+        <com.jenzz.materialpreference.Preference
+            android:key="@string/key_language_you_know"
+            android:title="@string/pref_language_you_know" />
+    </com.jenzz.materialpreference.PreferenceCategory>
+    <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_notifications">
+        <com.jenzz.materialpreference.SwitchPreference
+            android:summaryOff="@string/pref_notifications_disabled"
+            android:summaryOn="@string/pref_notifications_enabled"
+            android:title="@string/notification_text" />
+    </com.jenzz.materialpreference.PreferenceCategory>
+
+</PreferenceScreen>

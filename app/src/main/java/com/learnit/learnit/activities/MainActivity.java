@@ -70,8 +70,8 @@ public class MainActivity extends ActionBarActivity
 
         mOldScroll = 0;
 
-        if (Utils.isRunFirstTime(this, this.getLocalClassName())) {
-            Log.d(Constants.LOG_TAG, "running for the first time");
+        if (Utils.isRunFirstTime(this.getLocalClassName())) {
+            Log.d(Constants.LOG_TAG, "running " + this.getLocalClassName() + " for the first time");
 
             // start intro activity
             startActivity(new Intent(this, IntroActivity.class));
@@ -81,18 +81,20 @@ public class MainActivity extends ActionBarActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         // ugh... a dirty-dirty hack to make logo of normal size... :( redo?
         Drawable logo = getResources().getDrawable(R.drawable.logo_white);
         getSupportActionBar().setLogo(logo);
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             View child = toolbar.getChildAt(i);
-            if (child != null)
+            if (child != null) {
                 if (child instanceof ImageView) {
                     ImageView iv2 = (ImageView) child;
                     if (iv2.getDrawable() == logo) {
                         iv2.setAdjustViewBounds(true);
                     }
                 }
+            }
         }
 
         TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
@@ -157,13 +159,17 @@ public class MainActivity extends ActionBarActivity
                     String[] menuEntries = getResources().getStringArray(R.array.entries_actions_drawer);
                     TextView textView = (TextView) view;
                     if (textView.getText().toString().equals(menuEntries[0])) {
-                        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        startActivity(intent);
+                        startSettingsActivity();
                     }
                 }
                 Log.d(Constants.LOG_TAG, String.format("clicked view:%s, at pos:%s.", view.toString(), i));
             }
         });
+    }
+
+    private void startSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override

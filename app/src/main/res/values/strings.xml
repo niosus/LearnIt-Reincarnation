@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2015.
   ~ This code is written by Igor Bogoslavskyi. If you experience any issues with
   ~ it please contact me via email: igor.bogoslavskyi@gmail.com
@@ -175,7 +174,7 @@
         <item>Half-day</item>
         <item>Day</item>
     </string-array>
-    <string-array name="entries_languages_from">
+    <string-array name="entries_languages_to_learn">
         <item>German</item>
         <item>English</item>
         <item>Spanish</item>
@@ -199,7 +198,7 @@
         <item>Ukrainian</item>
     </string-array>
 
-    <string-array name="entries_languages_to">
+    <string-array name="entries_languages_you_know">
         <item>Auto</item>
         <item>German</item>
         <item>English</item>
