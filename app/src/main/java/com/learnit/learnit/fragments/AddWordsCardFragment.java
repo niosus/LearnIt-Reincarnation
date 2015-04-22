@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +39,6 @@ import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
 import com.learnit.learnit.utils.Constants;
-import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 
 import at.markushi.ui.CircleButton;
 import butterknife.ButterKnife;
@@ -52,7 +52,7 @@ public class AddWordsCardFragment extends Fragment
     @InjectView(R.id.addWordsListView)
     ObservableListView addWordsListView;
     @InjectView(R.id.addWord)
-    MaterialAutoCompleteTextView edtWord;
+    AppCompatAutoCompleteTextView edtWord;
     @InjectView(R.id.btnDeleteWord)
     CircleButton btnDeleteWord;
     private ObservableScrollViewCallbacks mScrollCallback = null;

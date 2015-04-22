@@ -14,8 +14,8 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,7 +25,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -39,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
         implements ObservableScrollViewCallbacks {
     @InjectView(R.id.toolbar) Toolbar toolbar;
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabs;
@@ -79,12 +78,13 @@ public class MainActivity extends ActionBarActivity
 
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // ugh... a dirty-dirty hack to make logo of normal size... :( redo?
         Drawable logo = getResources().getDrawable(R.drawable.logo_white);
-        getSupportActionBar().setLogo(logo);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setLogo(logo);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             View child = toolbar.getChildAt(i);
             if (child != null) {
@@ -104,12 +104,6 @@ public class MainActivity extends ActionBarActivity
                 .getDisplayMetrics());
         pager.setPageMargin(pageMargin);
         pager.setCurrentItem(0);
-        tabs.setOnTabReselectedListener(new PagerSlidingTabStrip.OnTabReselectedListener() {
-            @Override
-            public void onTabReselected(int position) {
-                Toast.makeText(MainActivity.this, "Tab reselected: " + position, Toast.LENGTH_SHORT).show();
-            }
-        });
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
