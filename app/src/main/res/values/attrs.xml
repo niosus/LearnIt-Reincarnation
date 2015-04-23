@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2015.
+  ~ This code is written by Igor Bogoslavskyi. If you experience any issues with
+  ~ it please contact me via email: igor.bogoslavskyi@gmail.com
+  -->
+
+<resources>
+    <declare-styleable name="SummarizedPreference">
+        <attr name="array" format="reference" />
+    </declare-styleable>
+</resources>

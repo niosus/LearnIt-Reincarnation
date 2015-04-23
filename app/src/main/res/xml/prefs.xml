@@ -4,14 +4,17 @@
   ~ it please contact me via email: igor.bogoslavskyi@gmail.com
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_general">
-        <com.jenzz.materialpreference.Preference
+        <com.learnit.learnit.views.ListPreferenceWithSummary
             android:key="@string/key_language_to_learn"
-            android:title="@string/pref_language_to_learn" />
-        <com.jenzz.materialpreference.Preference
+            android:title="@string/pref_language_to_learn"
+            app:array="@array/entries_languages_to_learn" />
+        <com.learnit.learnit.views.ListPreferenceWithSummary
             android:key="@string/key_language_you_know"
-            android:title="@string/pref_language_you_know" />
+            android:title="@string/pref_language_you_know"
+            app:array="@array/entries_languages_you_know" />
     </com.jenzz.materialpreference.PreferenceCategory>
     <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_notifications">
         <com.jenzz.materialpreference.SwitchPreference
