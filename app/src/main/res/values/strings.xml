@@ -167,6 +167,19 @@
     <string name="dict_sql_progress_searching_indexing">Searching and indexing dictionary…</string>
     <string name="dict_sql_may_close_now">You can now exit this screen.</string>
 
+    <string name="lang.german">German</string>
+    <string name="lang.english">English</string>
+    <string name="lang.spanish">Spanish</string>
+    <string name="lang.french">French</string>
+    <string name="lang.italian">Italian</string>
+    <string name="lang.polish">Polish</string>
+    <string name="lang.russian">Russian</string>
+    <string name="lang.swedish">Swedish</string>
+    <string name="lang.ukrainian">Ukrainian</string>
+    <string name="lang.auto">Auto</string>
+
+    <string name="lang.undefined">Undefined</string>
+
     <string-array name="time_entries">
         <item>Hour</item>
         <item>Two Hours</item>
@@ -174,42 +187,44 @@
         <item>Half-day</item>
         <item>Day</item>
     </string-array>
-    <string-array name="entries_languages_to_learn">
-        <item>German</item>
-        <item>English</item>
-        <item>Spanish</item>
-        <item>French</item>
-        <item>Italian</item>
-        <item>Polish</item>
-        <item>Russian</item>
-        <item>Swedish</item>
-        <item>Ukrainian</item>
-    </string-array>
 
-    <string-array name="add_words_language_hint">
-        <item>German</item>
-        <item>English</item>
-        <item>Spanish</item>
-        <item>French</item>
-        <item>Italian</item>
-        <item>Polish</item>
-        <item>Russian</item>
-        <item>Swedish</item>
-        <item>Ukrainian</item>
+    <string-array name="entries_languages_to_learn">
+        <item>@string/lang.german</item>
+        <item>@string/lang.english</item>
+        <item>@string/lang.spanish</item>
+        <item>@string/lang.french</item>
+        <item>@string/lang.italian</item>
+        <item>@string/lang.polish</item>
+        <item>@string/lang.russian</item>
+        <item>@string/lang.swedish</item>
+        <item>@string/lang.ukrainian</item>
     </string-array>
 
     <string-array name="entries_languages_you_know">
-        <item>Auto</item>
-        <item>German</item>
-        <item>English</item>
-        <item>Spanish</item>
-        <item>French</item>
-        <item>Italian</item>
-        <item>Polish</item>
-        <item>Russian</item>
-        <item>Swedish</item>
-        <item>Ukrainian</item>
+        <item>@string/lang.german</item>
+        <item>@string/lang.english</item>
+        <item>@string/lang.spanish</item>
+        <item>@string/lang.french</item>
+        <item>@string/lang.italian</item>
+        <item>@string/lang.polish</item>
+        <item>@string/lang.russian</item>
+        <item>@string/lang.swedish</item>
+        <item>@string/lang.ukrainian</item>
+        <item>@string/lang.auto</item>
     </string-array>
+
+    <string-array name="add_words_language_hint">
+        <item>@string/lang.german</item>
+        <item>@string/lang.english</item>
+        <item>@string/lang.spanish</item>
+        <item>@string/lang.french</item>
+        <item>@string/lang.italian</item>
+        <item>@string/lang.polish</item>
+        <item>@string/lang.russian</item>
+        <item>@string/lang.swedish</item>
+        <item>@string/lang.ukrainian</item>
+    </string-array>
+
     <string-array name="entries_way_to_learn">
         <item>Translation only</item>
         <item>Articles only</item>

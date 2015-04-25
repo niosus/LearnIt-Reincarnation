@@ -46,41 +46,53 @@
         <item>10</item>
     </string-array>
 
-    <string-array name="values_languages_to_learn">
-        <item>@string/tag_german</item>
-        <item>@string/tag_english</item>
-        <item>@string/tag_spanish</item>
-        <item>@string/tag_french</item>
-        <item>@string/tag_italian</item>
-        <item>@string/tag_polish</item>
-        <item>@string/tag_russian</item>
-        <item>@string/tag_swedish</item>
-        <item>@string/tag_ukrainian</item>
+    <string name="lang_tag_german">de</string>
+    <string name="lang_tag_english">en</string>
+    <string name="lang_tag_spanish">es</string>
+    <string name="lang_tag_french">fr</string>
+    <string name="lang_tag_italian">it</string>
+    <string name="lang_tag_polish">pl</string>
+    <string name="lang_tag_russian">ru</string>
+    <string name="lang_tag_swedish">swe</string>
+    <string name="lang_tag_ukrainian">uk</string>
+    <string name="lang_tag_auto">auto</string>
+
+    <string-array name="lang_tags_all">
+        <item>@string/lang_tag_german</item>
+        <item>@string/lang_tag_english</item>
+        <item>@string/lang_tag_spanish</item>
+        <item>@string/lang_tag_french</item>
+        <item>@string/lang_tag_italian</item>
+        <item>@string/lang_tag_polish</item>
+        <item>@string/lang_tag_russian</item>
+        <item>@string/lang_tag_swedish</item>
+        <item>@string/lang_tag_ukrainian</item>
+        <item>@string/lang_tag_auto</item>
     </string-array>
 
-    <string name="tag_german">de</string>
-    <string name="tag_english">en</string>
-    <string name="tag_spanish">es</string>
-    <string name="tag_french">fr</string>
-    <string name="tag_italian">it</string>
-    <string name="tag_polish">pl</string>
-    <string name="tag_russian">ru</string>
-    <string name="tag_swedish">swe</string>
-    <string name="tag_ukrainian">uk</string>
-    <string name="tag_auto">auto</string>
-
+    <string-array name="values_languages_to_learn">
+        <item>@string/lang_tag_german</item>
+        <item>@string/lang_tag_english</item>
+        <item>@string/lang_tag_spanish</item>
+        <item>@string/lang_tag_french</item>
+        <item>@string/lang_tag_italian</item>
+        <item>@string/lang_tag_polish</item>
+        <item>@string/lang_tag_russian</item>
+        <item>@string/lang_tag_swedish</item>
+        <item>@string/lang_tag_ukrainian</item>
+    </string-array>
 
     <string-array name="values_languages_you_know">
-        <item>@string/tag_auto</item>
-        <item>@string/tag_german</item>
-        <item>@string/tag_english</item>
-        <item>@string/tag_spanish</item>
-        <item>@string/tag_french</item>
-        <item>@string/tag_italian</item>
-        <item>@string/tag_polish</item>
-        <item>@string/tag_russian</item>
-        <item>@string/tag_swedish</item>
-        <item>@string/tag_ukrainian</item>
+        <item>@string/lang_tag_german</item>
+        <item>@string/lang_tag_english</item>
+        <item>@string/lang_tag_spanish</item>
+        <item>@string/lang_tag_french</item>
+        <item>@string/lang_tag_italian</item>
+        <item>@string/lang_tag_polish</item>
+        <item>@string/lang_tag_russian</item>
+        <item>@string/lang_tag_swedish</item>
+        <item>@string/lang_tag_ukrainian</item>
+        <item>@string/lang_tag_auto</item>
     </string-array>
 
     <string name="val_way_to_learn_trans_only">1</string>

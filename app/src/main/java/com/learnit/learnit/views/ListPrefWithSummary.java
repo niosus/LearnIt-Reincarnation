@@ -7,6 +7,7 @@
 package com.learnit.learnit.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -72,22 +73,34 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
         }
 
         Log.d(Constants.LOG_TAG, "the index of default value is " + mDefaultEntryIndex);
+        Resources res = getContext().getResources();
+        if (res == null) {
+            Log.e(Constants.LOG_TAG, "resources not found while setting entries for preference");
+            return;
+        }
 
-        String defaultStr = getContext().getString(R.string.hello_world);
-        String summaryToSet = Prefs.getString(getKey(), defaultStr);
+        String defaultStr = res.getString(R.string.lang_undefined);
+        int storedLangIndex = Prefs.getInt(getKey(), NONE);
 
-        // handle the situation when the default value index is set
-        if (mDefaultEntryIndex != NONE && summaryToSet.equals(defaultStr)) {
-            // if we store no value yet and default entry is set --> set default val for summary
+        // if we store no value yet and default entry is set --> set default val for summary
+        if (storedLangIndex == NONE && mDefaultEntryIndex != NONE) {
             String[] array = getContext().getResources().getStringArray(mEntriesArrayId);
             setSummary(array[mDefaultEntryIndex]);
-        } else {
-            // otherwise, just go for default string e.g. "NONE"
-            setSummary(defaultStr);
+            return;
         }
+
+        // if we have a stored value for language
+        if (storedLangIndex != NONE) {
+            String[] array = getContext().getResources().getStringArray(mEntriesArrayId);
+            setSummary(array[storedLangIndex]);
+            return;
+        }
+
+        // no stored value and no default value
+        setSummary(defaultStr);
     }
 
-    public class MyOnPreferenceClickListener implements OnPreferenceClickListener {
+    public class MyOnPreferenceClickListener implements Preference.OnPreferenceClickListener {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (mEntriesArrayId == NONE) {
@@ -100,8 +113,10 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
                         public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            Log.d(Constants.LOG_TAG, "checked list item with index " + which);
                             setSummary(text);
-                            Prefs.putString(getKey(), text.toString());
+                            // put the appropriate index into shared prefs
+                            Prefs.putInt(getKey(), which);
                             return true;
                         }
                     })
