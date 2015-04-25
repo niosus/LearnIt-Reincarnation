@@ -1,14 +1,20 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.types;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.learnit.learnit.BuildConfig;
+import com.learnit.learnit.CustomRobolectricTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -19,7 +25,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 public class DbHelperTest extends DbHelper {
     SQLiteDatabase database;
 

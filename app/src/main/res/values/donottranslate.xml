@@ -5,6 +5,8 @@
   -->
 
 <resources>
+    <string name="version">0.95.0</string>
+
     <string name="str_learn_it">Learn it!</string>
     <string name="str_love_it">Love it!</string>
     <string name="str_try_it">Try it!</string>
@@ -12,6 +14,7 @@
     <string name="app_name">LearnIt</string>
     <string name="layout_current">normal</string>
 
+    <!--keys-->
     <string name="key_first_run">first_run</string>
     <string name="key_pref_use_online_dict">use_online_dict</string>
     <string name="key_pref_notif_active">notification_enabled</string>
@@ -23,7 +26,8 @@
     <string name="key_language_you_know">language_you_know</string>
     <string name="key_time_to_start">time_to_start</string>
     <string name="key_prefs_main">prefs_main</string>
-    <string name="version">0.95.0</string>
+    <string name="key_stored_lang_to_learn">stored_lang_to_learn</string>
+    <string name="key_stored_lang_you_know">stored_lang_you_know</string>
 
     <string-array name="values_freq">
         <item>1</item>
@@ -93,6 +97,56 @@
         <item>@string/lang_tag_swedish</item>
         <item>@string/lang_tag_ukrainian</item>
         <item>@string/lang_tag_auto</item>
+    </string-array>
+
+    <string-array name="languages_all">
+        <item>@string/lang_german</item>
+        <item>@string/lang_english</item>
+        <item>@string/lang_spanish</item>
+        <item>@string/lang_french</item>
+        <item>@string/lang_italian</item>
+        <item>@string/lang_polish</item>
+        <item>@string/lang_russian</item>
+        <item>@string/lang_swedish</item>
+        <item>@string/lang_ukrainian</item>
+        <item>@string/lang_auto</item>
+    </string-array>
+
+    <string-array name="entries_languages_to_learn">
+        <item>@string/lang_german</item>
+        <item>@string/lang_english</item>
+        <item>@string/lang_spanish</item>
+        <item>@string/lang_french</item>
+        <item>@string/lang_italian</item>
+        <item>@string/lang_polish</item>
+        <item>@string/lang_russian</item>
+        <item>@string/lang_swedish</item>
+        <item>@string/lang_ukrainian</item>
+    </string-array>
+
+    <string-array name="entries_languages_you_know">
+        <item>@string/lang_german</item>
+        <item>@string/lang_english</item>
+        <item>@string/lang_spanish</item>
+        <item>@string/lang_french</item>
+        <item>@string/lang_italian</item>
+        <item>@string/lang_polish</item>
+        <item>@string/lang_russian</item>
+        <item>@string/lang_swedish</item>
+        <item>@string/lang_ukrainian</item>
+        <item>@string/lang_auto</item>
+    </string-array>
+
+    <string-array name="add_words_language_hint">
+        <item>@string/lang_german</item>
+        <item>@string/lang_english</item>
+        <item>@string/lang_spanish</item>
+        <item>@string/lang_french</item>
+        <item>@string/lang_italian</item>
+        <item>@string/lang_polish</item>
+        <item>@string/lang_russian</item>
+        <item>@string/lang_swedish</item>
+        <item>@string/lang_ukrainian</item>
     </string-array>
 
     <string name="val_way_to_learn_trans_only">1</string>

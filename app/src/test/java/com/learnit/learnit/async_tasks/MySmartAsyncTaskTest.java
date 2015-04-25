@@ -1,14 +1,20 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
 
 import com.learnit.learnit.BuildConfig;
+import com.learnit.learnit.CustomRobolectricTestRunner;
 import com.learnit.learnit.interfaces.IAsyncTaskEvents;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -17,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 public class MySmartAsyncTaskTest implements IAsyncTaskEvents<Integer> {
     private float maxReceivedProgress;
 

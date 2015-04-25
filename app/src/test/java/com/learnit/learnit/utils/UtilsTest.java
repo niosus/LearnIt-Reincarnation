@@ -6,20 +6,33 @@
 
 package com.learnit.learnit.utils;
 
-import junit.framework.TestCase;
+import android.content.Context;
+
+import com.learnit.learnit.BuildConfig;
+import com.learnit.learnit.CustomRobolectricTestRunner;
+import com.learnit.learnit.R;
+import com.pixplicity.easyprefs.library.Prefs;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
+@RunWith(CustomRobolectricTestRunner.class)
+public class UtilsTest {
 
-public class UtilsTest extends TestCase {
-
+    @Test
     public void testAreBothNull() throws Exception {
-        assertTrue(Utils.areBothNull(null, null));
+        assertThat(Utils.areBothNull(null, null), is(true));
         String a = "test";
-        assertFalse(Utils.areBothNull(a, null));
+        assertThat(Utils.areBothNull(a, null), is(false));
     }
 
+    @Test
     public void testIsArticle() throws Exception {
         Constants.LanguageName langEn = Constants.LanguageName.ENGLISH;
         Constants.LanguageName langDe = Constants.LanguageName.GERMAN;
@@ -33,6 +46,22 @@ public class UtilsTest extends TestCase {
         assertThat(Utils.isArticle("der", langEn), is(false));
         assertThat(Utils.isArticle("die", langEn), is(false));
         assertThat(Utils.isArticle("das", langEn), is(false));
+    }
+
+    @Test
+    public void testLanguagesChanged() throws Exception {
+        Context context = RuntimeEnvironment.application;
+        Prefs.putInt(context.getResources().getString(R.string.key_language_to_learn), 1);
+        Prefs.putInt(context.getResources().getString(R.string.key_language_you_know), 2);
+        assertThat(Utils.languagesHaveChanged(context), is(true));
+        assertThat(Utils.languagesHaveChanged(context), is(false));
+        Prefs.putInt(context.getResources().getString(R.string.key_language_you_know), 3);
+        assertThat(Utils.languagesHaveChanged(context), is(true));
+        assertThat(Utils.languagesHaveChanged(context), is(false));
+        Prefs.putInt(context.getResources().getString(R.string.key_language_to_learn), 6);
+        assertThat(Utils.languagesHaveChanged(context), is(true));
+        assertThat(Utils.languagesHaveChanged(context), is(false));
+
     }
 
 }
