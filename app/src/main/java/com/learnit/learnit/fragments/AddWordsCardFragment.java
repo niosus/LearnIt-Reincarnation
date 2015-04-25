@@ -94,21 +94,23 @@ public class AddWordsCardFragment extends Fragment
         }
         ViewCompat.setElevation(rootView, 50);
         edtWord.addTextChangedListener(new TextChangeListener(this, edtWord.getId()));
-        btnDeleteWord.setVisibility(View.INVISIBLE);
 
         View.OnClickListener myOnClickListener = new ClearBtnOnClickListener(this);
         btnDeleteWord.setOnClickListener(myOnClickListener);
+        btnDeleteWord.setVisibility(View.INVISIBLE);
         return rootView;
     }
 
     @Override
     public void wordTextChanged() {
         try {
+            Log.d(Constants.LOG_TAG, "changed text on edit text");
             if (edtWord.getText().toString().isEmpty()
                     && btnDeleteWord.getVisibility() == View.VISIBLE) {
-                this.startAnimation(btnDeleteWord.getId(), View.INVISIBLE);
-            } else if (btnDeleteWord.getVisibility() == View.INVISIBLE) {
-                this.startAnimation(btnDeleteWord.getId(), View.VISIBLE);
+                this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
+            } else if (btnDeleteWord.getVisibility() == View.INVISIBLE
+                    && !edtWord.getText().toString().isEmpty()) {
+                this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
             }
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
@@ -132,7 +134,7 @@ public class AddWordsCardFragment extends Fragment
         edtWord.setText("");
     }
 
-    private void startAnimation(final int id, final int visibility) {
+    private void animateToVisibilityState(final int id, final int visibility) {
         View myView = null;
         switch (id) {
             case R.id.btnDeleteWord:

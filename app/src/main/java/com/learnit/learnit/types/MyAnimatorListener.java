@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2015.
+ * This code is written by Igor Bogoslavskyi. If you experience any issues with
+ * it please contact me via email: igor.bogoslavskyi@gmail.com
+ */
+
 package com.learnit.learnit.types;
 
 import android.view.View;
@@ -20,14 +26,14 @@ public class MyAnimatorListener implements SupportAnimator.AnimatorListener {
     @Override
     public void onAnimationStart() {
         if (mTargetVisibility == View.VISIBLE) {
-            mCallback.setViewVisibilityState(mViewId, View.VISIBLE);
+            mCallback.setViewVisibilityState(mViewId, mTargetVisibility);
         }
     }
 
     @Override
     public void onAnimationEnd() {
         if (mTargetVisibility == View.INVISIBLE) {
-            mCallback.setViewVisibilityState(mViewId, View.INVISIBLE);
+            mCallback.setViewVisibilityState(mViewId, mTargetVisibility);
         }
     }
 
