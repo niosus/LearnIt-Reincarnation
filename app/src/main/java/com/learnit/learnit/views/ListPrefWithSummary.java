@@ -18,52 +18,72 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.utils.Constants;
 import com.pixplicity.easyprefs.library.Prefs;
 
-public class ListPreferenceWithSummary extends com.jenzz.materialpreference.Preference {
-    private final static int NONE = 0;
+public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference {
+    private final static int NONE = -1;
+    protected int mDefaultEntryIndex = NONE;
     int mEntriesArrayId = NONE;
     Context mContext = null;
     OnPreferenceClickListener mOnClickListener = null;
 
-    public ListPreferenceWithSummary(Context context) {
+    @SuppressWarnings("unused")
+    public ListPrefWithSummary(Context context) {
         super(context);
         mContext = context;
-        initOnClickListener();
+        init();
     }
 
-    public ListPreferenceWithSummary(Context context, AttributeSet attrs) {
+    @SuppressWarnings("unused")
+    public ListPrefWithSummary(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
-        initOnClickListener();
+        init();
         setEntries(attrs);
     }
 
-    public ListPreferenceWithSummary(Context context, AttributeSet attrs, int defStyleAttr) {
+    @SuppressWarnings("unused")
+    public ListPrefWithSummary(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        initOnClickListener();
+        init();
         setEntries(attrs);
     }
 
-    public ListPreferenceWithSummary(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    @SuppressWarnings("unused")
+    public ListPrefWithSummary(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mContext = context;
-        initOnClickListener();
+        init();
         setEntries(attrs);
     }
 
-    private void initOnClickListener() {
+    private void init() {
         mOnClickListener = new MyOnPreferenceClickListener();
         setOnPreferenceClickListener(mOnClickListener);
-        setSummary(Prefs.getString(getKey(), "NONE"));
     }
 
     private void setEntries(AttributeSet attrs) {
         TypedArray t = getContext().obtainStyledAttributes(attrs, R.styleable.SummarizedPreference);
         mEntriesArrayId = t.getResourceId(R.styleable.SummarizedPreference_array, NONE);
+        mDefaultEntryIndex = t.getInt(R.styleable.SummarizedPreference_defaultValueIndex, NONE);
         t.recycle();
 
         if (mEntriesArrayId == NONE) {
             Log.e(Constants.LOG_TAG, "the array id is not defined in summarized pref");
+        }
+
+        Log.d(Constants.LOG_TAG, "the index of default value is " + mDefaultEntryIndex);
+
+        String defaultStr = getContext().getString(R.string.hello_world);
+        String summaryToSet = Prefs.getString(getKey(), defaultStr);
+
+        // handle the situation when the default value index is set
+        if (mDefaultEntryIndex != NONE && summaryToSet.equals(defaultStr)) {
+            // if we store no value yet and default entry is set --> set default val for summary
+            String[] array = getContext().getResources().getStringArray(mEntriesArrayId);
+            setSummary(array[mDefaultEntryIndex]);
+        } else {
+            // otherwise, just go for default string e.g. "NONE"
+            setSummary(defaultStr);
         }
     }
 

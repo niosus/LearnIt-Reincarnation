@@ -7,5 +7,6 @@
 <resources>
     <declare-styleable name="SummarizedPreference">
         <attr name="array" format="reference" />
+        <attr name="defaultValueIndex" format="integer" />
     </declare-styleable>
 </resources>
