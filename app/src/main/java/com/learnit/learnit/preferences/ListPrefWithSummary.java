@@ -4,7 +4,7 @@
  * it please contact me via email: igor.bogoslavskyi@gmail.com
  */
 
-package com.learnit.learnit.views;
+package com.learnit.learnit.preferences;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,6 +17,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.learnit.learnit.R;
 import com.learnit.learnit.utils.Constants;
+import com.learnit.learnit.utils.Utils;
 import com.pixplicity.easyprefs.library.Prefs;
 
 public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference {
@@ -86,6 +87,8 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
         if (storedLangIndex == NONE && mDefaultEntryIndex != NONE) {
             String[] array = getContext().getResources().getStringArray(mEntriesArrayId);
             setSummary(array[mDefaultEntryIndex]);
+            mDefaultEntryIndex = Utils.updateLangIndexIfNeeded(getContext(), mDefaultEntryIndex);
+            Prefs.putInt(getKey(), mDefaultEntryIndex);
             return;
         }
 
@@ -101,6 +104,7 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
     }
 
     public class MyOnPreferenceClickListener implements Preference.OnPreferenceClickListener {
+
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (mEntriesArrayId == NONE) {
@@ -112,11 +116,12 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
                     .items(mEntriesArrayId)
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            Log.d(Constants.LOG_TAG, "checked list item with index " + which);
+                        public boolean onSelection(MaterialDialog dialog, View view, int pickedLangIndex, CharSequence text) {
+                            Log.d(Constants.LOG_TAG, "checked list item with index " + pickedLangIndex);
                             setSummary(text);
+                            pickedLangIndex = Utils.updateLangIndexIfNeeded(getContext(), pickedLangIndex);
                             // put the appropriate index into shared prefs
-                            Prefs.putInt(getKey(), which);
+                            Prefs.putInt(getKey(), pickedLangIndex);
                             return true;
                         }
                     })

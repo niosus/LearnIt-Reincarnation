@@ -26,8 +26,8 @@
     <string name="key_language_you_know">language_you_know</string>
     <string name="key_time_to_start">time_to_start</string>
     <string name="key_prefs_main">prefs_main</string>
-    <string name="key_stored_lang_to_learn">stored_lang_to_learn</string>
-    <string name="key_stored_lang_you_know">stored_lang_you_know</string>
+    <string name="previously_stored_lang_to_learn">stored_lang_to_learn</string>
+    <string name="previously_stored_lang_you_know">stored_lang_you_know</string>
 
     <string-array name="values_freq">
         <item>1</item>

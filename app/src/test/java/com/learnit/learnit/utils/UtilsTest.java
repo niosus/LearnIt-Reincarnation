@@ -64,4 +64,13 @@ public class UtilsTest {
 
     }
 
+    @Test
+    public void testAutoHandling() throws Exception {
+        Context context = RuntimeEnvironment.application;
+        int englishLangTag = 1;
+        int someTagIndex = 3;
+        int autoTagIndex = 9;
+        assertThat(Utils.updateLangIndexIfNeeded(context, someTagIndex), is(someTagIndex));
+        assertThat(Utils.updateLangIndexIfNeeded(context, autoTagIndex), is(englishLangTag));
+    }
 }
