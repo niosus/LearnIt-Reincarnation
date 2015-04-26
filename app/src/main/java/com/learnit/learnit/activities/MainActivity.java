@@ -18,7 +18,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -30,6 +29,8 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.learnit.learnit.R;
+import com.learnit.learnit.interfaces.IActionBarEvents;
+import com.learnit.learnit.types.MyOnPageChangeListener;
 import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
@@ -38,8 +39,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class MainActivity extends AppCompatActivity
-        implements ObservableScrollViewCallbacks {
+public class MainActivity
+        extends
+        AppCompatActivity
+        implements
+        ObservableScrollViewCallbacks,
+        IActionBarEvents {
     @InjectView(R.id.toolbar) Toolbar toolbar;
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager) ViewPager pager;
@@ -62,23 +67,7 @@ public class MainActivity extends AppCompatActivity
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mOldScroll = 0;
-
-        if (Utils.isRunFirstTime(this.getLocalClassName())) {
-            Log.d(Constants.LOG_TAG, "running " + this.getLocalClassName() + " for the first time");
-
-            // start intro activity
-            startActivity(new Intent(this, IntroActivity.class));
-        }
-
-        ButterKnife.inject(this);
-        setSupportActionBar(toolbar);
-
+    private void adjustLogoSize() {
         // ugh... a dirty-dirty hack to make logo of normal size... :( redo?
         Drawable logo = getResources().getDrawable(R.drawable.logo_white);
         if (getSupportActionBar() != null) {
@@ -96,53 +85,33 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        mOldScroll = 0;
+
+        if (Utils.isRunFirstTime(this.getLocalClassName())) {
+            Log.d(Constants.LOG_TAG, "running " + this.getLocalClassName() + " for the first time");
+            // start intro activity
+            startActivity(new Intent(this, IntroActivity.class));
+        }
+
+        ButterKnife.inject(this);
+        setSupportActionBar(toolbar);
+        adjustLogoSize();
 
         TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
         pager.setAdapter(adapter);
         tabs.setViewPager(pager);
-        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
-                .getDisplayMetrics());
-        pager.setPageMargin(pageMargin);
         pager.setCurrentItem(0);
-        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (positionOffset == 0.0
-                        && (position == 1 || position == 2)) {
-                    ActionBar ab = getSupportActionBar();
-                    if (ab == null) {
-                        return;
-                    }
-                    if (!ab.isShowing()) {
-                        ab.show();
-                    }
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.d(Constants.LOG_TAG, "page changed");
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+        tabs.setOnPageChangeListener(new MyOnPageChangeListener(this));
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                toolbar, R.string.hello_world,
-                R.string.hello_world) {
-
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                invalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
+                toolbar, R.string.str_learn_it, R.string.str_learn_it);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
@@ -166,26 +135,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onScrollChanged(int newScroll, boolean b, boolean b2) {
-        ActionBar ab = getSupportActionBar();
-        if (ab == null) {
-            return;
-        }
-
         // The damping is needed to account for the implicit scroll that
         // occurs when the list view changes its size.
         if (newScroll - mOldScroll > toolbar.getHeight()) {
             hideKeyboard(this);
             mOldScroll = newScroll;
-            if (ab.isShowing()) {
-                ab.hide();
-            }
+            hideActionBar();
         }
         if (newScroll - mOldScroll < -toolbar.getHeight()) {
             hideKeyboard(this);
             mOldScroll = newScroll;
-            if (!ab.isShowing()) {
-                ab.show();
-            }
+            showActionBar();
         }
     }
     @Override
@@ -205,4 +165,25 @@ public class MainActivity extends AppCompatActivity
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void showActionBar() {
+        ActionBar ab = getSupportActionBar();
+        if (ab == null) {
+            return;
+        }
+        if (!ab.isShowing()) {
+            ab.show();
+        }
+    }
+
+    @Override
+    public void hideActionBar() {
+        ActionBar ab = getSupportActionBar();
+        if (ab == null) {
+            return;
+        }
+        if (ab.isShowing()) {
+            ab.hide();
+        }
+    }
 }
