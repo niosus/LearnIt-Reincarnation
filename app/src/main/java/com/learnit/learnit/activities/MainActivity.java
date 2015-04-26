@@ -148,15 +148,13 @@ public class MainActivity extends AppCompatActivity
 
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int clickedIndex, long l) {
                 if (view instanceof TextView) {
-                    String[] menuEntries = getResources().getStringArray(R.array.entries_actions_drawer);
-                    TextView textView = (TextView) view;
-                    if (textView.getText().toString().equals(menuEntries[0])) {
+                    if (clickedIndex == 0) {
                         startSettingsActivity();
                     }
                 }
-                Log.d(Constants.LOG_TAG, String.format("clicked view:%s, at pos:%s.", view.toString(), i));
+                Log.d(Constants.LOG_TAG, String.format("clicked view:%s, at pos:%s.", view.toString(), clickedIndex));
             }
         });
     }
