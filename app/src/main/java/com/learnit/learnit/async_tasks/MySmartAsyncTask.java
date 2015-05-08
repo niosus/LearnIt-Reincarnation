@@ -8,23 +8,31 @@ package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.learnit.learnit.interfaces.IAsyncTaskEvents;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.utils.Constants;
 
-public abstract class MySmartAsyncTask<InType, OutType> extends AsyncTask<InType, Float, OutType> {
-    protected IAsyncTaskEvents<OutType> mAsyncEventHandler;
+public abstract class MySmartAsyncTask<InType, OutType>
+        extends AsyncTask<InType, Float, OutType> {
+    protected IAsyncTaskResultClient mAsyncEventHandler;
     protected Context mContext;
+    protected InType mInputData;
+
+    protected String TAG = null;
 
     public MySmartAsyncTask(
             Context context,
-            IAsyncTaskEvents<OutType> asyncEventHandler) {
+            InType data,
+            IAsyncTaskResultClient asyncEventHandler) {
         super();
         mContext = context;
+        mInputData = data;
         mAsyncEventHandler = asyncEventHandler;
     }
 
     public MySmartAsyncTask<InType, OutType> setAsyncEventHandler(
-            IAsyncTaskEvents<OutType> asyncEventHandler) {
+            IAsyncTaskResultClient asyncEventHandler) {
         mAsyncEventHandler = asyncEventHandler;
         return this;
     }
@@ -33,6 +41,18 @@ public abstract class MySmartAsyncTask<InType, OutType> extends AsyncTask<InType
             Context context) {
         mContext = context;
         return this;
+    }
+
+    // just a stub for children to implement and to avoid
+    // warnings about the vararg array of generics
+    public abstract void execute();
+
+    // children need to have a distinct tag
+    public String tag() {
+        if (TAG == null) {
+            Log.e(Constants.LOG_TAG, "ERROR: returning tag of parent task.");
+        }
+        return TAG;
     }
 
     @Override

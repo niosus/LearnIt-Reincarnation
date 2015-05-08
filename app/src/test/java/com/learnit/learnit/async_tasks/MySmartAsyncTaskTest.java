@@ -10,7 +10,7 @@ import android.content.Context;
 
 import com.learnit.learnit.BuildConfig;
 import com.learnit.learnit.CustomRobolectricTestRunner;
-import com.learnit.learnit.interfaces.IAsyncTaskEvents;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,28 +24,22 @@ import static org.junit.Assert.assertTrue;
 
 @Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
 @RunWith(CustomRobolectricTestRunner.class)
-public class MySmartAsyncTaskTest implements IAsyncTaskEvents<Integer> {
+public class MySmartAsyncTaskTest implements IAsyncTaskResultClient {
     private float maxReceivedProgress;
-
-    @Before
-    public void setUp() throws Exception {
-
-    }
 
     @Test
     public void testReadTxtDatabase() {
-//        DbHelper helper = new DbHelper(RuntimeEnvironment.application, DbHelper.DB_HELPER_DICT, null, 1);
         Context context = RuntimeEnvironment.application;
         String filePath;
-        if (context.getPackageResourcePath().contains("test")) {
-            // means that we run from android studio
-            filePath = context.getPackageResourcePath() + "/res/en-uk.txt";
-        } else {
-            // we run from command line
-            filePath = context.getPackageResourcePath() + "/src/test/res/en-uk.txt";
-        }
-        PopulateHelpDictTask populateHelpDictTask = new PopulateHelpDictTask(context, this);
-        populateHelpDictTask.execute(filePath);
+        filePath = context.getPackageResourcePath() + "/src/test/res/en-uk.txt";
+        System.out.println(filePath);
+        PopulateHelpDictTask populateHelpDictTask = new PopulateHelpDictTask(context, filePath, this);
+        populateHelpDictTask.execute();
+    }
+
+    @Override
+    public String tag() {
+        return "test_task";
     }
 
     @Override
@@ -54,10 +48,14 @@ public class MySmartAsyncTaskTest implements IAsyncTaskEvents<Integer> {
     }
 
     @Override
-    public void onFinish(Integer result) {
-        //we consider progress of more than 95% a success
+    public <OutType> void onFinish(OutType result) {
         assertTrue(maxReceivedProgress > 95f);
-        assertThat(result, is(0));
+        if (result instanceof Integer) {
+            assertThat((Integer) result, is(0));
+        } else {
+            // make sure this is not called
+            assertThat(true, is(false));
+        }
     }
 
     @Override

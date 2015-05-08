@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-import com.learnit.learnit.interfaces.IAsyncTaskEvents;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.types.DbHelper;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.StringUtils;
@@ -23,10 +23,17 @@ import java.io.IOException;
 
 public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
 
+    protected String TAG = "populate_dict";
 
     public PopulateHelpDictTask(Context context,
-                                IAsyncTaskEvents<Integer> asyncEventHandler) {
-        super(context, asyncEventHandler);
+                                String data,
+                                IAsyncTaskResultClient asyncEventHandler) {
+        super(context, data, asyncEventHandler);
+    }
+
+    @Override
+    public void execute() {
+        super.execute(mInputData);
     }
 
     @Override
