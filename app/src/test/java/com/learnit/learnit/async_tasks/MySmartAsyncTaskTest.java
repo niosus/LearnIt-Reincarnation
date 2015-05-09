@@ -53,7 +53,7 @@ public class MySmartAsyncTaskTest implements IAsyncTaskResultClient {
     public <OutType> void onFinish(OutType result) {
         assertTrue(maxReceivedProgress > 95f);
         if (result instanceof Integer) {
-            assertThat(result, is(0));
+            assertThat((Integer) result, is(0));
         } else {
             // make sure this is not called
             assertThat(true, is(false));
