@@ -15,7 +15,7 @@ import com.learnit.learnit.utils.Constants;
 
 public abstract class MySmartAsyncTask<InType, OutType>
         extends AsyncTask<InType, Float, OutType> {
-    protected IAsyncTaskResultClient mAsyncEventHandler;
+    protected IAsyncTaskResultClient mAsyncTaskResultClient;
     protected Context mContext;
     protected InType mInputData;
 
@@ -28,12 +28,12 @@ public abstract class MySmartAsyncTask<InType, OutType>
         super();
         mContext = context;
         mInputData = data;
-        mAsyncEventHandler = asyncEventHandler;
+        mAsyncTaskResultClient = asyncEventHandler;
     }
 
     public MySmartAsyncTask<InType, OutType> setAsyncEventHandler(
             IAsyncTaskResultClient asyncEventHandler) {
-        mAsyncEventHandler = asyncEventHandler;
+        mAsyncTaskResultClient = asyncEventHandler;
         return this;
     }
 
@@ -50,7 +50,7 @@ public abstract class MySmartAsyncTask<InType, OutType>
     // children need to have a distinct tag
     public String tag() {
         if (TAG == null) {
-            Log.e(Constants.LOG_TAG, "ERROR: returning tag of parent task.");
+            throw new NullPointerException("returning tag of parent task");
         }
         return TAG;
     }
@@ -58,13 +58,19 @@ public abstract class MySmartAsyncTask<InType, OutType>
     @Override
     protected void onPostExecute(OutType result) {
         super.onPostExecute(result);
-        mAsyncEventHandler.onProgressUpdate(100f);
-        mAsyncEventHandler.onFinish(result);
+        mAsyncTaskResultClient.onProgressUpdate(100f);
+        mAsyncTaskResultClient.onFinish(result);
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mAsyncEventHandler.onPreExecute();
+        mAsyncTaskResultClient.onPreExecute();
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        mAsyncTaskResultClient.onCancelled();
     }
 }

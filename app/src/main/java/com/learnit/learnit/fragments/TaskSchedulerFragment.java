@@ -27,9 +27,11 @@ public class TaskSchedulerFragment
         extends Fragment
         implements IWorkerJobInput {
     private Map<String, IAsyncTaskResultClient> mClients = null;
-    private Map<String, String> mTasksToClientsMapping = null;
+    private Map<String, MySmartAsyncTask> mTasks = null;
+    private Map<String, String > mTaskClientBinder= null;
 
     public void registerClient(IAsyncTaskResultClient client) {
+        // no check needed here as the old value will just be overwritten
         mClients.put(client.tag(), client);
     }
 
@@ -43,7 +45,8 @@ public class TaskSchedulerFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mClients = new HashMap<>();
-        mTasksToClientsMapping = new HashMap<>();
+        mTasks = new HashMap<>();
+        mTaskClientBinder = new HashMap<>();
     }
 
     @Override
@@ -54,22 +57,38 @@ public class TaskSchedulerFragment
 
     @Override
     public void newTaskForClient(MySmartAsyncTask task, IAsyncTaskResultClient client) {
-        // TODO: kill previous task if needed
+        // kill the task pending for current fragment
+        IAsyncTaskResultClient currentClient = mClients.get(client.tag());
+        if (currentClient != null) {
+            // this client is already registered
+            MySmartAsyncTask currentTask = mTasks.get(client.tag());
+            if (currentTask != null) {
+                // there is a task that is doing something, cancel it
+                // this generally takes some time. Be sure to test everything
+                currentTask.cancel(true);
+                // set the current task for this client to null
+                mTasks.put(client.tag(), null);
+            }
+        } else {
+            mClients.put(client.tag(), client);
+        }
 
-        // register new client
-        mClients.put(client.tag(), client);
-        mTasksToClientsMapping.put(task.tag(), client.tag());
+        // register new task
+        mTasks.put(client.tag(), task);
+        // bind its name to the client's name
+        mTaskClientBinder.put(task.tag(), client.tag());
+
         // start executing the task
         task.execute();
     }
 
     @Override
     public <OutType> void onTaskFinished(String taskTag, OutType result) {
-        if (!mTasksToClientsMapping.containsKey(taskTag)) {
+        if (!mTaskClientBinder.containsKey(taskTag)) {
             Log.e(Constants.LOG_TAG, "Received task for unknown client.");
             return;
         }
-        String clientTag = mTasksToClientsMapping.get(taskTag);
+        String clientTag = mTaskClientBinder.get(taskTag);
         if (clientTag == null) {
             Log.e(Constants.LOG_TAG, "Something wrong with the client tag");
             return;
@@ -83,6 +102,8 @@ public class TaskSchedulerFragment
             Log.e(Constants.LOG_TAG, String.format("Client for tag '%s' is null", clientTag));
             return;
         }
+        // set the task connected to this client to null
+        mTasks.put(clientTag, null);
         // if we are here - everything is ok
         client.onFinish(result);
     }

@@ -73,7 +73,7 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
 
                 currentLength += line.getBytes().length;
                 Float percent = 100f * ((float) currentLength / (float) fullLength);
-                mAsyncEventHandler.onProgressUpdate(percent);
+                mAsyncTaskResultClient.onProgressUpdate(percent);
 
                 if (isCancelled()) {
                     Log.d(Constants.LOG_TAG, "oh man, seems I am being killed... :( so sad...");

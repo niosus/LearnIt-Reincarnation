@@ -7,10 +7,12 @@
 package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.learnit.learnit.BuildConfig;
 import com.learnit.learnit.CustomRobolectricTestRunner;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.utils.Constants;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +53,7 @@ public class MySmartAsyncTaskTest implements IAsyncTaskResultClient {
     public <OutType> void onFinish(OutType result) {
         assertTrue(maxReceivedProgress > 95f);
         if (result instanceof Integer) {
-            assertThat((Integer) result, is(0));
+            assertThat(result, is(0));
         } else {
             // make sure this is not called
             assertThat(true, is(false));
@@ -61,5 +63,10 @@ public class MySmartAsyncTaskTest implements IAsyncTaskResultClient {
     @Override
     public void onPreExecute() {
 
+    }
+
+    @Override
+    public void onCancelled() {
+        Log.d(Constants.LOG_TAG, "I am cancelled: " + this.getClass().getCanonicalName());
     }
 }

@@ -5,4 +5,5 @@ public interface IAsyncTaskResultClient {
     void onPreExecute();
     void onProgressUpdate(Float progress);
     <OutType> void onFinish(OutType result);
+    void onCancelled();
 }
