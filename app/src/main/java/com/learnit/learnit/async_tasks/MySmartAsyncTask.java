@@ -23,17 +23,15 @@ public abstract class MySmartAsyncTask<InType, OutType>
 
     public MySmartAsyncTask(
             Context context,
-            InType data,
-            IAsyncTaskResultClient asyncEventHandler) {
+            InType data) {
         super();
         mContext = context;
         mInputData = data;
-        mAsyncTaskResultClient = asyncEventHandler;
     }
 
-    public MySmartAsyncTask<InType, OutType> setAsyncEventHandler(
-            IAsyncTaskResultClient asyncEventHandler) {
-        mAsyncTaskResultClient = asyncEventHandler;
+    public MySmartAsyncTask<InType, OutType> setResulClient(
+            IAsyncTaskResultClient resultClient) {
+        mAsyncTaskResultClient = resultClient;
         return this;
     }
 
@@ -48,12 +46,7 @@ public abstract class MySmartAsyncTask<InType, OutType>
     public abstract void execute();
 
     // children need to have a distinct tag
-    public String tag() {
-        if (TAG == null) {
-            throw new NullPointerException("returning tag of parent task");
-        }
-        return TAG;
-    }
+    public abstract String tag();
 
     @Override
     protected void onPostExecute(OutType result) {

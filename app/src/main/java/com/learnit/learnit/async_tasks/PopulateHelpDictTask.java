@@ -26,14 +26,18 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
     protected String TAG = "populate_dict";
 
     public PopulateHelpDictTask(Context context,
-                                String data,
-                                IAsyncTaskResultClient asyncEventHandler) {
-        super(context, data, asyncEventHandler);
+                                String data) {
+        super(context, data);
     }
 
     @Override
     public void execute() {
         super.execute(mInputData);
+    }
+
+    @Override
+    public String tag() {
+        return TAG;
     }
 
     @Override

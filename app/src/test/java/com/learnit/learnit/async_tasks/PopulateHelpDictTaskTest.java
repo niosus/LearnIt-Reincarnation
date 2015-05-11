@@ -35,13 +35,9 @@ public class PopulateHelpDictTaskTest implements IAsyncTaskResultClient {
         String filePath;
         filePath = context.getPackageResourcePath() + "/src/test/res/en-uk.txt";
         System.out.println(filePath);
-        PopulateHelpDictTask populateHelpDictTask = new PopulateHelpDictTask(context, filePath, this);
+        PopulateHelpDictTask populateHelpDictTask = new PopulateHelpDictTask(context, filePath);
+        populateHelpDictTask.setResulClient(this);
         populateHelpDictTask.execute();
-    }
-
-    @Override
-    public String tag() {
-        return "test_task";
     }
 
     @Override
@@ -58,6 +54,12 @@ public class PopulateHelpDictTaskTest implements IAsyncTaskResultClient {
             // make sure this is not called
             assertThat(true, is(false));
         }
+    }
+
+    @Override
+    public String tag() {
+        // TODO: probably something is wrong with the tags over here
+        return "populate_dict_test_tag";
     }
 
     @Override

@@ -33,13 +33,9 @@ public class DummyTaskTest implements IAsyncTaskResultClient {
     @Test
     public void testDummyTask() {
         Context context = RuntimeEnvironment.application;
-        dummyTask = new DummyTask(context, 5, this);
+        dummyTask = new DummyTask(context, 5);
+        dummyTask.setResulClient(this);
         dummyTask.execute();
-    }
-
-    @Override
-    public String tag() {
-        return "dummy_task";
     }
 
     @Override
@@ -56,6 +52,11 @@ public class DummyTaskTest implements IAsyncTaskResultClient {
             // make sure this is not called
             assertThat(true, is(false));
         }
+    }
+
+    @Override
+    public String tag() {
+        return "dummy_test_task_tag";
     }
 
     @Override

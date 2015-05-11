@@ -26,14 +26,18 @@ public class DummyTask extends MySmartAsyncTask<Integer, Integer> {
     protected String TAG = "dummy_task";
 
     public DummyTask(Context context,
-                     Integer numOfChunks,
-                     IAsyncTaskResultClient asyncEventHandler) {
-        super(context, numOfChunks, asyncEventHandler);
+                     Integer numOfChunks) {
+        super(context, numOfChunks);
     }
 
     @Override
     public void execute() {
         super.execute(mInputData);
+    }
+
+    @Override
+    public String tag() {
+        return TAG;
     }
 
     @Override

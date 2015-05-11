@@ -79,6 +79,7 @@ public class TaskSchedulerFragment
         mTaskClientBinder.put(task.tag(), client.tag());
 
         // start executing the task
+        task.setResulClient(client);
         task.execute();
     }
 
