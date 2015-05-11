@@ -14,7 +14,6 @@ import com.learnit.learnit.CustomRobolectricTestRunner;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.utils.Constants;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
@@ -26,22 +25,19 @@ import static org.junit.Assert.assertTrue;
 
 @Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
 @RunWith(CustomRobolectricTestRunner.class)
-public class MySmartAsyncTaskTest implements IAsyncTaskResultClient {
+public class DummyTaskTest implements IAsyncTaskResultClient {
     private float maxReceivedProgress;
 
     @Test
-    public void testReadTxtDatabase() {
+    public void testDummyTask() {
         Context context = RuntimeEnvironment.application;
-        String filePath;
-        filePath = context.getPackageResourcePath() + "/src/test/res/en-uk.txt";
-        System.out.println(filePath);
-        PopulateHelpDictTask populateHelpDictTask = new PopulateHelpDictTask(context, filePath, this);
-        populateHelpDictTask.execute();
+        DummyTask dummyTask = new DummyTask(context, 5, this);
+        dummyTask.execute();
     }
 
     @Override
     public String tag() {
-        return "test_task";
+        return "dummy_task";
     }
 
     @Override
