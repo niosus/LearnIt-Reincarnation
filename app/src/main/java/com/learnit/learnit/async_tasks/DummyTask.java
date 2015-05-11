@@ -49,7 +49,8 @@ public class DummyTask extends MySmartAsyncTask<Integer, Integer> {
         try {
             for (int i = 0; i < numOfChunks[0]; i++) {
                 Thread.sleep(100);
-                mAsyncTaskResultClient.onProgressUpdate((i * 100) / (float) numOfChunks[0] );
+                float percent = (i * 100) / (float) numOfChunks[0];
+                mAsyncTaskResultClient.onProgressUpdate(percent);
                 if (isCancelled()) {
                     return -1;
                 }

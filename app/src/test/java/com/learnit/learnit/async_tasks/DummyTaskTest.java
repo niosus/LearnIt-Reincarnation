@@ -16,8 +16,10 @@ import com.learnit.learnit.utils.Constants;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -35,6 +37,16 @@ public class DummyTaskTest implements IAsyncTaskResultClient {
         Context context = RuntimeEnvironment.application;
         dummyTask = new DummyTask(context, 5);
         dummyTask.setResulClient(this);
+        dummyTask.execute();
+    }
+
+    @Test
+    public void testCancelDummyTask() throws InterruptedException {
+        Context context = RuntimeEnvironment.application;
+        dummyTask = new DummyTask(context, 100);
+        dummyTask.setResulClient(this);
+        System.out.println("killing the task");
+        dummyTask.cancel(true);
         dummyTask.execute();
     }
 
@@ -66,7 +78,7 @@ public class DummyTaskTest implements IAsyncTaskResultClient {
 
     @Override
     public void onCancelled() {
-        assertTrue(dummyTask.isCancelled());
         System.out.println(String.format("Task %s has just been cancelled", dummyTask.getClass().getCanonicalName()));
+        assertTrue(dummyTask.isCancelled());
     }
 }
