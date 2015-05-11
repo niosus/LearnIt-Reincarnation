@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -27,11 +28,12 @@ import static org.junit.Assert.assertTrue;
 @RunWith(CustomRobolectricTestRunner.class)
 public class DummyTaskTest implements IAsyncTaskResultClient {
     private float maxReceivedProgress;
+    private DummyTask dummyTask;
 
     @Test
     public void testDummyTask() {
         Context context = RuntimeEnvironment.application;
-        DummyTask dummyTask = new DummyTask(context, 5, this);
+        dummyTask = new DummyTask(context, 5, this);
         dummyTask.execute();
     }
 
@@ -63,6 +65,7 @@ public class DummyTaskTest implements IAsyncTaskResultClient {
 
     @Override
     public void onCancelled() {
-        Log.d(Constants.LOG_TAG, "I am cancelled: " + this.getClass().getCanonicalName());
+        assertTrue(dummyTask.isCancelled());
+        System.out.println(String.format("Task %s has just been cancelled", dummyTask.getClass().getCanonicalName()));
     }
 }
