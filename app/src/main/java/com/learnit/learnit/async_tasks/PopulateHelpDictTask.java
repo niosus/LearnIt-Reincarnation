@@ -24,6 +24,8 @@ import java.io.IOException;
 public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
 
     protected String TAG = "populate_dict";
+    public static final Integer SUCCESS = 0;
+    public static final Integer FAILURE = -1;
 
     public PopulateHelpDictTask(Context context,
                                 String data) {
@@ -44,10 +46,10 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
     protected Integer doInBackground(String... strings) {
         // we expect exactly one string - name of the input file
         if (strings.length != 1) {
-            return null;
+            return FAILURE;
         }
 
-        DbHelper dbHelper = new DbHelper(mContext, DbHelper.DB_HELPER_DICT, null, 1);
+        DbHelper dbHelper = DbHelper.Factory.createLocalizedHelper(mContext, DbHelper.DB_HELPER_DICT);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String sql = "INSERT INTO " + dbHelper.getDatabaseName()
                 + " (" + DbHelper.HELPER_WORD_COLUMN_NAME + ", "
@@ -87,13 +89,13 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
             br.close();
         } catch (IOException e) {
             Log.e(Constants.LOG_TAG, "Error: cannot find dictionary file");
-            return -1;
+            return FAILURE;
         }
         if (!isCancelled()) {
             db.setTransactionSuccessful();
         }
         db.endTransaction();
         db.close();
-        return 0;
+        return SUCCESS;
     }
 }

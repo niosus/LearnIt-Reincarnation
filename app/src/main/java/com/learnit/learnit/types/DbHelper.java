@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.learnit.learnit.interfaces.IDatabaseInteractions;
 import com.learnit.learnit.utils.Constants;
+import com.learnit.learnit.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class DbHelper extends SQLiteOpenHelper
     // used for learning new words.
     final public static String DB_USER_DICT = "user_dict";
     // database that stores the data generated from a star-dict dictionary.
-    final public static String DB_HELPER_DICT = "helper_dict";
+    final public static String DB_HELPER_DICT = "help_dict";
     // names of DB_USER_DICT database fields
     final public static String WORD_COLUMN_NAME = "word";
     final public static String ID_COLUMN_NAME = "id";
@@ -43,16 +45,29 @@ public class DbHelper extends SQLiteOpenHelper
     final public static String HELPER_WORD_COLUMN_NAME = "wname";
     final public static String HELPER_MEANING_COLUMN_NAME = "wmean";
 
-    public DbHelper(Context context, String name,
+    private DbHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory,
                     int version) {
         super(context, name, factory, version);
     }
 
+    public static class Factory {
+        public static DbHelper createLocalizedHelper(Context context, String dbName) {
+            LanguagePair.LangTags langTags = Utils.getCurrentLanguageTags(context);
+            String localizedDbName = String.format("%s_%s_%s",
+                    dbName, langTags.langToLearnTag(), langTags.langYouKnowTag());
+            return new DbHelper(context, localizedDbName, null, 1);
+        }
+    }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.d(Constants.LOG_TAG, "--- onCreate database " + getDatabaseName() + "---");
-        switch (getDatabaseName()) {
+        if (DB_HELPER_DICT.length() != DB_USER_DICT.length()) {
+            Log.e(Constants.LOG_TAG, "Current implementation requires that DB_HELPER_DICT and DB_USER_DICT have same lengths. Cannot create database. Doing nothing.");
+            return;
+        }
+        switch (getDatabaseName().substring(0, DB_HELPER_DICT.length())) {
             case DB_USER_DICT:
                 sqLiteDatabase.execSQL("CREATE TABLE " + getDatabaseName() + " ("
                         + ID_COLUMN_NAME + " INTEGER primary key autoincrement,"
@@ -101,12 +116,30 @@ public class DbHelper extends SQLiteOpenHelper
         // if we reach this place - there is something similar in the db, but not the same.
         // Requires investigation and update.
         // TODO: actually implement the logic behind the word updated
+        Log.w(Constants.LOG_TAG, "reached unimplemented behaviour. Please decide how to update the words.");
         return AddWordReturnCode.WORD_UPDATED;
     }
 
     @Override
     public List<WordBundle> queryWord(final String word) {
         return queryFromDB(word, this.getDatabaseName(), this.getReadableDatabase());
+    }
+
+    @Override
+    public void deleteDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if (db == null) {
+            return;
+        }
+        try {
+            db.delete(getDatabaseName(), null, null);
+            db.close();
+        } catch (SQLiteException e) {
+            // cannot delete. Usually means the database is not there yet.
+            // do nothing.
+            Log.e(Constants.LOG_TAG, "database cannot be deleted.\n" + e.getMessage());
+            db.close();
+        }
     }
 
     protected List<WordBundle> queryFromDB(final String word, final String dbName, final SQLiteDatabase db) {
@@ -137,7 +170,7 @@ public class DbHelper extends SQLiteOpenHelper
         return wordBundle;
     }
 
-    public static enum AddWordReturnCode {
+    public enum AddWordReturnCode {
         SUCCESS,
         WORD_UPDATED,
         WORD_EXISTS

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -29,7 +30,10 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.learnit.learnit.R;
+import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
+import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IActionBarEvents;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.types.MyOnPageChangeListener;
 import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
@@ -40,11 +44,8 @@ import butterknife.InjectView;
 
 
 public class MainActivity
-        extends
-        AppCompatActivity
-        implements
-        ObservableScrollViewCallbacks,
-        IActionBarEvents {
+        extends AppCompatActivity
+        implements ObservableScrollViewCallbacks, IActionBarEvents, IAsyncTaskResultClient {
     @InjectView(R.id.toolbar) Toolbar toolbar;
     @InjectView(R.id.tabs) PagerSlidingTabStrip tabs;
     @InjectView(R.id.pager) ViewPager pager;
@@ -55,37 +56,7 @@ public class MainActivity
 
     private int mOldScroll;
     private ActionBarDrawerToggle mDrawerToggle;
-
-    private static void hideKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    private void adjustLogoSize() {
-        // ugh... a dirty-dirty hack to make logo of normal size... :( redo?
-        Drawable logo = getResources().getDrawable(R.drawable.logo_white);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setLogo(logo);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View child = toolbar.getChildAt(i);
-            if (child != null) {
-                if (child instanceof ImageView) {
-                    ImageView iv2 = (ImageView) child;
-                    if (iv2.getDrawable() == logo) {
-                        iv2.setAdjustViewBounds(true);
-                    }
-                }
-            }
-        }
-    }
+    private TaskSchedulerFragment mTaskScheduler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,33 +70,24 @@ public class MainActivity
             // start intro activity
             startActivity(new Intent(this, IntroActivity.class));
         }
-
         ButterKnife.inject(this);
-        setSupportActionBar(toolbar);
-        adjustLogoSize();
+        initActionBar();
+        initTabbedViewPager();
+        initSidePane();
+        initTaskScheduler();
+    }
 
-        TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
-        pager.setAdapter(adapter);
-        tabs.setViewPager(pager);
-        pager.setCurrentItem(0);
-        tabs.setOnPageChangeListener(new MyOnPageChangeListener(this));
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                toolbar, R.string.str_learn_it, R.string.str_learn_it);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
+        Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
+    }
 
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int clickedIndex, long l) {
-                if (view instanceof TextView) {
-                    if (clickedIndex == 0) {
-                        startSettingsActivity();
-                    }
-                }
-                Log.d(Constants.LOG_TAG, String.format("clicked view:%s, at pos:%s.", view.toString(), clickedIndex));
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDrawerLayout.closeDrawer(mDrawerListView);
     }
 
     private void startSettingsActivity() {
@@ -185,5 +147,102 @@ public class MainActivity
         if (ab.isShowing()) {
             ab.hide();
         }
+    }
+
+    private void initActionBar() {
+        setSupportActionBar(toolbar);
+        adjustLogoSize();
+    }
+
+    private void initTabbedViewPager() {
+        TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
+        pager.setAdapter(adapter);
+        tabs.setViewPager(pager);
+        pager.setCurrentItem(0);
+        tabs.setOnPageChangeListener(new MyOnPageChangeListener(this));
+    }
+
+    private void initSidePane() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                toolbar, R.string.str_learn_it, R.string.str_learn_it);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int clickedIndex, long l) {
+                if (view instanceof TextView) {
+                    if (clickedIndex == 0) {
+                        startSettingsActivity();
+                    }
+                }
+                Log.d(Constants.LOG_TAG, String.format("clicked view:%s, at pos:%s.", view.toString(), clickedIndex));
+            }
+        });
+    }
+
+    private static void hideKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private void adjustLogoSize() {
+        // ugh... a dirty-dirty hack to make logo of normal size... :( redo?
+        Drawable logo = getResources().getDrawable(R.drawable.logo_white);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setLogo(logo);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View child = toolbar.getChildAt(i);
+            if (child != null) {
+                if (child instanceof ImageView) {
+                    ImageView iv2 = (ImageView) child;
+                    if (iv2.getDrawable() == logo) {
+                        iv2.setAdjustViewBounds(true);
+                    }
+                }
+            }
+        }
+    }
+
+    private void initTaskScheduler() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        mTaskScheduler = (TaskSchedulerFragment)
+                fragmentManager.findFragmentByTag(TaskSchedulerFragment.TAG);
+        if (mTaskScheduler == null) {
+            mTaskScheduler = new TaskSchedulerFragment();
+            fragmentManager.beginTransaction()
+                    .add(mTaskScheduler, TaskSchedulerFragment.TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    public String tag() {
+        return "main_activity";
+    }
+    @Override
+    public void onPreExecute() {}
+    @Override
+    public void onProgressUpdate(Float progress) {}
+    @Override
+    public <OutType> void onFinish(OutType result) {
+        if (result instanceof Integer) {
+            if (result == PopulateHelpDictTask.SUCCESS) {
+                Log.d(Constants.LOG_TAG, "loaded help dictionary");
+            }
+        }
+    }
+
+    @Override
+    public void onCancelled() {
+
     }
 }

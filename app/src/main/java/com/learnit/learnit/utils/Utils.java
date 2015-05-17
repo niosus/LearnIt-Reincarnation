@@ -8,15 +8,23 @@ package com.learnit.learnit.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.util.Log;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
+import com.learnit.learnit.fragments.TaskSchedulerFragment;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.types.DbHelper;
+import com.learnit.learnit.types.LanguagePair;
 import com.pixplicity.easyprefs.library.Prefs;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Locale;
 
 public class Utils {
+
     public static boolean isRunFirstTime(String activityName) {
         if (Prefs.getBoolean(activityName, true)) {
             Log.d(Constants.LOG_TAG, "setting the value of " + activityName + " to 'false'");
@@ -70,6 +78,28 @@ public class Utils {
         return changed;
     }
 
+    public static LanguagePair.LangNames getCurrentLanguageNames(Context context) {
+        int langToLearnIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_to_learn), -1);
+        int langYouKnowIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_you_know), -1);
+        Resources res = context.getResources();
+        String[] allLanguages = res.getStringArray(R.array.languages_all);
+        LanguagePair.LangNames result = new LanguagePair.LangNames();
+        result.setLangToLearn(allLanguages[langToLearnIndex])
+                .setLangYouKnow(allLanguages[langYouKnowIndex]);
+        return result;
+    }
+
+    public static LanguagePair.LangTags getCurrentLanguageTags(Context context) {
+        int langToLearnIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_to_learn), -1);
+        int langYouKnowIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_you_know), -1);
+        Resources res = context.getResources();
+        String[] allLanguages = res.getStringArray(R.array.lang_tags_all);
+        LanguagePair.LangTags result = new LanguagePair.LangTags();
+        result.setLangToLearnTag(allLanguages[langToLearnIndex])
+                .setLangYouKnowTag(allLanguages[langYouKnowIndex]);
+        return result;
+    }
+
     public static int updateLangIndexIfNeeded(Context context, final int currentLangIndex) {
         int newLangIndex = currentLangIndex;
         if (context == null) {
@@ -100,6 +130,45 @@ public class Utils {
         }
 
         return newLangIndex;
+    }
+
+    public static File dictFileFromCurrentLanguageTags(LanguagePair.LangTags currentLangTags) {
+        File sd = Environment.getExternalStorageDirectory();
+        sd = new File(sd, "LearnIt");
+        sd = new File(sd, String.format("%s-%s",
+                currentLangTags.langToLearnTag(),
+                currentLangTags.langYouKnowTag()));
+        sd = new File(sd, String.format("%s-%s.txt",
+                currentLangTags.langToLearnTag(),
+                currentLangTags.langYouKnowTag()));
+        return sd;
+    }
+
+
+    public static void updateHelpDictIfNeeded(Context context,
+                                              TaskSchedulerFragment taskScheduler,
+                                              IAsyncTaskResultClient resultClient) {
+        if (Utils.languagesHaveChanged(context)) {
+            // TODO: update the help dictionary
+            LanguagePair.LangTags currentLangTags = Utils.getCurrentLanguageTags(context);
+            File dictFile = Utils.dictFileFromCurrentLanguageTags(currentLangTags);
+            Log.d(Constants.LOG_TAG, "path do dict: " + dictFile.getPath());
+
+            // delete the old database anyway
+            DbHelper helper = DbHelper.Factory.createLocalizedHelper(context, DbHelper.DB_HELPER_DICT);
+            helper.deleteDatabase();
+
+            if (!dictFile.exists()) {
+                Log.e(Constants.LOG_TAG, "dict does not exist in folder");
+                return;
+            }
+
+            if (taskScheduler == null) {
+                Log.e(Constants.LOG_TAG, "no task scheduler to load dict");
+                return;
+            }
+            taskScheduler.newTaskForClient(new PopulateHelpDictTask(context, dictFile.getPath()), resultClient);
+        }
     }
 
 }

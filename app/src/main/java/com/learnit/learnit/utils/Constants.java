@@ -22,6 +22,5 @@ public class Constants {
 
     enum LanguageName {
         GERMAN, ENGLISH
-
     }
 }

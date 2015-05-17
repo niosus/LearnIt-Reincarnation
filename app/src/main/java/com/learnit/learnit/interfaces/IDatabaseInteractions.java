@@ -6,6 +6,7 @@ import com.learnit.learnit.types.WordBundle;
 import java.util.List;
 
 public interface IDatabaseInteractions {
-    public DbHelper.AddWordReturnCode addWord(final WordBundle wordBundle);
-    public List<WordBundle> queryWord(final String word);
+    DbHelper.AddWordReturnCode addWord(final WordBundle wordBundle);
+    List<WordBundle> queryWord(final String word);
+    void deleteDatabase();
 }

@@ -7,9 +7,8 @@
 package com.learnit.learnit.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,7 @@ import java.util.Map;
 public class TaskSchedulerFragment
         extends Fragment
         implements IWorkerJobInput {
+    public static final String TAG = "task_scheduler";
     private Map<String, IAsyncTaskResultClient> mClients = null;
     private Map<String, MySmartAsyncTask> mTasks = null;
     private Map<String, String > mTaskClientBinder= null;
