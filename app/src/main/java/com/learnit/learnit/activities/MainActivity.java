@@ -6,12 +6,15 @@
 
 package com.learnit.learnit.activities;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -20,9 +23,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,23 +55,27 @@ import butterknife.InjectView;
 public class MainActivity
         extends AppCompatActivity
         implements ObservableScrollViewCallbacks, IActionBarEvents, IAsyncTaskResultClient {
-    @InjectView(R.id.toolbar) Toolbar toolbar;
-    @InjectView(R.id.tabs) PagerSlidingTabStrip tabs;
-    @InjectView(R.id.pager) ViewPager pager;
+    @InjectView(R.id.toolbar) Toolbar mToolbar;
+    @InjectView(R.id.tabs) PagerSlidingTabStrip mTabs;
+    @InjectView(R.id.pager) ViewPager mViewPager;
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @InjectView(R.id.main_linear_layout)
+    LinearLayout mParentLayout;
     @InjectView(R.id.nav_drawer_list)
     ListView mDrawerListView;
+    FragmentPagerAdapter mPagerAdapter;
 
     private int mOldScroll;
     private ActionBarDrawerToggle mDrawerToggle;
     private TaskSchedulerFragment mTaskScheduler;
+    private boolean mActionBarHidden;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mActionBarHidden = false;
         mOldScroll = 0;
 
         if (Utils.isRunFirstTime(this.getLocalClassName())) {
@@ -99,12 +112,12 @@ public class MainActivity
     public void onScrollChanged(int newScroll, boolean b, boolean b2) {
         // The damping is needed to account for the implicit scroll that
         // occurs when the list view changes its size.
-        if (newScroll - mOldScroll > toolbar.getHeight()) {
+        if (newScroll - mOldScroll > mToolbar.getHeight()) {
             hideKeyboard(this);
             mOldScroll = newScroll;
             hideActionBar();
         }
-        if (newScroll - mOldScroll < -toolbar.getHeight()) {
+        if (newScroll - mOldScroll < -mToolbar.getHeight()) {
             hideKeyboard(this);
             mOldScroll = newScroll;
             showActionBar();
@@ -129,42 +142,43 @@ public class MainActivity
 
     @Override
     public void showActionBar() {
-        ActionBar ab = getSupportActionBar();
-        if (ab == null) {
+        if (!mActionBarHidden) {
+            // is shown already
             return;
         }
-        if (!ab.isShowing()) {
-            ab.show();
-        }
+        mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+        mDrawerLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+        mActionBarHidden = false;
     }
 
     @Override
     public void hideActionBar() {
-        ActionBar ab = getSupportActionBar();
-        if (ab == null) {
+        if (mActionBarHidden) {
+            // already hidden
             return;
         }
-        if (ab.isShowing()) {
-            ab.hide();
-        }
+        mToolbar.animate().translationY(-mToolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+        mDrawerLayout.animate().translationY(-mToolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+        mActionBarHidden = true;
+        mParentLayout.requestLayout();
     }
 
     private void initActionBar() {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         adjustLogoSize();
     }
 
     private void initTabbedViewPager() {
-        TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
-        pager.setAdapter(adapter);
-        tabs.setViewPager(pager);
-        pager.setCurrentItem(0);
-        tabs.setOnPageChangeListener(new MyOnPageChangeListener(this));
+        mPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
+        mViewPager.setAdapter(mPagerAdapter);
+        mTabs.setViewPager(mViewPager);
+        mViewPager.setCurrentItem(0);
+        mTabs.setOnPageChangeListener(new MyOnPageChangeListener(this));
     }
 
     private void initSidePane() {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                toolbar, R.string.str_learn_it, R.string.str_learn_it);
+                mToolbar, R.string.str_learn_it, R.string.str_learn_it);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
@@ -199,8 +213,8 @@ public class MainActivity
             getSupportActionBar().setLogo(logo);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View child = toolbar.getChildAt(i);
+        for (int i = 0; i < mToolbar.getChildCount(); i++) {
+            View child = mToolbar.getChildAt(i);
             if (child != null) {
                 if (child instanceof ImageView) {
                     ImageView iv2 = (ImageView) child;

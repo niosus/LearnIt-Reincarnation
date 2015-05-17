@@ -21,7 +21,6 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         card_view:cardBackgroundColor="@android:color/white"
-        card_view:cardCornerRadius="8dp"
         card_view:cardElevation="2dp">
 
         <LinearLayout
@@ -73,8 +72,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="2dp"
-            card_view:cardBackgroundColor="@android:color/white"
-            card_view:cardCornerRadius="8dp">
+            card_view:cardBackgroundColor="@android:color/white">
             <com.github.ksoichiro.android.observablescrollview.ObservableListView
                 android:id="@+id/addWordsListView"
                 android:layout_width="match_parent"
