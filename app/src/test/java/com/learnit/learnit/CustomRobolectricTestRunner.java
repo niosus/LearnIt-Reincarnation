@@ -35,6 +35,7 @@ public class CustomRobolectricTestRunner extends RobolectricGradleTestRunner {
             String moduleRoot = getModuleRootPath(config);
             androidManifestFile = FileFsFile.from(moduleRoot, appManifest.getAndroidManifestFile().getPath().replace("bundles", "manifests/full"));
             FsFile resDirectory = FileFsFile.from(moduleRoot, appManifest.getResDirectory().getPath());
+            System.out.println("resources: " + resDirectory.getPath());
             FsFile assetsDirectory = FileFsFile.from(moduleRoot, appManifest.getAssetsDirectory().getPath());
             return new AndroidManifest(androidManifestFile, resDirectory, assetsDirectory);
         }

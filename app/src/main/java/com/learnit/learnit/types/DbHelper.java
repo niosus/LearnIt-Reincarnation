@@ -45,7 +45,7 @@ public class DbHelper extends SQLiteOpenHelper
     final public static String HELPER_WORD_COLUMN_NAME = "wname";
     final public static String HELPER_MEANING_COLUMN_NAME = "wmean";
 
-    private DbHelper(Context context, String name,
+    protected DbHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory,
                     int version) {
         super(context, name, factory, version);

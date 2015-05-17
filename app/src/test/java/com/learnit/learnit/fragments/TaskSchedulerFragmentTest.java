@@ -1,6 +1,7 @@
 package com.learnit.learnit.fragments;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
 import com.learnit.learnit.BuildConfig;
 import com.learnit.learnit.CustomRobolectricTestRunner;

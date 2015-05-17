@@ -90,13 +90,18 @@ public class Utils {
     }
 
     public static LanguagePair.LangTags getCurrentLanguageTags(Context context) {
+        LanguagePair.LangTags result = new LanguagePair.LangTags();
         int langToLearnIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_to_learn), -1);
         int langYouKnowIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_you_know), -1);
+        if (langToLearnIndex < 0 || langYouKnowIndex < 0) {
+            // return some dummy result
+            result.setLangToLearnTag("undefined").setLangYouKnowTag("undefined");
+            return result;
+        }
         Resources res = context.getResources();
-        String[] allLanguages = res.getStringArray(R.array.lang_tags_all);
-        LanguagePair.LangTags result = new LanguagePair.LangTags();
-        result.setLangToLearnTag(allLanguages[langToLearnIndex])
-                .setLangYouKnowTag(allLanguages[langYouKnowIndex]);
+        String[] allLangTags = res.getStringArray(R.array.lang_tags_all);
+        result.setLangToLearnTag(allLangTags[langToLearnIndex])
+                .setLangYouKnowTag(allLangTags[langYouKnowIndex]);
         return result;
     }
 
