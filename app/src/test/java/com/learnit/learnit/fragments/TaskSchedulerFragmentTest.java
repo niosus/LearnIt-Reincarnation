@@ -28,6 +28,8 @@ public class TaskSchedulerFragmentTest implements IAsyncTaskResultClient {
     TaskSchedulerFragment scheduler;
     Context context;
 
+    boolean mOnPreExecuteCalled = false;
+
     @Before
     public void testNotNull() throws Exception {
         context = RuntimeEnvironment.application;
@@ -49,7 +51,7 @@ public class TaskSchedulerFragmentTest implements IAsyncTaskResultClient {
 
     @Override
     public void onPreExecute() {
-
+        mOnPreExecuteCalled = true;
     }
 
     @Override
@@ -59,8 +61,11 @@ public class TaskSchedulerFragmentTest implements IAsyncTaskResultClient {
 
     @Override
     public <OutType> void onFinish(OutType result) {
+        assertTrue(mOnPreExecuteCalled);
         if (result instanceof Integer) {
             assertThat((Integer) result, is(0));
+        } else {
+            assertThat(true, is(false));
         }
     }
 
