@@ -1,6 +1,7 @@
 package com.learnit.learnit.types;
 
 import android.content.Context;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,13 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.learnit.learnit.R;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.fragments.AddWordsCardFragment;
 import com.learnit.learnit.fragments.CardFragment;
 
-public class TabsPagerAdapter extends FragmentPagerAdapter implements PagerSlidingTabStrip.CustomTabProvider {
+public class TabsPagerAdapter extends FragmentPagerAdapter {
     private static final int ADD_WORDS_ITEM = 0;
     private static final int DICT_ITEM = 1;
     private static final int LEARN_WORDS_ITEM = 2;
@@ -54,16 +54,5 @@ public class TabsPagerAdapter extends FragmentPagerAdapter implements PagerSlidi
                 return CardFragment.newInstance(position);
         }
         return CardFragment.newInstance(position);
-    }
-
-    @Override
-    public View getCustomTabView(ViewGroup viewGroup, int i) {
-        if (mContext == null) {
-            Log.e(Constants.LOG_TAG, "getCustomTabView --> context == null");
-            return null;
-        }
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        return inflater.inflate(R.layout.custom_tab, null);
     }
 }

@@ -25,17 +25,26 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableListView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.learnit.learnit.R;
+import com.learnit.learnit.interfaces.IActionBarEvents;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
+import com.learnit.learnit.types.CountryAdapter;
+import com.learnit.learnit.types.CountryManager;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
 import com.learnit.learnit.utils.Constants;
@@ -47,15 +56,30 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
 public class AddWordsCardFragment extends Fragment
-        implements IAddWordsFragmentUiEvents {
+        implements IAddWordsFragmentUiEvents, IActionBarEvents {
     private static final String ARG_POSITION = "position";
-    @InjectView(R.id.addWordsListView)
-    ObservableListView addWordsListView;
+    private CountryAdapter mAdapter;
+
+    @InjectView(R.id.list)
+    RecyclerView mRecyclerView;
     @InjectView(R.id.addWord)
-    AppCompatAutoCompleteTextView edtWord;
+    AppCompatEditText edtWord;
     @InjectView(R.id.btnDeleteWord)
     CircleButton btnDeleteWord;
-    private ObservableScrollViewCallbacks mScrollCallback = null;
+    @InjectView(R.id.add_word_layout)
+    RelativeLayout addWordLayout;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView countryName;
+        public ImageView countryImage;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            countryName = (TextView) itemView.findViewById(R.id.countryName);
+            countryImage = (ImageView)itemView.findViewById(R.id.countryImage);
+        }
+
+    }
 
     public static AddWordsCardFragment newInstance(int position) {
         AddWordsCardFragment f = new AddWordsCardFragment();
@@ -75,29 +99,37 @@ public class AddWordsCardFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.d(Constants.LOG_TAG, "attaching fragment");
-        if (activity instanceof ObservableScrollViewCallbacks) {
-            mScrollCallback = (ObservableScrollViewCallbacks) activity;
-        } else {
-            Log.e(Constants.LOG_TAG, "activity " + activity.getLocalClassName()
-                    + " does not implement ObservableScrollViewCallbacks interface");
-        }
+//        if (activity instanceof ObservableScrollViewCallbacks) {
+//            mScrollCallback = (ObservableScrollViewCallbacks) activity;
+//        } else {
+//            Log.e(Constants.LOG_TAG, "activity " + activity.getLocalClassName()
+//                    + " does not implement ObservableScrollViewCallbacks interface");
+//        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(Constants.LOG_TAG, "creating view");
         View rootView = inflater.inflate(R.layout.fragment_add_words, container, false);
+
         ButterKnife.inject(this, rootView);
-        if (mScrollCallback != null) {
-            Log.d(Constants.LOG_TAG, "setting scroll callback.");
-            addWordsListView.setScrollViewCallbacks(mScrollCallback);
-        }
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mAdapter = new CountryAdapter(CountryManager.getInstance().getCountries(), R.layout.row_country, this.getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+
         ViewCompat.setElevation(rootView, 50);
         edtWord.addTextChangedListener(new TextChangeListener(this, edtWord.getId()));
 
         View.OnClickListener myOnClickListener = new ClearBtnOnClickListener(this);
         btnDeleteWord.setOnClickListener(myOnClickListener);
         btnDeleteWord.setVisibility(View.INVISIBLE);
+
+        if (addWordLayout != null) {
+            Log.d(Constants.LOG_TAG, "relative layout initialized");
+        }
         return rootView;
     }
 
@@ -166,5 +198,25 @@ public class AddWordsCardFragment extends Fragment
         animator.setDuration(500);
         animator.addListener(new MyAnimatorListener(this, id, visibility));
         animator.start();
+    }
+
+    @Override
+    public void hideActionBar(int actionBarHeight) {
+        View view = this.getView();
+        if (view == null) {
+            Log.e(Constants.LOG_TAG, "view is null in " + this.getClass().getCanonicalName());
+            return;
+        }
+        addWordLayout.animate().translationY(-actionBarHeight).setInterpolator(new AccelerateInterpolator(2));
+    }
+
+    @Override
+    public void showActionBar() {
+        View view = this.getView();
+        if (view == null) {
+            Log.e(Constants.LOG_TAG, "view is null in " + this.getClass().getCanonicalName());
+            return;
+        }
+        addWordLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
     }
 }

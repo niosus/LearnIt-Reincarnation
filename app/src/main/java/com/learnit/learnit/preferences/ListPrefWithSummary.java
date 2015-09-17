@@ -25,7 +25,7 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
     protected int mDefaultEntryIndex = NONE;
     int mEntriesArrayId = NONE;
     Context mContext = null;
-    OnPreferenceClickListener mOnClickListener = null;
+    Preference.OnPreferenceClickListener mOnClickListener = null;
 
     @SuppressWarnings("unused")
     public ListPrefWithSummary(Context context) {

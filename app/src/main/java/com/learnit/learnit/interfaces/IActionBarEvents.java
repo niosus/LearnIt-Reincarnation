@@ -7,7 +7,7 @@
 package com.learnit.learnit.interfaces;
 
 public interface IActionBarEvents {
-    void hideActionBar();
+    void hideActionBar(int actionBarHeight);
 
     void showActionBar();
 }

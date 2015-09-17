@@ -7,79 +7,49 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_material_light">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/words_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        card_view:cardBackgroundColor="@android:color/white"
-        card_view:cardElevation="2dp">
-
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/add_word_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical">
-            <RelativeLayout
+            android:background="@color/highlight">
+
+            <android.support.v7.widget.AppCompatEditText
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/addWord"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:hint="@string/add_word_hint"
+                android:maxLines="1"
+                android:paddingRight="48dip" />
 
-                <android.support.v7.widget.AppCompatAutoCompleteTextView
+            <io.codetail.widget.RevealFrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:layout_alignEnd="@id/addWord"
+                android:layout_alignRight="@id/addWord">
+                <at.markushi.ui.CircleButton
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/addWord"
+                    android:id="@+id/btnDeleteWord"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:hint="@string/add_word_hint"
-                    android:maxLines="1"
-                    android:paddingRight="48dip" />
-
-                <io.codetail.widget.RevealFrameLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="40dip"
-                    android:layout_height="40dip"
-                    android:layout_alignEnd="@id/addWord"
-                    android:layout_alignRight="@id/addWord"
-                    android:layout_centerVertical="true">
-                    <at.markushi.ui.CircleButton
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/btnDeleteWord"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="3dip"
-                        android:src="@drawable/ic_action_delete"
-                        app:cb_color="@android:color/holo_red_dark"
-                        app:cb_pressedRingWidth="8dip" />
-                </io.codetail.widget.RevealFrameLayout>
-            </RelativeLayout>
-        </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:id="@+id/cardview"
+                    android:layout_height="match_parent"
+                    android:padding="3dip"
+                    android:src="@drawable/ic_action_delete"
+                    app:cb_color="@android:color/holo_red_dark"
+                    app:cb_pressedRingWidth="8dip" />
+            </io.codetail.widget.RevealFrameLayout>
+        </RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_below="@id/add_word_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/words_card"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="2dp"
-            card_view:cardBackgroundColor="@android:color/white">
-            <com.github.ksoichiro.android.observablescrollview.ObservableListView
-                android:id="@+id/addWordsListView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:entries="@array/dummy_array">
-        </com.github.ksoichiro.android.observablescrollview.ObservableListView>
-
-        </android.support.v7.widget.CardView>
-
+            app:context=".MainActivity"
+            />
 </RelativeLayout>

@@ -5,10 +5,8 @@
   -->
 
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/abc_action_bar_default_height_material"
     android:background="@color/highlight"
-    android:minHeight="?attr/actionBarSize"
-    app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+    android:minHeight="?attr/actionBarSize"/>
