@@ -6,7 +6,6 @@
 
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinatorLayout"
     android:layout_height="match_parent"
@@ -22,8 +21,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -34,15 +32,14 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
-            android:scrollbars="horizontal"
             android:layout_below="@id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            tools:tabTextColor="@android:color/white"
-            tools:tabSelectedTextColor="@android:color/white"
-            tools:tabIndicatorColor="@android:color/white"
-            tools:tabIndicatorHeight="3dp" />
+            app:tabTextColor="@android:color/white"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabIndicatorHeight="3dp" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -51,8 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/tab_layout"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:context=".MainActivity" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <!-- The navigation drawer -->
         <!--<ListView-->
