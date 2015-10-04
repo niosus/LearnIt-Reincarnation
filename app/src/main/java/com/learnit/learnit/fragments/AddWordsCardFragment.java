@@ -76,7 +76,6 @@ public class AddWordsCardFragment extends Fragment
         public ViewHolder(View itemView) {
             super(itemView);
             countryName = (TextView) itemView.findViewById(R.id.countryName);
-            countryImage = (ImageView)itemView.findViewById(R.id.countryImage);
         }
 
     }
@@ -93,18 +92,6 @@ public class AddWordsCardFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(Constants.LOG_TAG, "creating fragment");
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        Log.d(Constants.LOG_TAG, "attaching fragment");
-//        if (activity instanceof ObservableScrollViewCallbacks) {
-//            mScrollCallback = (ObservableScrollViewCallbacks) activity;
-//        } else {
-//            Log.e(Constants.LOG_TAG, "activity " + activity.getLocalClassName()
-//                    + " does not implement ObservableScrollViewCallbacks interface");
-//        }
     }
 
     @Override

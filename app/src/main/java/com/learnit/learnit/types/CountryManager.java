@@ -34,7 +34,6 @@ public class CountryManager {
                 Country country = new Country();
                 country.name = countryName;
                 country.description = loremIpsum;
-                country.imageName = countryName.replaceAll("\\s+","").toLowerCase();
                 countries.add(country);
             }
         }

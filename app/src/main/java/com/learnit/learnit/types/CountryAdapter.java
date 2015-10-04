@@ -38,7 +38,6 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Country country = countries.get(i);
         viewHolder.countryName.setText(country.name);
-        viewHolder.countryImage.setImageDrawable(mContext.getDrawable(country.getImageResourceId(mContext)));
     }
 
     @Override
@@ -48,12 +47,10 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView countryName;
-        public ImageView countryImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
             countryName = (TextView) itemView.findViewById(R.id.countryName);
-            countryImage = (ImageView)itemView.findViewById(R.id.countryImage);
         }
 
     }
