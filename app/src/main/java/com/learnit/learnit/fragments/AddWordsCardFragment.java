@@ -56,7 +56,7 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
 public class AddWordsCardFragment extends Fragment
-        implements IAddWordsFragmentUiEvents, IActionBarEvents {
+        implements IAddWordsFragmentUiEvents {
     private static final String ARG_POSITION = "position";
     private CountryAdapter mAdapter;
 
@@ -182,28 +182,8 @@ public class AddWordsCardFragment extends Fragment
         SupportAnimator animator =
                 ViewAnimationUtils.createCircularReveal(myView, cx, cy, start, end);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.setDuration(500);
+        animator.setDuration(300);
         animator.addListener(new MyAnimatorListener(this, id, visibility));
         animator.start();
-    }
-
-    @Override
-    public void hideActionBar(int actionBarHeight) {
-        View view = this.getView();
-        if (view == null) {
-            Log.e(Constants.LOG_TAG, "view is null in " + this.getClass().getCanonicalName());
-            return;
-        }
-        addWordLayout.animate().translationY(-actionBarHeight).setInterpolator(new AccelerateInterpolator(2));
-    }
-
-    @Override
-    public void showActionBar() {
-        View view = this.getView();
-        if (view == null) {
-            Log.e(Constants.LOG_TAG, "view is null in " + this.getClass().getCanonicalName());
-            return;
-        }
-        addWordLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
     }
 }
