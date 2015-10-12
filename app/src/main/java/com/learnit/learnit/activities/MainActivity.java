@@ -14,12 +14,16 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
@@ -42,6 +46,10 @@ public class MainActivity
     TabLayout mTabLayout;
     @InjectView(R.id.pager)
     ViewPager mPager;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @InjectView(R.id.nav_drawer_list)
+    ListView mDrawerList;
 
     private TaskSchedulerFragment mTaskScheduler;
 
@@ -56,6 +64,17 @@ public class MainActivity
             startActivity(new Intent(this, IntroActivity.class));
         }
         ButterKnife.inject(this);
+        mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
+
+        // Set the adapter for the list view
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    startSettingsActivity();
+                }
+            }
+        });
         FragmentPagerAdapter mPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
         mPager.setAdapter(mPagerAdapter);
         mTabLayout.setTabsFromPagerAdapter(mPagerAdapter);

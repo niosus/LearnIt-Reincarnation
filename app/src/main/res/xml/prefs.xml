@@ -21,7 +21,7 @@
         <com.jenzz.materialpreference.SwitchPreference
             android:summaryOff="@string/pref_notifications_disabled"
             android:summaryOn="@string/pref_notifications_enabled"
-            android:title="@string/notification_text" />
+            android:title="@string/pref_notifications" />
     </com.jenzz.materialpreference.PreferenceCategory>
 
 </PreferenceScreen>
