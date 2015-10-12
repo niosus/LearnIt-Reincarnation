@@ -34,21 +34,21 @@ import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 
 public class MainActivity
         extends AppCompatActivity
         implements IAsyncTaskResultClient {
-    @InjectView(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @InjectView(R.id.tab_layout)
+    @Bind(R.id.tab_layout)
     TabLayout mTabLayout;
-    @InjectView(R.id.pager)
+    @Bind(R.id.pager)
     ViewPager mPager;
-    @InjectView(R.id.drawer_layout)
+    @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    @InjectView(R.id.nav_drawer_list)
+    @Bind(R.id.nav_drawer_list)
     ListView mDrawerList;
 
     private TaskSchedulerFragment mTaskScheduler;
@@ -63,7 +63,7 @@ public class MainActivity
             // start intro activity
             startActivity(new Intent(this, IntroActivity.class));
         }
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
 
         // Set the adapter for the list view

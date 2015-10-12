@@ -25,13 +25,13 @@ import android.widget.TextView;
 import com.learnit.learnit.R;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 public class CardFragment extends Fragment {
 
     private static final String ARG_POSITION = "position";
 
-    @InjectView(R.id.textView)
+    @Bind(R.id.textView)
     TextView textView;
 
     private int position;
@@ -53,7 +53,7 @@ public class CardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_card,container,false);
-        ButterKnife.inject(this, rootView);
+        ButterKnife.bind(this, rootView);
         ViewCompat.setElevation(rootView,50);
         textView.setText("CARD "+position);
         return rootView;

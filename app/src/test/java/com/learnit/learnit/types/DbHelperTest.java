@@ -10,11 +10,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.learnit.learnit.BuildConfig;
-import com.learnit.learnit.CustomRobolectricTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -24,8 +24,8 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
-@RunWith(CustomRobolectricTestRunner.class)
+@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
+@RunWith(RobolectricGradleTestRunner.class)
 public class DbHelperTest extends DbHelper {
     SQLiteDatabase database;
 

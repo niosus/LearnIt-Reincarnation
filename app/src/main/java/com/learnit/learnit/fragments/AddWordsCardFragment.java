@@ -50,8 +50,8 @@ import com.learnit.learnit.types.TextChangeListener;
 import com.learnit.learnit.utils.Constants;
 
 import at.markushi.ui.CircleButton;
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
@@ -60,13 +60,13 @@ public class AddWordsCardFragment extends Fragment
     private static final String ARG_POSITION = "position";
     private CountryAdapter mAdapter;
 
-    @InjectView(R.id.list)
+    @Bind(R.id.list)
     RecyclerView mRecyclerView;
-    @InjectView(R.id.addWord)
+    @Bind(R.id.addWord)
     AppCompatEditText edtWord;
-    @InjectView(R.id.btnDeleteWord)
+    @Bind(R.id.btnDeleteWord)
     CircleButton btnDeleteWord;
-    @InjectView(R.id.add_word_layout)
+    @Bind(R.id.add_word_layout)
     RelativeLayout addWordLayout;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -99,7 +99,7 @@ public class AddWordsCardFragment extends Fragment
         Log.d(Constants.LOG_TAG, "creating view");
         View rootView = inflater.inflate(R.layout.fragment_add_words, container, false);
 
-        ButterKnife.inject(this, rootView);
+        ButterKnife.bind(this, rootView);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

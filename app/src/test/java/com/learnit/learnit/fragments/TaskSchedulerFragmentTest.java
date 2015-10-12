@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.learnit.learnit.BuildConfig;
-import com.learnit.learnit.CustomRobolectricTestRunner;
 import com.learnit.learnit.activities.IntroActivity;
 import com.learnit.learnit.async_tasks.DummyTask;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
@@ -12,6 +11,8 @@ import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.FragmentTestUtil;
@@ -23,7 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 
 @Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
-@RunWith(CustomRobolectricTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class TaskSchedulerFragmentTest implements IAsyncTaskResultClient {
 
     TaskSchedulerFragment scheduler;

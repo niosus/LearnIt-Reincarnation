@@ -10,13 +10,14 @@ import android.content.Context;
 import android.util.Log;
 
 import com.learnit.learnit.BuildConfig;
-import com.learnit.learnit.CustomRobolectricTestRunner;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.utils.Constants;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -24,8 +25,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
-@RunWith(CustomRobolectricTestRunner.class)
+@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
+@RunWith(RobolectricTestRunner.class)
 public class PopulateHelpDictTaskTest implements IAsyncTaskResultClient {
     private float maxReceivedProgress;
 
