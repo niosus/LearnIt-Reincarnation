@@ -37,24 +37,23 @@ import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
+import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.OnItemClick;
 import butterknife.OnItemSelected;
 
 
 public class MainActivity
         extends AppCompatActivity
         implements IAsyncTaskResultClient {
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
-    @Bind(R.id.tab_layout)
-    TabLayout mTabLayout;
-    @Bind(R.id.pager)
-    ViewPager mPager;
-    @Bind(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @Bind(R.id.nav_drawer_list)
-    ListView mDrawerList;
+    @Bind(R.id.toolbar)             Toolbar mToolbar;
+    @Bind(R.id.tab_layout)          TabLayout mTabLayout;
+    @Bind(R.id.pager)               ViewPager mPager;
+    @Bind(R.id.drawer_layout)       DrawerLayout mDrawerLayout;
+    @Bind(R.id.nav_drawer_list)     ListView mDrawerList;
+
+    @BindDrawable(R.drawable.logo_white) Drawable mLogo;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private TaskSchedulerFragment mTaskScheduler;
@@ -71,6 +70,34 @@ public class MainActivity
         }
         ButterKnife.bind(this);
 
+        initActionBar();
+        initTabbedViewPager();
+        initTaskScheduler();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
+    }
+
+    @OnItemClick(R.id.nav_drawer_list)
+    public void navDrawerOnSelected(int position) {
+        Log.d(Constants.LOG_TAG, "selected " + position);
+        switch (position) {
+            case 0:
+                startSettingsActivity();
+                break;
+        }
+    }
+
+    private void startSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void initTabbedViewPager() {
         FragmentPagerAdapter mPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
         mPager.setAdapter(mPagerAdapter);
         mTabLayout.setTabsFromPagerAdapter(mPagerAdapter);
@@ -91,30 +118,6 @@ public class MainActivity
 
             }
         });
-        initActionBar();
-        initTaskScheduler();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
-    }
-
-    @OnItemSelected(R.id.nav_drawer_list)
-    public void navDrawerOnSelected(int position) {
-        Log.d(Constants.LOG_TAG, "selected " + position);
-        switch (position) {
-            case 0:
-                startSettingsActivity();
-                break;
-        }
-    }
-
-    private void startSettingsActivity() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
     }
 
     private void initActionBar() {
@@ -158,9 +161,8 @@ public class MainActivity
 
     private void adjustLogoSize() {
         // ugh... a dirty-dirty hack to make logo of normal size... :( redo?
-        Drawable logo = ContextCompat.getDrawable(this, R.drawable.logo_white);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setLogo(logo);
+            getSupportActionBar().setLogo(mLogo);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         for (int i = 0; i < mToolbar.getChildCount(); i++) {
@@ -168,7 +170,7 @@ public class MainActivity
             if (child != null) {
                 if (child instanceof ImageView) {
                     ImageView iv2 = (ImageView) child;
-                    if (iv2.getDrawable() == logo) {
+                    if (iv2.getDrawable() == mLogo) {
                         iv2.setAdjustViewBounds(true);
                     }
                 }

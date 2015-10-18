@@ -6,8 +6,7 @@
 
 <resources>
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@color/background_material_light</item>
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.NoActionBar">
         <!-- ...and here we setting appcompat’s color theming attrs -->
         <item name="colorPrimary">@color/highlight</item>
         <item name="colorPrimaryDark">@color/highlight_darker</item>

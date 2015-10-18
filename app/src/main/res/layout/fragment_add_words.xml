@@ -12,12 +12,24 @@
     android:background="@color/background_material_light"
     android:fitsSystemWindows="true">
 
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/add_word_card"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginStart="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginEnd="10dip"
+        card_view:cardCornerRadius="@dimen/cardview_default_radius">
         <RelativeLayout
             android:id="@+id/add_word_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/highlight">
-
             <android.support.v7.widget.AppCompatEditText
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/addWord"
@@ -27,7 +39,7 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:hint="@string/add_word_hint"
                 android:maxLines="1"
-                android:paddingRight="48dip" />
+                android:paddingRight="48dip"/>
 
             <io.codetail.widget.RevealFrameLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,9 +58,10 @@
                     app:cb_pressedRingWidth="8dip" />
             </io.codetail.widget.RevealFrameLayout>
         </RelativeLayout>
+    </android.support.v7.widget.CardView>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
-            android:layout_below="@id/add_word_layout"
+            android:layout_below="@id/add_word_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:context=".MainActivity"
