@@ -17,10 +17,9 @@ import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper
     implements IDatabaseInteractions {
-    // name of the database that stores the user-defined words.
-    // used for learning new words.
+    // name of the database that stores the user-defined words used for learning new words.
     final public static String DB_USER_DICT = "user_dict";
-    // database that stores the data generated from a star-dict dictionary.
+    // database that stores the data generated from a dictionary.
     final public static String DB_HELPER_DICT = "help_dict";
     // names of DB_USER_DICT database fields
     final public static String WORD_COLUMN_NAME = "word";
@@ -93,7 +92,7 @@ public class DbHelper extends SQLiteOpenHelper
     }
 
     @Override
-    public AddWordReturnCode addWord(WordBundle wordBundle) {
+    public Constants.AddWordReturnCode addWord(WordBundle wordBundle) {
         Log.d(Constants.LOG_TAG, "DbHelper: adding word '" + wordBundle.word() + "'");
         ContentValues cv = new ContentValues();
         cv.put(ARTICLE_COLUMN_NAME, wordBundle.article());
@@ -103,26 +102,44 @@ public class DbHelper extends SQLiteOpenHelper
         cv.put(WEIGHT_COLUMN_NAME, wordBundle.weight());
         cv.put(WORD_TYPE_COLUMN_NAME, wordBundle.wordType());
 
-        List<WordBundle> nowInDb = this.queryFromDB(wordBundle.word(), getDatabaseName(), getReadableDatabase());
+        List<WordBundle> nowInDb = this.queryWord(wordBundle.word(), Constants.QueryStyle.EXACT);
         if (nowInDb == null || nowInDb.isEmpty()) {
             // there is no such word in the database
             SQLiteDatabase db = this.getWritableDatabase();
             db.insert(this.getDatabaseName(), null, cv);
-            return AddWordReturnCode.SUCCESS;
+            return Constants.AddWordReturnCode.SUCCESS;
         }
         if (nowInDb.contains(wordBundle)) {
-            return AddWordReturnCode.WORD_EXISTS;
+            return Constants.AddWordReturnCode.WORD_EXISTS;
         }
         // if we reach this place - there is something similar in the db, but not the same.
         // Requires investigation and update.
         // TODO: actually implement the logic behind the word updated
-        Log.w(Constants.LOG_TAG, "reached unimplemented behaviour. Please decide how to update the words.");
-        return AddWordReturnCode.WORD_UPDATED;
+        Log.e(Constants.LOG_TAG, "reached unimplemented behaviour. Please decide how to update the words.");
+        return Constants.AddWordReturnCode.WORD_UPDATED;
     }
 
     @Override
-    public List<WordBundle> queryWord(final String word) {
-        return queryFromDB(word, this.getDatabaseName(), this.getReadableDatabase());
+    public List<WordBundle> queryWord(final String word, final Constants.QueryStyle queryStyle) {
+        String matchingRule = null;
+        String[] matchingParams = null;
+        switch (queryStyle) {
+            case EXACT:
+                matchingRule = WORD_COLUMN_NAME + " = ?";
+                matchingParams = new String[]{word};
+                break;
+            case APPROXIMATE_ENDING:
+                matchingRule = WORD_COLUMN_NAME + " like ?";
+                matchingParams = new String[]{word + "%"};
+                break;
+            case APPROXIMATE_ALL:
+                matchingRule = WORD_COLUMN_NAME + " like ?";
+                matchingParams = new String[]{"%" + word + "%"};
+                break;
+            default:
+                return null;
+        }
+        return queryFromDB(getDatabaseName(), getReadableDatabase(), matchingRule, matchingParams);
     }
 
     @Override
@@ -142,9 +159,11 @@ public class DbHelper extends SQLiteOpenHelper
         }
     }
 
-    protected List<WordBundle> queryFromDB(final String word, final String dbName, final SQLiteDatabase db) {
-        Cursor cursor = db.query(dbName, ALL_COLUMNS, WORD_COLUMN_NAME + " = ?",
-                new String[]{word},
+    protected List<WordBundle> queryFromDB(final String dbName,
+                                           final SQLiteDatabase db,
+                                           final String matchingRule,
+                                           final String[] matchingParams) {
+        Cursor cursor = db.query(dbName, ALL_COLUMNS, matchingRule, matchingParams,
                 null, null, null);
         if (!cursor.moveToFirst()) {
             return null;
@@ -168,11 +187,5 @@ public class DbHelper extends SQLiteOpenHelper
                 .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)))
                 .setWordType(cursor.getInt(cursor.getColumnIndex(WORD_TYPE_COLUMN_NAME)));
         return wordBundle;
-    }
-
-    public enum AddWordReturnCode {
-        SUCCESS,
-        WORD_UPDATED,
-        WORD_EXISTS
     }
 }

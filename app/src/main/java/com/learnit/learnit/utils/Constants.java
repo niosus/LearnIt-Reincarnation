@@ -23,4 +23,17 @@ public class Constants {
     enum LanguageName {
         GERMAN, ENGLISH
     }
+
+    public enum AddWordReturnCode {
+        SUCCESS,
+        WORD_UPDATED,
+        WORD_EXISTS,
+        FAILURE
+    }
+
+    public enum QueryStyle {
+        EXACT,
+        APPROXIMATE_ENDING,
+        APPROXIMATE_ALL
+    }
 }

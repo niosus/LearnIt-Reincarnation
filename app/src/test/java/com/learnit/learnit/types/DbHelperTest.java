@@ -10,6 +10,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.learnit.learnit.BuildConfig;
+import com.learnit.learnit.utils.Constants;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,11 +58,11 @@ public class DbHelperTest extends DbHelper {
         bundle.setWord(wordToQuery)
                 .setTransFromString(transToExpect)
                 .setWeight(0.9f);
-        DbHelper.AddWordReturnCode returnCode = helper.addWord(bundle);
-        assertThat(returnCode, is(AddWordReturnCode.SUCCESS));
+        Constants.AddWordReturnCode returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(Constants.AddWordReturnCode.SUCCESS));
 
         // test that the word is correctly inserted
-        List<WordBundle> res = helper.queryWord(wordToQuery);
+        List<WordBundle> res = helper.queryWord(wordToQuery, Constants.QueryStyle.EXACT);
         assertThat(res.size(), is(1));
         WordBundle resultBundle = res.get(0);
         assertThat(resultBundle.weight(), is(bundle.weight()));
@@ -71,12 +72,12 @@ public class DbHelperTest extends DbHelper {
 
         // test that we don't insert the word twice
         returnCode = helper.addWord(bundle);
-        assertThat(returnCode, is(AddWordReturnCode.WORD_EXISTS));
+        assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_EXISTS));
 
         // test that we update similar words
         bundle.setTransFromString(transToExpect + WordBundle.TRANS_DIVIDER + "something new");
         returnCode = helper.addWord(bundle);
-        assertThat(returnCode, is(AddWordReturnCode.WORD_UPDATED));
+        assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_UPDATED));
     }
 
     @Test
@@ -85,8 +86,23 @@ public class DbHelperTest extends DbHelper {
         // The word is written in lower case, while it is in upper case in the database.
         // The result should be null.
         String wordToQuery = "apfel";
-        List<WordBundle> res = queryFromDB(wordToQuery, "test_words", database);
+        String queryRule = WORD_COLUMN_NAME + " = ?";
+        String[] queryParams = new String[]{wordToQuery};
+        List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
         assertThat(res == null, is(true));
+    }
+
+    @Test
+    public void testApproxEndingReadFromDb() {
+        String wordToQuery = "gut";
+        String queryRule = WORD_COLUMN_NAME + " like ?";
+        String[] queryParams = new String[]{wordToQuery + "%"};
+        List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
+        assertThat(res == null, is(false));
+        assertThat(res.size(), is(3));
+        assertThat(res.get(0).word(), is("Gutachter"));
+        assertThat(res.get(1).word(), is("gut"));
+        assertThat(res.get(2).word(), is("gutig"));
     }
 
     @Test
@@ -99,8 +115,10 @@ public class DbHelperTest extends DbHelper {
                 .setWord(wordToQuery)
                 .setTransFromString(transToExpect)
                 .setWeight(0.5f)
-                .setWordType(WordBundle.WordType.VERB);
-        List<WordBundle> res = queryFromDB(wordToQuery, "test_words", database);
+                .setWordType(WordBundle.WordType.ADVERB);
+        String queryRule = WORD_COLUMN_NAME + " = ?";
+        String[] queryParams = new String[]{wordToQuery};
+        List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
         assertThat(res == null, is(false));
         if (res == null) {
             return;
@@ -108,7 +126,7 @@ public class DbHelperTest extends DbHelper {
         assertThat(res.size(), is(1));
         WordBundle resultBundle = res.get(0);
         assertThat(resultBundle, is(bundle));
-        assertThat(resultBundle.wordType(), is(WordBundle.WordType.VERB));
+        assertThat(resultBundle.wordType(), is(WordBundle.WordType.ADVERB));
 
         // and another word
         wordToQuery = "Apfel";
@@ -118,8 +136,11 @@ public class DbHelperTest extends DbHelper {
                 .setWord(wordToQuery)
                 .setTransFromString(transToExpect)
                 .setArticle("der")
-                .setWeight(0.5f);
-        res = queryFromDB(wordToQuery, "test_words", database);
+                .setWeight(0.5f)
+                .setWordType(WordBundle.WordType.NOUN);
+        queryRule = WORD_COLUMN_NAME + " = ?";
+        queryParams = new String[]{wordToQuery};
+        res = queryFromDB("test_words", database, queryRule, queryParams);
         assertThat(res == null, is(false));
         if (res == null) {
             return;
