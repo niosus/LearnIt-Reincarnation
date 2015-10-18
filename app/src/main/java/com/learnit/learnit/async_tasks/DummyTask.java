@@ -7,19 +7,6 @@
 package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
-
-import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
-import com.learnit.learnit.types.DbHelper;
-import com.learnit.learnit.utils.Constants;
-import com.learnit.learnit.utils.StringUtils;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class DummyTask extends MySmartAsyncTask<Integer, Integer> {
 

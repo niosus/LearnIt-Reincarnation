@@ -8,7 +8,7 @@ package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
 
-import com.learnit.learnit.types.DbHelper;
+import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
 
@@ -40,7 +40,7 @@ public class GetHelpWordsTask extends MySmartAsyncTask<String, List<WordBundle>>
             return null;
         }
         String queryWord = queryWords[0];
-        DbHelper dbHelper = DbHelper.Factory.createLocalizedHelper(mContext, DbHelper.DB_HELPER_DICT);
-        return dbHelper.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ENDING);
+        DbHandler dbHandler = DbHandler.Factory.createLocalizedHelper(mContext, DbHandler.DB_HELPER_DICT);
+        return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ENDING);
     }
 }

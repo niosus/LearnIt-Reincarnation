@@ -4,12 +4,15 @@
  * it please contact me via email: igor.bogoslavskyi@gmail.com
  */
 
-package com.learnit.learnit.types;
+package com.learnit.learnit.db_handlers;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.learnit.learnit.BuildConfig;
+import com.learnit.learnit.db_handlers.DbHandler;
+import com.learnit.learnit.db_handlers.DbUserDictHandler;
+import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
 
 import org.junit.Before;
@@ -27,11 +30,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricGradleTestRunner.class)
-public class DbHelperTest extends DbHelper {
+public class DbHandlerTest extends DbUserDictHandler {
     SQLiteDatabase database;
 
-    public DbHelperTest() {
-        super(null, null, null, 100, DbType.USER_DICT);
+    public DbHandlerTest() {
+        super(null, null, null, 100);
     }
 
     @Before
@@ -51,7 +54,10 @@ public class DbHelperTest extends DbHelper {
 
     @Test
     public void testAddWord() {
-        DbHelper helper = new DbHelper(RuntimeEnvironment.application, DbHelper.DB_USER_DICT, null, 1, DbType.USER_DICT);
+        DbHandler helper = new DbUserDictHandler(
+                RuntimeEnvironment.application,
+                DbHandler.DB_USER_DICT,
+                null, 1);
         String wordToQuery = "test_word";
         String transToExpect = "test_trans";
         WordBundle bundle = new WordBundle();

@@ -6,11 +6,9 @@ import android.util.Log;
 
 import com.learnit.learnit.BuildConfig;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
-import com.learnit.learnit.types.DbHelper;
+import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
-
-import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +17,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import java.io.File;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,7 +37,7 @@ public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
             assertThat(true, is(false));
             return;
         }
-        DbHelper helper = DbHelper.Factory.createLocalizedHelper(context, DbHelper.DB_HELPER_DICT);
+        DbHandler helper = DbHandler.Factory.createLocalizedHelper(context, DbHandler.DB_HELPER_DICT);
         WordBundle wordBundle1 = new WordBundle();
         wordBundle1.setWord("hello");
         wordBundle1.setTransFromString("hello");

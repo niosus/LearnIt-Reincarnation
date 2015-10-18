@@ -15,7 +15,7 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
 import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
-import com.learnit.learnit.types.DbHelper;
+import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.types.LanguagePair;
 import com.pixplicity.easyprefs.library.Prefs;
 
@@ -160,7 +160,7 @@ public class Utils {
             Log.d(Constants.LOG_TAG, "path do dict: " + dictFile.getPath());
 
             // delete the old database anyway
-            DbHelper helper = DbHelper.Factory.createLocalizedHelper(context, DbHelper.DB_HELPER_DICT);
+            DbHandler helper = DbHandler.Factory.createLocalizedHelper(context, DbHandler.DB_HELPER_DICT);
             helper.deleteDatabase();
 
             if (!dictFile.exists()) {

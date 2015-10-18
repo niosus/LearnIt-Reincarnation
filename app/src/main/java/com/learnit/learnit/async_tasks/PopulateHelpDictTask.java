@@ -11,8 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
-import com.learnit.learnit.types.DbHelper;
+import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.StringUtils;
 
@@ -49,11 +48,11 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
             return FAILURE;
         }
 
-        DbHelper dbHelper = DbHelper.Factory.createLocalizedHelper(mContext, DbHelper.DB_HELPER_DICT);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "INSERT INTO " + dbHelper.getDatabaseName()
-                + " (" + DbHelper.HELPER_WORD_COLUMN_NAME + ", "
-                + DbHelper.HELPER_MEANING_COLUMN_NAME + ")  VALUES (?, ?)";
+        DbHandler dbHandler = DbHandler.Factory.createLocalizedHelper(mContext, DbHandler.DB_HELPER_DICT);
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+        String sql = "INSERT INTO " + dbHandler.getDatabaseName()
+                + " (" + DbHandler.HELPER_WORD_COLUMN_NAME + ", "
+                + DbHandler.HELPER_MEANING_COLUMN_NAME + ")  VALUES (?, ?)";
         SQLiteStatement stmt = db.compileStatement(sql);
         db.beginTransaction();
 
