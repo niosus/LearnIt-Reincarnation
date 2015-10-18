@@ -9,12 +9,16 @@ package com.learnit.learnit.activities;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +39,7 @@ import com.learnit.learnit.utils.Utils;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.OnItemSelected;
 
 
 public class MainActivity
@@ -51,6 +56,7 @@ public class MainActivity
     @Bind(R.id.nav_drawer_list)
     ListView mDrawerList;
 
+    private ActionBarDrawerToggle mDrawerToggle;
     private TaskSchedulerFragment mTaskScheduler;
 
     @Override
@@ -64,17 +70,7 @@ public class MainActivity
             startActivity(new Intent(this, IntroActivity.class));
         }
         ButterKnife.bind(this);
-        mDrawerList = (ListView) findViewById(R.id.nav_drawer_list);
 
-        // Set the adapter for the list view
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    startSettingsActivity();
-                }
-            }
-        });
         FragmentPagerAdapter mPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
         mPager.setAdapter(mPagerAdapter);
         mTabLayout.setTabsFromPagerAdapter(mPagerAdapter);
@@ -106,6 +102,16 @@ public class MainActivity
         Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
     }
 
+    @OnItemSelected(R.id.nav_drawer_list)
+    public void navDrawerOnSelected(int position) {
+        Log.d(Constants.LOG_TAG, "selected " + position);
+        switch (position) {
+            case 0:
+                startSettingsActivity();
+                break;
+        }
+    }
+
     private void startSettingsActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
@@ -113,7 +119,30 @@ public class MainActivity
 
     private void initActionBar() {
         setSupportActionBar(mToolbar);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar == null) {
+            Log.e(Constants.LOG_TAG, "support action bar is null.");
+            return;
+        }
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+        supportActionBar.setDisplayShowTitleEnabled(false);
         adjustLogoSize();
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                mToolbar, R.string.hello_world,
+                R.string.hello_world) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
     }
 
     private static void hideKeyboard(Activity activity) {
@@ -129,7 +158,7 @@ public class MainActivity
 
     private void adjustLogoSize() {
         // ugh... a dirty-dirty hack to make logo of normal size... :( redo?
-        Drawable logo = getResources().getDrawable(R.drawable.logo_white);
+        Drawable logo = ContextCompat.getDrawable(this, R.drawable.logo_white);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setLogo(logo);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -160,6 +189,18 @@ public class MainActivity
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public String tag() {
         return "main_activity";
     }
@@ -175,7 +216,6 @@ public class MainActivity
             }
         }
     }
-
     @Override
     public void onCancelled() {
 
