@@ -17,6 +17,13 @@ import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper
     implements IDatabaseInteractions {
+    enum DbType {
+        HELPER_DICT,
+        USER_DICT
+    };
+
+    private DbType mDbType;
+
     // name of the database that stores the user-defined words used for learning new words.
     final public static String DB_USER_DICT = "user_dict";
     // database that stores the data generated from a dictionary.
@@ -29,7 +36,7 @@ public class DbHelper extends SQLiteOpenHelper
     final public static String PREFIX_COLUMN_NAME = "prefix";
     final public static String TRANSLATION_COLUMN_NAME = "translation";
     final public static String WORD_TYPE_COLUMN_NAME = "word_type";
-    final public static String[] ALL_COLUMNS = new String[] {
+    final public static String[] ALL_COLUMNS_USER = new String[] {
             ID_COLUMN_NAME,
             WORD_COLUMN_NAME,
             TRANSLATION_COLUMN_NAME,
@@ -43,19 +50,34 @@ public class DbHelper extends SQLiteOpenHelper
     final public static String HELPER_ID_COLUMN_NAME = "s_id";
     final public static String HELPER_WORD_COLUMN_NAME = "wname";
     final public static String HELPER_MEANING_COLUMN_NAME = "wmean";
+    final public static String[] ALL_COLUMNS_HELP_DICT = new String[] {
+            HELPER_ID_COLUMN_NAME,
+            HELPER_WORD_COLUMN_NAME,
+            HELPER_MEANING_COLUMN_NAME
+    };
 
     protected DbHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory,
-                    int version) {
+                    int version, DbType type) {
         super(context, name, factory, version);
+        mDbType = type;
     }
 
     public static class Factory {
         public static DbHelper createLocalizedHelper(Context context, String dbName) {
+            DbType type = null;
+            if (dbName.equals(DB_USER_DICT)) {
+                type = DbType.USER_DICT;
+            } else if (dbName.equals(DB_HELPER_DICT)) {
+                type = DbType.HELPER_DICT;
+            } else {
+                Log.e(Constants.LOG_TAG, "Trying to create unspecified database. Failure.");
+                return null;
+            }
             LanguagePair.LangTags langTags = Utils.getCurrentLanguageTags(context);
             String localizedDbName = String.format("%s_%s_%s",
                     dbName, langTags.langToLearnTag(), langTags.langYouKnowTag());
-            return new DbHelper(context, localizedDbName, null, 1);
+            return new DbHelper(context, localizedDbName, null, 1, type);
         }
     }
 
@@ -66,7 +88,8 @@ public class DbHelper extends SQLiteOpenHelper
             Log.e(Constants.LOG_TAG, "Current implementation requires that DB_HELPER_DICT and DB_USER_DICT have same lengths. Cannot create database. Doing nothing.");
             return;
         }
-        switch (getDatabaseName().substring(0, DB_HELPER_DICT.length())) {
+        int commonLength = DB_HELPER_DICT.length();
+        switch (getDatabaseName().substring(0, commonLength)) {
             case DB_USER_DICT:
                 sqLiteDatabase.execSQL("CREATE TABLE " + getDatabaseName() + " ("
                         + ID_COLUMN_NAME + " INTEGER primary key autoincrement,"
@@ -95,13 +118,23 @@ public class DbHelper extends SQLiteOpenHelper
     public Constants.AddWordReturnCode addWord(WordBundle wordBundle) {
         Log.d(Constants.LOG_TAG, "DbHelper: adding word '" + wordBundle.word() + "'");
         ContentValues cv = new ContentValues();
-        cv.put(ARTICLE_COLUMN_NAME, wordBundle.article());
-        cv.put(PREFIX_COLUMN_NAME, wordBundle.prefix());
-        cv.put(WORD_COLUMN_NAME, wordBundle.word());
-        cv.put(TRANSLATION_COLUMN_NAME, wordBundle.transAsString());
-        cv.put(WEIGHT_COLUMN_NAME, wordBundle.weight());
-        cv.put(WORD_TYPE_COLUMN_NAME, wordBundle.wordType());
-
+        switch (mDbType) {
+            case USER_DICT:
+                cv.put(ARTICLE_COLUMN_NAME, wordBundle.article());
+                cv.put(PREFIX_COLUMN_NAME, wordBundle.prefix());
+                cv.put(WORD_COLUMN_NAME, wordBundle.word());
+                cv.put(TRANSLATION_COLUMN_NAME, wordBundle.transAsString());
+                cv.put(WEIGHT_COLUMN_NAME, wordBundle.weight());
+                cv.put(WORD_TYPE_COLUMN_NAME, wordBundle.wordType());
+                break;
+            case HELPER_DICT:
+                cv.put(HELPER_WORD_COLUMN_NAME, wordBundle.word());
+                cv.put(HELPER_MEANING_COLUMN_NAME, wordBundle.transAsString());
+                break;
+            default:
+                Log.e(Constants.LOG_TAG, "unknown type of DbHelper dict provided. Failure.");
+                return Constants.AddWordReturnCode.FAILURE;
+        }
         List<WordBundle> nowInDb = this.queryWord(wordBundle.word(), Constants.QueryStyle.EXACT);
         if (nowInDb == null || nowInDb.isEmpty()) {
             // there is no such word in the database
@@ -123,17 +156,32 @@ public class DbHelper extends SQLiteOpenHelper
     public List<WordBundle> queryWord(final String word, final Constants.QueryStyle queryStyle) {
         String matchingRule = null;
         String[] matchingParams = null;
+        String currentWordColumnName = null;
+        String currentTransColumnName = null;
+        switch (mDbType) {
+            case USER_DICT:
+                currentWordColumnName = WORD_COLUMN_NAME;
+                currentTransColumnName= TRANSLATION_COLUMN_NAME;
+                break;
+            case HELPER_DICT:
+                currentWordColumnName = HELPER_WORD_COLUMN_NAME;
+                currentTransColumnName= HELPER_MEANING_COLUMN_NAME;
+                break;
+            default:
+                Log.e(Constants.LOG_TAG, "unknown type of DbHelper dict provided. Failure.");
+                return null;
+        }
         switch (queryStyle) {
             case EXACT:
-                matchingRule = WORD_COLUMN_NAME + " = ?";
+                matchingRule = currentWordColumnName + " = ? ";
                 matchingParams = new String[]{word};
                 break;
             case APPROXIMATE_ENDING:
-                matchingRule = WORD_COLUMN_NAME + " like ?";
+                matchingRule = currentWordColumnName + " like ? ";
                 matchingParams = new String[]{word + "%"};
                 break;
             case APPROXIMATE_ALL:
-                matchingRule = WORD_COLUMN_NAME + " like ?";
+                matchingRule = currentWordColumnName + " like ? ";
                 matchingParams = new String[]{"%" + word + "%"};
                 break;
             default:
@@ -163,7 +211,19 @@ public class DbHelper extends SQLiteOpenHelper
                                            final SQLiteDatabase db,
                                            final String matchingRule,
                                            final String[] matchingParams) {
-        Cursor cursor = db.query(dbName, ALL_COLUMNS, matchingRule, matchingParams,
+        String[] allColumnsNames = null;
+        switch (mDbType) {
+            case USER_DICT:
+                allColumnsNames = ALL_COLUMNS_USER;
+                break;
+            case HELPER_DICT:
+                allColumnsNames = ALL_COLUMNS_HELP_DICT;
+                break;
+            default:
+                Log.e(Constants.LOG_TAG, "unknown type of DbHelper dict provided. Failure.");
+                return null;
+        }
+        Cursor cursor = db.query(dbName, allColumnsNames, matchingRule, matchingParams,
                 null, null, null);
         if (!cursor.moveToFirst()) {
             return null;
@@ -179,13 +239,25 @@ public class DbHelper extends SQLiteOpenHelper
 
     private WordBundle wordBundleFromCursor(final Cursor cursor) {
         WordBundle wordBundle = new WordBundle();
-        wordBundle.setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
-                .setTransFromString(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)))
-                .setArticle(cursor.getString(cursor.getColumnIndex(ARTICLE_COLUMN_NAME)))
-                .setPrefix(cursor.getString(cursor.getColumnIndex(PREFIX_COLUMN_NAME)))
-                .setWeight(cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)))
-                .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)))
-                .setWordType(cursor.getInt(cursor.getColumnIndex(WORD_TYPE_COLUMN_NAME)));
+        switch (mDbType) {
+            case USER_DICT:
+                wordBundle.setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
+                        .setTransFromString(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)))
+                        .setArticle(cursor.getString(cursor.getColumnIndex(ARTICLE_COLUMN_NAME)))
+                        .setPrefix(cursor.getString(cursor.getColumnIndex(PREFIX_COLUMN_NAME)))
+                        .setWeight(cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)))
+                        .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)))
+                        .setWordType(cursor.getInt(cursor.getColumnIndex(WORD_TYPE_COLUMN_NAME)));
+                break;
+            case HELPER_DICT:
+                wordBundle.setWord(cursor.getString(cursor.getColumnIndex(HELPER_WORD_COLUMN_NAME)))
+                        .setTransFromString(cursor.getString(cursor.getColumnIndex(HELPER_MEANING_COLUMN_NAME)))
+                        .setId(cursor.getInt(cursor.getColumnIndex(HELPER_ID_COLUMN_NAME)));
+                break;
+            default:
+                Log.e(Constants.LOG_TAG, "unknown type of DbHelper dict provided. Failure.");
+                return null;
+        }
         return wordBundle;
     }
 }

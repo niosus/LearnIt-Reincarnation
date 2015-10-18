@@ -18,6 +18,12 @@ public class WordBundleTest extends TestCase {
         assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
+    public void testTransFromStringNull() throws Exception {
+        WordBundle testWordBundle = new WordBundle();
+        testWordBundle.setTransFromString(null);
+        assertThat(testWordBundle.transAsString(), is(""));
+    }
+
     public void testTrans() throws Exception {
         WordBundle testWordBundle = new WordBundle();
         String trans1 = "trans1.1, trans1.2";
@@ -27,9 +33,9 @@ public class WordBundleTest extends TestCase {
         assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
-    public void testTransNull() throws Exception {
+    public void testEmptyTrans() throws Exception {
         WordBundle testWordBundle = new WordBundle();
-        assertThat(testWordBundle.transAsString() == null, is(true));
+        assertThat(testWordBundle.transAsString().isEmpty(), is(true));
     }
 
     public void testEquals() throws Exception {

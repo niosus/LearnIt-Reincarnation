@@ -22,6 +22,17 @@ public class StringUtilsTest extends TestCase {
         assertThat(StringUtils.join(testArray, connector), is(a + connector + b + connector + c));
     }
 
+    public void testJoinNull() throws Exception {
+        String a = "    some!@#%%   ";
+        String b = "123fff!!!!....";
+        String c = "<<><SADADFast1123123";
+        String connector = "!<>___";
+        String[] testArray = new String[] {a, b, c};
+        assertThat(StringUtils.join(null, connector), is(""));
+        assertThat(StringUtils.join(testArray, null), is(""));
+        assertThat(StringUtils.join(null, null), is(""));
+    }
+
     public void testSplitTxt() throws Exception {
         String line = "air route\t(n) авіалінія; повітряна траса";
         String[] expectedResult = new String[]{"air route", "(n) авіалінія; повітряна траса"};

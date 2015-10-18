@@ -9,7 +9,7 @@ package com.learnit.learnit.utils;
 public class StringUtils {
     public static String join(final String[] array, final String divider) {
         if (array == null || divider == null) {
-            return null;
+            return "";
         }
         StringBuilder builder = new StringBuilder();
         for (final String s: array) {

@@ -49,6 +49,7 @@ public class WordBundle {
     }
 
     public WordBundle setTransFromString(final String trans) {
+        if (trans == null) { return this; }
         this.mTrans = trans.split(TRANS_DIVIDER);
         return this;
     }

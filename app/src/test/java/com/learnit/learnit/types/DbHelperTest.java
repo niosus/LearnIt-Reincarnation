@@ -31,7 +31,7 @@ public class DbHelperTest extends DbHelper {
     SQLiteDatabase database;
 
     public DbHelperTest() {
-        super(null, null, null, 100);
+        super(null, null, null, 100, DbType.USER_DICT);
     }
 
     @Before
@@ -51,7 +51,7 @@ public class DbHelperTest extends DbHelper {
 
     @Test
     public void testAddWord() {
-        DbHelper helper = new DbHelper(RuntimeEnvironment.application, DbHelper.DB_USER_DICT, null, 1);
+        DbHelper helper = new DbHelper(RuntimeEnvironment.application, DbHelper.DB_USER_DICT, null, 1, DbType.USER_DICT);
         String wordToQuery = "test_word";
         String transToExpect = "test_trans";
         WordBundle bundle = new WordBundle();
