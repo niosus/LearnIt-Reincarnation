@@ -19,5 +19,5 @@
     <color name="text_secondary">#D9000000</color>
     <color name="photo_tint">#88101010</color>
     <color name="black">#000000</color>
-    <color name="background_material_dark">#f1f1f1</color>
+    <color name="background_material_dark">#d9d9d9</color>
 </resources>
