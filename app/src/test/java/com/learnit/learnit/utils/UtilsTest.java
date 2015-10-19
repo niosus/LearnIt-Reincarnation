@@ -22,8 +22,7 @@ import org.robolectric.annotation.Config;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 21, reportSdk = 21,
-        constants = BuildConfig.class)
+@Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricTestRunner.class)
 public class UtilsTest {
 

@@ -21,8 +21,10 @@ package com.learnit.learnit.fragments;/*
  */
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.AppCompatEditText;
@@ -40,8 +42,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IActionBarEvents;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.CountryAdapter;
 import com.learnit.learnit.types.CountryManager;
@@ -56,9 +60,11 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
 public class AddWordsCardFragment extends Fragment
-        implements IAddWordsFragmentUiEvents {
+        implements IAddWordsFragmentUiEvents, IAsyncTaskResultClient{
     private static final String ARG_POSITION = "position";
     private CountryAdapter mAdapter;
+
+    private static String TAG = "add_words_card_fragment";
 
     @Bind(R.id.list)
     RecyclerView mRecyclerView;
@@ -69,6 +75,33 @@ public class AddWordsCardFragment extends Fragment
     @Bind(R.id.add_word_layout)
     RelativeLayout addWordLayout;
 
+    private TaskSchedulerFragment mTaskScheduler;
+
+    @Override
+    public String tag() {
+        return TAG;
+    }
+
+    @Override
+    public void onPreExecute() {
+        Log.d(Constants.LOG_TAG, "about to call a task");
+    }
+
+    @Override
+    public void onProgressUpdate(Float progress) {
+
+    }
+
+    @Override
+    public <OutType> void onFinish(OutType result) {
+        Log.d(Constants.LOG_TAG, "task finished");
+    }
+
+    @Override
+    public void onCancelled() {
+        Log.d(Constants.LOG_TAG, "task cancelled");
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView countryName;
         public ImageView countryImage;
@@ -78,6 +111,24 @@ public class AddWordsCardFragment extends Fragment
             countryName = (TextView) itemView.findViewById(R.id.countryName);
         }
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        initTaskScheduler(context);
+    }
+
+    private void initTaskScheduler(Context context) {
+        FragmentManager fragmentManager = getFragmentManager();
+        mTaskScheduler = (TaskSchedulerFragment)
+                fragmentManager.findFragmentByTag(TaskSchedulerFragment.TAG);
+        if (mTaskScheduler == null) {
+            mTaskScheduler = new TaskSchedulerFragment();
+            fragmentManager.beginTransaction()
+                    .add(mTaskScheduler, TaskSchedulerFragment.TAG)
+                    .commit();
+        }
     }
 
     public static AddWordsCardFragment newInstance(int position) {
@@ -127,9 +178,14 @@ public class AddWordsCardFragment extends Fragment
             if (edtWord.getText().toString().isEmpty()
                     && btnDeleteWord.getVisibility() == View.VISIBLE) {
                 this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
-            } else if (btnDeleteWord.getVisibility() == View.INVISIBLE
-                    && !edtWord.getText().toString().isEmpty()) {
-                this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
+            } else {
+                if (btnDeleteWord.getVisibility() == View.INVISIBLE
+                        && !edtWord.getText().toString().isEmpty()) {
+                    this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
+                }
+                mTaskScheduler.newTaskForClient(
+                        new GetHelpWordsTask(this.getContext(),
+                                edtWord.getText().toString()), this);
             }
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");

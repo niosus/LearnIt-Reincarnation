@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
+@Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricTestRunner.class)
 public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
     SQLiteDatabase database;

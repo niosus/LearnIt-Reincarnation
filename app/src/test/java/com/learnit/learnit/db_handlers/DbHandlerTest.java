@@ -28,7 +28,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
+@Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricGradleTestRunner.class)
 public class DbHandlerTest extends DbUserDictHandler {
     SQLiteDatabase database;

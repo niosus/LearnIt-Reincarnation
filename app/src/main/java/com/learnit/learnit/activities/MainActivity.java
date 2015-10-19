@@ -7,11 +7,11 @@
 package com.learnit.learnit.activities;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -179,7 +179,7 @@ public class MainActivity
     }
 
     private void initTaskScheduler() {
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         mTaskScheduler = (TaskSchedulerFragment)
                 fragmentManager.findFragmentByTag(TaskSchedulerFragment.TAG);
         if (mTaskScheduler == null) {

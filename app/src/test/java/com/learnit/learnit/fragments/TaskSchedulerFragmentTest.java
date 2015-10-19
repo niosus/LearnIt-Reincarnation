@@ -15,15 +15,16 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.util.FragmentTestUtil;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 
+import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
-@Config(emulateSdk = 21, reportSdk = 21, constants = BuildConfig.class)
+
+@Config(sdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricTestRunner.class)
 public class TaskSchedulerFragmentTest implements IAsyncTaskResultClient {
 
@@ -31,19 +32,22 @@ public class TaskSchedulerFragmentTest implements IAsyncTaskResultClient {
     Context context;
 
     boolean mOnPreExecuteCalled = false;
+    boolean mFirstTestRun = false;
+    boolean mFirstTestCancelled = false;
+    int counter = 0;
 
     @Before
     public void testNotNull() throws Exception {
         context = RuntimeEnvironment.application;
         scheduler = new TaskSchedulerFragment();
-        FragmentTestUtil.startFragment(scheduler);
+        SupportFragmentTestUtil.startFragment(scheduler);
         assertNotNull(scheduler);
         System.out.println(scheduler.getActivity());
     }
 
     @Test
     public void testRunningSimpleTask() throws Exception {
-        scheduler.newTaskForClient(new DummyTask(context, 5), this);
+        scheduler.newTaskForClient(new DummyTask(context, 2), this);
     }
 
     @Override
@@ -73,6 +77,5 @@ public class TaskSchedulerFragmentTest implements IAsyncTaskResultClient {
 
     @Override
     public void onCancelled() {
-
     }
 }
