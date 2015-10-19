@@ -12,8 +12,8 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/countryName"
-            android:gravity="center"
+            android:id="@+id/word_row"
+            android:gravity="left"
             android:background="?android:selectableItemBackground"
             android:focusable="true"
             android:clickable="true"
@@ -21,6 +21,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:textSize="24sp"
+            android:textColor="@android:color/black"
+            />
+        <TextView
+            android:id="@+id/trans_row"
+            android:layout_below="@id/word_row"
+            android:background="?android:selectableItemBackground"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textSize="20sp"
             android:textColor="@android:color/black"
             />
 

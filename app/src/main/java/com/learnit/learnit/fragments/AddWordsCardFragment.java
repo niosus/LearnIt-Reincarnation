@@ -20,13 +20,11 @@ package com.learnit.learnit.fragments;/*
  * limitations under the License.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,7 +33,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -43,15 +40,16 @@ import android.widget.TextView;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
-import com.learnit.learnit.interfaces.IActionBarEvents;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
-import com.learnit.learnit.types.CountryAdapter;
-import com.learnit.learnit.types.CountryManager;
+import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
+import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
+
+import java.util.List;
 
 import at.markushi.ui.CircleButton;
 import butterknife.Bind;
@@ -62,7 +60,7 @@ import io.codetail.animation.ViewAnimationUtils;
 public class AddWordsCardFragment extends Fragment
         implements IAddWordsFragmentUiEvents, IAsyncTaskResultClient{
     private static final String ARG_POSITION = "position";
-    private CountryAdapter mAdapter;
+    private WordBundleAdapter mAdapter;
 
     private static String TAG = "add_words_card_fragment";
 
@@ -94,7 +92,18 @@ public class AddWordsCardFragment extends Fragment
 
     @Override
     public <OutType> void onFinish(OutType result) {
-        Log.d(Constants.LOG_TAG, "task finished");
+        Log.d(Constants.LOG_TAG, "task finished " + result);
+        if (result == null) {
+            mRecyclerView.swapAdapter(null, true);
+            return;
+        }
+        if (result instanceof List) {
+            @SuppressWarnings("unchecked")
+            List<WordBundle> bundleList = (List<WordBundle>) result;
+            mRecyclerView.swapAdapter(
+                    new WordBundleAdapter(bundleList, R.layout.word_bundle_layout, this.getActivity()),
+                    true);
+        }
     }
 
     @Override
@@ -108,7 +117,7 @@ public class AddWordsCardFragment extends Fragment
 
         public ViewHolder(View itemView) {
             super(itemView);
-            countryName = (TextView) itemView.findViewById(R.id.countryName);
+            countryName = (TextView) itemView.findViewById(R.id.word_row);
         }
 
     }
@@ -155,7 +164,7 @@ public class AddWordsCardFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new CountryAdapter(CountryManager.getInstance().getCountries(), R.layout.row_country, this.getActivity());
+        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, this.getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         ViewCompat.setElevation(rootView, 50);
@@ -178,11 +187,14 @@ public class AddWordsCardFragment extends Fragment
             if (edtWord.getText().toString().isEmpty()
                     && btnDeleteWord.getVisibility() == View.VISIBLE) {
                 this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
+                // the word is empty, clear the recycleview
+                mRecyclerView.swapAdapter(null, true);
             } else {
                 if (btnDeleteWord.getVisibility() == View.INVISIBLE
                         && !edtWord.getText().toString().isEmpty()) {
                     this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
                 }
+                // the word is not empty, so load helper words
                 mTaskScheduler.newTaskForClient(
                         new GetHelpWordsTask(this.getContext(),
                                 edtWord.getText().toString()), this);
