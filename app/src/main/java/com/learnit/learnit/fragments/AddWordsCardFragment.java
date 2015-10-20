@@ -58,7 +58,7 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
 public class AddWordsCardFragment extends Fragment
-        implements IAddWordsFragmentUiEvents, IAsyncTaskResultClient{
+        implements IAddWordsFragmentUiEvents {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -74,42 +74,6 @@ public class AddWordsCardFragment extends Fragment
     RelativeLayout addWordLayout;
 
     private TaskSchedulerFragment mTaskScheduler;
-
-    @Override
-    public String tag() {
-        return TAG;
-    }
-
-    @Override
-    public void onPreExecute() {
-        Log.d(Constants.LOG_TAG, "about to call a task");
-    }
-
-    @Override
-    public void onProgressUpdate(Float progress) {
-
-    }
-
-    @Override
-    public <OutType> void onFinish(OutType result) {
-        Log.d(Constants.LOG_TAG, "task finished " + result);
-        if (result == null) {
-            mRecyclerView.swapAdapter(null, true);
-            return;
-        }
-        if (result instanceof List) {
-            @SuppressWarnings("unchecked")
-            List<WordBundle> bundleList = (List<WordBundle>) result;
-            mRecyclerView.swapAdapter(
-                    new WordBundleAdapter(bundleList, R.layout.word_bundle_layout, this.getActivity()),
-                    true);
-        }
-    }
-
-    @Override
-    public void onCancelled() {
-        Log.d(Constants.LOG_TAG, "task cancelled");
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView countryName;
@@ -188,17 +152,17 @@ public class AddWordsCardFragment extends Fragment
                     && btnDeleteWord.getVisibility() == View.VISIBLE) {
                 this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
                 // the word is empty, clear the recycleview
-                mRecyclerView.swapAdapter(null, true);
+                // mRecyclerView.swapAdapter(null, true);
             } else {
                 if (btnDeleteWord.getVisibility() == View.INVISIBLE
                         && !edtWord.getText().toString().isEmpty()) {
                     this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
                 }
-                // the word is not empty, so load helper words
-                mTaskScheduler.newTaskForClient(
-                        new GetHelpWordsTask(this.getContext(),
-                                edtWord.getText().toString()), this);
             }
+            // load new helper words
+            mTaskScheduler.newTaskForClient(
+                    new GetHelpWordsTask(this.getContext(),
+                            edtWord.getText().toString()), mAdapter);
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
         }
