@@ -161,6 +161,10 @@ public class Utils {
 
             // delete the old database anyway
             DbHandler helper = DbHandler.Factory.createLocalizedHelper(context, DbHandler.DB_HELPER_DICT);
+            if (helper == null) {
+                Log.e(Constants.LOG_TAG, "helper is null. Exiting.");
+                return;
+            }
             helper.deleteDatabase();
 
             if (!dictFile.exists()) {

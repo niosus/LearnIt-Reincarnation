@@ -14,7 +14,7 @@ import com.learnit.learnit.utils.Constants;
 import java.util.List;
 
 public class WordBundleAdapter
-        extends RecyclerView.Adapter<WordBundleAdapter.ViewHolder>
+        extends RecyclerView.Adapter<WordBundleAdapter.WordBundleViewHolder>
         implements IAsyncTaskResultClient {
 
     private static String TAG = "word_bundle_adapter";
@@ -27,16 +27,15 @@ public class WordBundleAdapter
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public WordBundleViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(mRowLayout, viewGroup, false);
-        return new ViewHolder(v);
+        return new WordBundleViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(WordBundleViewHolder wordBundleViewHolder, int i) {
         WordBundle wordBundle = mWordBundles.get(i);
-        viewHolder.mWordText.setText(wordBundle.word());
-        viewHolder.mTransText.setText(wordBundle.transAsString());
+        wordBundleViewHolder.setWordBundle(wordBundle);
     }
 
     @Override
@@ -76,15 +75,34 @@ public class WordBundleAdapter
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mWordText;
-        public TextView mTransText;
+    public static class WordBundleViewHolder
+            extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
+        private TextView mWordText;
+        private TextView mTransText;
+        private WordBundle mWordBundle;
 
-        public ViewHolder(View itemView) {
+        public WordBundleViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
+            itemView.setOnClickListener(this);
             mWordText = (TextView) itemView.findViewById(R.id.word_row);
             mTransText = (TextView) itemView.findViewById(R.id.trans_row);
         }
 
+        public void setWordBundle(final WordBundle wordBundle) {
+            mWordBundle = wordBundle;
+            updateViewFromWordBundle(mWordBundle);
+        }
+
+        private void updateViewFromWordBundle(final WordBundle wordBundle) {
+            mWordText.setText(wordBundle.word());
+            mTransText.setText(wordBundle.transAsString());
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(Constants.LOG_TAG, "item clicked. Word is: " + mWordBundle.word());
+        }
     }
 }

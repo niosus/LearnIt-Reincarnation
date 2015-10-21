@@ -13,6 +13,24 @@
         <item name="colorAccent">@color/highlight</item>
     </style>
 
+    <style name="PrefsTheme" parent="@style/Theme.AppCompat.Light">
+        <!-- ...and here we setting appcompat’s color theming attrs -->
+        <item name="colorPrimary">@color/highlight</item>
+        <item name="colorPrimaryDark">@color/highlight_darker</item>
+        <item name="colorAccent">@color/highlight</item>
+        <item name="android:actionBarStyle">@style/ToolbarStyle</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="@style/Widget.AppCompat.ActionBar">
+        <!-- ...and here we setting appcompat’s color theming attrs -->
+        <item name="colorPrimary">@color/highlight</item>
+        <item name="colorPrimaryDark">@color/highlight_darker</item>
+        <item name="colorAccent">@color/highlight</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
     <style name="AppTheme" parent="AppBaseTheme">
 
     </style>
