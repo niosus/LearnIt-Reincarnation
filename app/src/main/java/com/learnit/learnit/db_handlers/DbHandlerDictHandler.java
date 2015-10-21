@@ -62,6 +62,7 @@ public class DbHandlerDictHandler extends DbHandler {
         Cursor cursor = db.query(dbName, ALL_COLUMNS_HELP_DICT, matchingRule, matchingParams,
                 null, null, null);
         if (!cursor.moveToFirst()) {
+            cursor.close();
             return null;
         } else {
             ArrayList<WordBundle> wordBundles = new ArrayList<>();

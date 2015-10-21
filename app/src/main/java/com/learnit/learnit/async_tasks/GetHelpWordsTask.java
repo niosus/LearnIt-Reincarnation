@@ -7,6 +7,7 @@
 package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.types.WordBundle;
@@ -41,6 +42,10 @@ public class GetHelpWordsTask extends MySmartAsyncTask<String, List<WordBundle>>
         }
         String queryWord = queryWords[0];
         DbHandler dbHandler = DbHandler.Factory.createLocalizedHelper(mContext, DbHandler.DB_HELPER_DICT);
+        if (dbHandler == null) {
+            Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting help words");
+            return null;
+        }
         return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ENDING);
     }
 }

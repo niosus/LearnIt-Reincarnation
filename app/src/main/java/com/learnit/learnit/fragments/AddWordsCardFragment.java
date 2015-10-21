@@ -75,17 +75,6 @@ public class AddWordsCardFragment extends Fragment
 
     private TaskSchedulerFragment mTaskScheduler;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView countryName;
-        public ImageView countryImage;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            countryName = (TextView) itemView.findViewById(R.id.word_row);
-        }
-
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -141,6 +130,7 @@ public class AddWordsCardFragment extends Fragment
         if (addWordLayout != null) {
             Log.d(Constants.LOG_TAG, "relative layout initialized");
         }
+
         return rootView;
     }
 

@@ -92,6 +92,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
             // there is no such word in the database
             SQLiteDatabase db = this.getWritableDatabase();
             db.insert(this.getDatabaseName(), null, cv);
+            db.close();
             return Constants.AddWordReturnCode.SUCCESS;
         }
         if (nowInDb.contains(wordBundle)) {

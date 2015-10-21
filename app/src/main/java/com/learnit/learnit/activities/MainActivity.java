@@ -11,9 +11,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
@@ -22,10 +22,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -41,17 +42,15 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemClick;
-import butterknife.OnItemSelected;
 
 
 public class MainActivity
         extends AppCompatActivity
-        implements IAsyncTaskResultClient {
+        implements IAsyncTaskResultClient{
     @Bind(R.id.toolbar)             Toolbar mToolbar;
     @Bind(R.id.tab_layout)          TabLayout mTabLayout;
     @Bind(R.id.pager)               ViewPager mPager;
     @Bind(R.id.drawer_layout)       DrawerLayout mDrawerLayout;
-    @Bind(R.id.nav_drawer_list)     ListView mDrawerList;
 
     @BindDrawable(R.drawable.logo_white) Drawable mLogo;
 

@@ -49,6 +49,10 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
         }
 
         DbHandler dbHandler = DbHandler.Factory.createLocalizedHelper(mContext, DbHandler.DB_HELPER_DICT);
+        if (dbHandler == null) {
+            Log.e(Constants.LOG_TAG, "db handler is suddenly null while populating help dict");
+            return null;
+        }
         SQLiteDatabase db = dbHandler.getWritableDatabase();
         String sql = "INSERT INTO " + dbHandler.getDatabaseName()
                 + " (" + DbHandler.HELPER_WORD_COLUMN_NAME + ", "
@@ -88,6 +92,8 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
             br.close();
         } catch (IOException e) {
             Log.e(Constants.LOG_TAG, "Error: cannot find dictionary file");
+            db.endTransaction();
+            db.close();
             return FAILURE;
         }
         if (!isCancelled()) {
