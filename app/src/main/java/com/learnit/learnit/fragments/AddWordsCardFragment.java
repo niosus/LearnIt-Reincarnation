@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,7 +72,7 @@ public class AddWordsCardFragment extends Fragment
     @Bind(R.id.btnDeleteWord)
     CircleButton btnDeleteWord;
     @Bind(R.id.add_word_layout)
-    RelativeLayout addWordLayout;
+    LinearLayout addWordLayout;
 
     private TaskSchedulerFragment mTaskScheduler;
 

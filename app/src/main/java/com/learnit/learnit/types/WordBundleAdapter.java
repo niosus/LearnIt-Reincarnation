@@ -1,10 +1,12 @@
 package com.learnit.learnit.types;
 import android.content.Context;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.learnit.learnit.R;
@@ -12,6 +14,9 @@ import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.utils.Constants;
 
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class WordBundleAdapter
         extends RecyclerView.Adapter<WordBundleAdapter.WordBundleViewHolder>
@@ -78,16 +83,16 @@ public class WordBundleAdapter
     public static class WordBundleViewHolder
             extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-        private TextView mWordText;
-        private TextView mTransText;
+        @Bind(R.id.word_row) TextView mWordText;
+        @Bind(R.id.trans_row) TextView mTransText;
+        @Bind(R.id.word_bundle_layout) RelativeLayout mLayout;
         private WordBundle mWordBundle;
 
         public WordBundleViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setClickable(true);
             itemView.setOnClickListener(this);
-            mWordText = (TextView) itemView.findViewById(R.id.word_row);
-            mTransText = (TextView) itemView.findViewById(R.id.trans_row);
         }
 
         public void setWordBundle(final WordBundle wordBundle) {
