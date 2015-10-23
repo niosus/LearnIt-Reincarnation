@@ -78,19 +78,19 @@ public class Utils {
         return changed;
     }
 
-    public static LanguagePair.LangNames getCurrentLanguageNames(Context context) {
+    public static LanguagePair.Names getCurrentLanguageNames(Context context) {
         int langToLearnIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_to_learn), -1);
         int langYouKnowIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_you_know), -1);
         Resources res = context.getResources();
         String[] allLanguages = res.getStringArray(R.array.languages_all);
-        LanguagePair.LangNames result = new LanguagePair.LangNames();
+        LanguagePair.Names result = new LanguagePair.Names();
         result.setLangToLearn(allLanguages[langToLearnIndex])
                 .setLangYouKnow(allLanguages[langYouKnowIndex]);
         return result;
     }
 
-    public static LanguagePair.LangTags getCurrentLanguageTags(Context context) {
-        LanguagePair.LangTags result = new LanguagePair.LangTags();
+    public static LanguagePair.Tags getCurrentLanguageTags(Context context) {
+        LanguagePair.Tags result = new LanguagePair.Tags();
         int langToLearnIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_to_learn), -1);
         int langYouKnowIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_you_know), -1);
         if (langToLearnIndex < 0 || langYouKnowIndex < 0) {
@@ -137,7 +137,7 @@ public class Utils {
         return newLangIndex;
     }
 
-    public static File dictFileFromCurrentLanguageTags(LanguagePair.LangTags currentLangTags) {
+    public static File dictFileFromCurrentLanguageTags(LanguagePair.Tags currentLangTags) {
         File sd = Environment.getExternalStorageDirectory();
         sd = new File(sd, "LearnIt");
         sd = new File(sd, String.format("%s-%s",
@@ -155,7 +155,7 @@ public class Utils {
                                               IAsyncTaskResultClient resultClient) {
         if (Utils.languagesHaveChanged(context)) {
             // TODO: update the help dictionary
-            LanguagePair.LangTags currentLangTags = Utils.getCurrentLanguageTags(context);
+            LanguagePair.Tags currentLangTags = Utils.getCurrentLanguageTags(context);
             File dictFile = Utils.dictFileFromCurrentLanguageTags(currentLangTags);
             Log.d(Constants.LOG_TAG, "path do dict: " + dictFile.getPath());
 

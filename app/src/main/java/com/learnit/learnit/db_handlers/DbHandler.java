@@ -58,7 +58,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
 
     public static class Factory {
         public static DbHandler createLocalizedHelper(Context context, String dbName) {
-            LanguagePair.LangTags langTags = Utils.getCurrentLanguageTags(context);
+            LanguagePair.Tags langTags = Utils.getCurrentLanguageTags(context);
             String localizedDbName = String.format("%s_%s_%s",
                     dbName, langTags.langToLearnTag(), langTags.langYouKnowTag());
             if (dbName.equals(DB_USER_DICT)) {

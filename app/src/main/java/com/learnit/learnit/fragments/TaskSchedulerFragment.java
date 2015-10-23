@@ -6,7 +6,6 @@
 
 package com.learnit.learnit.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -80,7 +79,7 @@ public class TaskSchedulerFragment
         mTaskClientBinder.put(task.tag(), client.tag());
 
         // start executing the task
-        task.setResulClient(client);
+        task.setResultClient(client);
         task.execute();
     }
 

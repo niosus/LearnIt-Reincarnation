@@ -20,6 +20,7 @@ package com.learnit.learnit.fragments;/*
  * limitations under the License.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,23 +35,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
-import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
+import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
-import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
-
-import java.util.List;
+import com.learnit.learnit.utils.Utils;
 
 import at.markushi.ui.CircleButton;
 import butterknife.Bind;
@@ -68,7 +65,7 @@ public class AddWordsCardFragment extends Fragment
     @Bind(R.id.list)
     RecyclerView mRecyclerView;
     @Bind(R.id.addWord)
-    AppCompatEditText edtWord;
+    AppCompatEditText mEditText;
     @Bind(R.id.btnDeleteWord)
     CircleButton btnDeleteWord;
     @Bind(R.id.add_word_layout)
@@ -109,6 +106,35 @@ public class AddWordsCardFragment extends Fragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
+        mEditText.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
+    }
+
+    private static void hideKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private static void showKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        inputMethodManager.showSoftInput(view, 0);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(Constants.LOG_TAG, "creating view");
         View rootView = inflater.inflate(R.layout.fragment_add_words, container, false);
@@ -120,9 +146,23 @@ public class AddWordsCardFragment extends Fragment
 
         mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isDetached()) {
+                    // means there is no activity to use
+                    return;
+                }
+                int threshold = 2;
+                if (Math.abs(dy) > threshold) {
+                    hideKeyboard(getActivity());
+                }
+            }
+        });
 
         ViewCompat.setElevation(rootView, 50);
-        edtWord.addTextChangedListener(new TextChangeListener(this, edtWord.getId()));
+        mEditText.addTextChangedListener(new TextChangeListener(this, mEditText.getId()));
 
         View.OnClickListener myOnClickListener = new ClearBtnOnClickListener(this);
         btnDeleteWord.setOnClickListener(myOnClickListener);
@@ -139,21 +179,21 @@ public class AddWordsCardFragment extends Fragment
     public void wordTextChanged() {
         try {
             Log.d(Constants.LOG_TAG, "changed text on edit text");
-            if (edtWord.getText().toString().isEmpty()
+            if (mEditText.getText().toString().isEmpty()
                     && btnDeleteWord.getVisibility() == View.VISIBLE) {
                 this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
                 // the word is empty, clear the recycleview
                 // mRecyclerView.swapAdapter(null, true);
             } else {
                 if (btnDeleteWord.getVisibility() == View.INVISIBLE
-                        && !edtWord.getText().toString().isEmpty()) {
+                        && !mEditText.getText().toString().isEmpty()) {
                     this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
                 }
             }
             // load new helper words
             mTaskScheduler.newTaskForClient(
                     new GetHelpWordsTask(this.getContext(),
-                            edtWord.getText().toString()), mAdapter);
+                            mEditText.getText().toString()), mAdapter);
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
         }
@@ -173,7 +213,12 @@ public class AddWordsCardFragment extends Fragment
 
     @Override
     public void clearWord() {
-        edtWord.setText("");
+        mEditText.setText(null);
+        if (isDetached()) {
+            // no activity, so we can't do anything
+            return;
+        }
+        showKeyboard(getActivity());
     }
 
     private void animateToVisibilityState(final int id, final int visibility) {

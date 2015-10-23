@@ -60,7 +60,7 @@ public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
             return;
         }
         GetHelpWordsTask getWordsTask = new GetHelpWordsTask(context, "hel");
-        getWordsTask.setResulClient(this);
+        getWordsTask.setResultClient(this);
         getWordsTask.execute();
     }
 

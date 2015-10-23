@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 public class Constants {
     public static final int UNDEFINED_INDEX = -666;
-    public static final String LOG_TAG = "my_logs";
+    public static final String LOG_TAG = "learn_it_logs";
     public static final HashSet<String> GERMAN_ARTICLES = new HashSet<String>() {{
         add("der"); add("die"); add("das");
     }};

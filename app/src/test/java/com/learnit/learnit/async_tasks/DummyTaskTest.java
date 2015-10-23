@@ -7,21 +7,16 @@
 package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.learnit.learnit.BuildConfig;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
-import com.learnit.learnit.utils.Constants;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowApplication;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -36,7 +31,7 @@ public class DummyTaskTest implements IAsyncTaskResultClient {
     public void testDummyTask() {
         Context context = RuntimeEnvironment.application;
         dummyTask = new DummyTask(context, 5);
-        dummyTask.setResulClient(this);
+        dummyTask.setResultClient(this);
         dummyTask.execute();
     }
 
@@ -44,7 +39,7 @@ public class DummyTaskTest implements IAsyncTaskResultClient {
     public void testCancelDummyTask() throws InterruptedException {
         Context context = RuntimeEnvironment.application;
         dummyTask = new DummyTask(context, 100);
-        dummyTask.setResulClient(this);
+        dummyTask.setResultClient(this);
         System.out.println("killing the task");
         dummyTask.cancel(true);
         dummyTask.execute();

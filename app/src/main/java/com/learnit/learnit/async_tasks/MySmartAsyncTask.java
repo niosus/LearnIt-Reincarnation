@@ -29,7 +29,7 @@ public abstract class MySmartAsyncTask<InType, OutType>
         mInputData = data;
     }
 
-    public MySmartAsyncTask<InType, OutType> setResulClient(
+    public MySmartAsyncTask<InType, OutType> setResultClient(
             IAsyncTaskResultClient resultClient) {
         mAsyncTaskResultClient = resultClient;
         return this;

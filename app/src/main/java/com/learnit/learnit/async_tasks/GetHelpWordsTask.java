@@ -41,6 +41,11 @@ public class GetHelpWordsTask extends MySmartAsyncTask<String, List<WordBundle>>
             return null;
         }
         String queryWord = queryWords[0];
+        if (queryWord.isEmpty()) {
+            Log.w(Constants.LOG_TAG,
+                    "Task tries to fetch all the help words. For now this is not allowed - too slow");
+            return null;
+        }
         DbHandler dbHandler = DbHandler.Factory.createLocalizedHelper(mContext, DbHandler.DB_HELPER_DICT);
         if (dbHandler == null) {
             Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting help words");

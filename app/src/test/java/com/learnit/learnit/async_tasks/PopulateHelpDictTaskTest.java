@@ -13,10 +13,8 @@ import com.learnit.learnit.BuildConfig;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.utils.Constants;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -37,7 +35,7 @@ public class PopulateHelpDictTaskTest implements IAsyncTaskResultClient {
         filePath = context.getPackageResourcePath() + "/src/test/res/en-uk.txt";
         System.out.println(filePath);
         PopulateHelpDictTask populateHelpDictTask = new PopulateHelpDictTask(context, filePath);
-        populateHelpDictTask.setResulClient(this);
+        populateHelpDictTask.setResultClient(this);
         populateHelpDictTask.execute();
     }
 
