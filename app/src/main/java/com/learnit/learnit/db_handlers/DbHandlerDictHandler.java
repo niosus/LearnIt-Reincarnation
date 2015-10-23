@@ -75,10 +75,9 @@ public class DbHandlerDictHandler extends DbHandler {
     }
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {
-        WordBundle wordBundle = new WordBundle();
-        wordBundle.setWord(cursor.getString(cursor.getColumnIndex(HELPER_WORD_COLUMN_NAME)))
-                .setTransFromString(cursor.getString(cursor.getColumnIndex(HELPER_MEANING_COLUMN_NAME)))
-                .setId(cursor.getInt(cursor.getColumnIndex(HELPER_ID_COLUMN_NAME)));
+        WordBundle wordBundle = new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(HELPER_WORD_COLUMN_NAME)))
+                .setTrans(cursor.getString(cursor.getColumnIndex(HELPER_MEANING_COLUMN_NAME)))
+                .setId(cursor.getInt(cursor.getColumnIndex(HELPER_ID_COLUMN_NAME))).construct();
         return wordBundle;
     }
 }

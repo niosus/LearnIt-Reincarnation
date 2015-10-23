@@ -83,13 +83,14 @@ public class DbUserDictHandler extends DbHandler {
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {
         WordBundle wordBundle = new WordBundle();
-        wordBundle.setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
-                .setTransFromString(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)))
+        wordBundle = new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
+                .setTrans(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)))
                 .setArticle(cursor.getString(cursor.getColumnIndex(ARTICLE_COLUMN_NAME)))
                 .setPrefix(cursor.getString(cursor.getColumnIndex(PREFIX_COLUMN_NAME)))
                 .setWeight(cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)))
                 .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)))
-                .setWordType(cursor.getInt(cursor.getColumnIndex(WORD_TYPE_COLUMN_NAME)));
+                .setWordType(cursor.getInt(cursor.getColumnIndex(WORD_TYPE_COLUMN_NAME)))
+                .construct();
         return wordBundle;
     }
 }

@@ -60,10 +60,11 @@ public class DbHandlerTest extends DbUserDictHandler {
                 null, 1);
         String wordToQuery = "test_word";
         String transToExpect = "test_trans";
-        WordBundle bundle = new WordBundle();
-        bundle.setWord(wordToQuery)
-                .setTransFromString(transToExpect)
-                .setWeight(0.9f);
+        WordBundle bundle = new WordBundle.Constructor()
+                .setWord(wordToQuery)
+                .setTrans(transToExpect)
+                .setWeight(0.9f)
+                .construct();
         Constants.AddWordReturnCode returnCode = helper.addWord(bundle);
         assertThat(returnCode, is(Constants.AddWordReturnCode.SUCCESS));
 
@@ -81,7 +82,7 @@ public class DbHandlerTest extends DbUserDictHandler {
         assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_EXISTS));
 
         // test that we update similar words
-        bundle.setTransFromString(transToExpect + WordBundle.TRANS_DIVIDER + "something new");
+        bundle.setTrans(transToExpect + WordBundle.TRANS_DIVIDER + "something new");
         returnCode = helper.addWord(bundle);
         assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_UPDATED));
     }
@@ -116,12 +117,13 @@ public class DbHandlerTest extends DbUserDictHandler {
         assertThat(database == null, is(false));
         String wordToQuery = "fallen";
         String transToExpect = "fall";
-        WordBundle bundle = new WordBundle();
-        bundle.setId(2)
+        WordBundle bundle = new WordBundle.Constructor()
+                .setId(2)
                 .setWord(wordToQuery)
-                .setTransFromString(transToExpect)
+                .setTrans(transToExpect)
                 .setWeight(0.5f)
-                .setWordType(WordBundle.WordType.ADVERB);
+                .setWordType(WordBundle.WordType.ADVERB)
+                .construct();
         String queryRule = WORD_COLUMN_NAME + " = ?";
         String[] queryParams = new String[]{wordToQuery};
         List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
@@ -137,13 +139,14 @@ public class DbHandlerTest extends DbUserDictHandler {
         // and another word
         wordToQuery = "Apfel";
         transToExpect = "apple";
-        bundle = new WordBundle();
-        bundle.setId(1)
+        bundle = new WordBundle.Constructor()
+                .setId(1)
                 .setWord(wordToQuery)
-                .setTransFromString(transToExpect)
+                .setTrans(transToExpect)
                 .setArticle("der")
                 .setWeight(0.5f)
-                .setWordType(WordBundle.WordType.NOUN);
+                .setWordType(WordBundle.WordType.NOUN)
+                .construct();
         queryRule = WORD_COLUMN_NAME + " = ?";
         queryParams = new String[]{wordToQuery};
         res = queryFromDB("test_words", database, queryRule, queryParams);

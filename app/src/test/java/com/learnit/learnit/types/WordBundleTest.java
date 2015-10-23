@@ -14,13 +14,19 @@ public class WordBundleTest extends TestCase {
         String trans2 = "trans2.1, trans2.2; trans2.3";
         String[] fullTrans = new String[] {trans1, trans2};
         String tempTransString = fullTrans[0] + WordBundle.TRANS_DIVIDER + fullTrans[1];
-        testWordBundle.setTransFromString(tempTransString);
+        testWordBundle.setTrans(tempTransString);
         assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
     public void testTransFromStringNull() throws Exception {
         WordBundle testWordBundle = new WordBundle();
-        testWordBundle.setTransFromString(null);
+        testWordBundle.setTrans((String) null);
+        assertThat(testWordBundle.transAsString(), is(""));
+    }
+
+    public void testTransFromStringNullArray() throws Exception {
+        WordBundle testWordBundle = new WordBundle();
+        testWordBundle.setTrans((String[]) null);
         assertThat(testWordBundle.transAsString(), is(""));
     }
 
@@ -29,7 +35,7 @@ public class WordBundleTest extends TestCase {
         String trans1 = "trans1.1, trans1.2";
         String trans2 = "trans2.1, trans2.2; trans2.3";
         String[] fullTrans = new String[] {trans1, trans2};
-        testWordBundle.setTransFromStringArray(fullTrans);
+        testWordBundle.setTrans(fullTrans);
         assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
@@ -40,17 +46,19 @@ public class WordBundleTest extends TestCase {
 
     public void testEquals() throws Exception {
         WordBundle bundle = new WordBundle();
-        bundle.setId(2)
+        WordBundle.Constructor constructor = new WordBundle.Constructor();
+        bundle = constructor.setId(2)
                 .setWord("fallen")
-                .setTransFromString("fall")
+                .setTrans("fall")
                 .setWeight(0.5f)
-                .setArticle("blah");
-        WordBundle bundle_same = new WordBundle();
-        bundle_same.setId(2)
+                .setArticle("blah")
+                .construct();
+        WordBundle bundle_same =constructor.setId(2)
                 .setWord("fallen")
-                .setTransFromString("fall")
+                .setTrans("fall")
                 .setWeight(0.5f)
-                .setArticle("blah");
+                .setArticle("blah")
+                .construct();
         assertThat(bundle, is(bundle_same));
 
         WordBundle bundle_diff = new WordBundle();
@@ -58,13 +66,13 @@ public class WordBundleTest extends TestCase {
         assertThat(bundle_diff, is(bundle_diff));
 
         // test that word type plays a difference
-        bundle_diff = new WordBundle();
-        bundle_diff.setId(2)
+        bundle_diff = constructor.setId(2)
                 .setWord("fallen")
-                .setTransFromString("fall")
+                .setTrans("fall")
                 .setWeight(0.5f)
                 .setArticle("blah")
-                .setWordType(WordBundle.WordType.NOUN);
-        assertThat(bundle, is(not(bundle_diff)));
+                .setWordType(WordBundle.WordType.NOUN)
+                .construct();
+        assertThat(bundle.equals(bundle_diff), is(false));
     }
 }

@@ -13,6 +13,81 @@ public class WordBundle {
     private String[] mTrans;
     private float mWeight;
 
+    public static class Constructor {
+        private WordBundle mWordBundle;
+        private int mNestedId = -1;
+        private int mNestedWordType = WordType.NONE;
+        private String mNestedArticle = null;
+        private String mNestedPrefix = null;
+        private String mNestedWord = null;
+        private String[] mNestedTrans = null;
+        private float mNestedWeight = -1;
+
+        private void resetNestedValues() {
+            mNestedId = -1;
+            mNestedArticle = null;
+            mNestedPrefix = null;
+            mNestedWord = null;
+            mNestedTrans = null;
+            mNestedWeight = -1;
+            mNestedWordType = WordType.NONE;
+        }
+
+        public WordBundle construct() {
+            WordBundle tempBundle = new WordBundle();
+            tempBundle.setWord(mNestedWord);
+            tempBundle.setTrans(mNestedTrans);
+            tempBundle.setArticle(mNestedArticle);
+            tempBundle.setPrefix(mNestedPrefix);
+            tempBundle.setWordType(mNestedWordType);
+            tempBundle.setId(mNestedId);
+            tempBundle.setWeight(mNestedWeight);
+            resetNestedValues();
+            return tempBundle;
+        }
+
+        public WordBundle.Constructor setWord(final String word) {
+            mNestedWord = word;
+            return this;
+        }
+
+        public WordBundle.Constructor setArticle(final String article) {
+            mNestedArticle = article;
+            return this;
+        }
+
+        public WordBundle.Constructor setPrefix(final String prefix) {
+            mNestedPrefix = prefix;
+            return this;
+        }
+
+        public WordBundle.Constructor setWeight(final float weight) {
+            mNestedWeight = weight;
+            return this;
+        }
+
+        public WordBundle.Constructor setId(final int id) {
+            mNestedId = id;
+            return this;
+        }
+
+        public WordBundle.Constructor setTrans(final String trans) {
+            if (trans == null) { return this; }
+            this.mNestedTrans = trans.split(TRANS_DIVIDER);
+            return this;
+        }
+
+        public WordBundle.Constructor setTrans(final String[] trans) {
+            mNestedTrans = trans;
+            return this;
+        }
+
+        public WordBundle.Constructor setWordType(final int wordType) {
+            mNestedWordType = wordType;
+            return this;
+        }
+    }
+
     public WordBundle() {
         mId = -1;
         mArticle = null;
@@ -23,45 +98,37 @@ public class WordBundle {
         mWordType = WordType.NONE;
     }
 
-    public WordBundle setWord(final String word) {
+    public void setWord(final String word) {
         this.mWord = word;
-        return this;
     }
 
-    public WordBundle setArticle(final String article) {
+    public void setArticle(final String article) {
         this.mArticle = article;
-        return this;
     }
 
-    public WordBundle setPrefix(final String prefix) {
+    public void setPrefix(final String prefix) {
         this.mPrefix = prefix;
-        return this;
     }
 
-    public WordBundle setWeight(final float weight) {
+    public void setWeight(final float weight) {
         this.mWeight = weight;
-        return this;
     }
 
-    public WordBundle setId(final int id) {
+    public void setId(final int id) {
         this.mId = id;
-        return this;
     }
 
-    public WordBundle setTransFromString(final String trans) {
-        if (trans == null) { return this; }
+    public void setTrans(final String trans) {
+        if (trans == null) { return; }
         this.mTrans = trans.split(TRANS_DIVIDER);
-        return this;
     }
 
-    public WordBundle setTransFromStringArray(final String[] trans) {
+    public void setTrans(final String[] trans) {
         this.mTrans = trans;
-        return this;
     }
 
-    public WordBundle setWordType(final int wordType) {
+    public void setWordType(final int wordType) {
         this.mWordType = wordType;
-        return this;
     }
 
     public String word() {

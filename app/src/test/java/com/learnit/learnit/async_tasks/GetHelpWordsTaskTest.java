@@ -40,11 +40,11 @@ public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
         DbHandler helper = DbHandler.Factory.createLocalizedHelper(context, DbHandler.DB_HELPER_DICT);
         WordBundle wordBundle1 = new WordBundle();
         wordBundle1.setWord("hello");
-        wordBundle1.setTransFromString("hello");
+        wordBundle1.setTrans("hello");
         helper.addWord(wordBundle1);
         WordBundle wordBundle2 = new WordBundle();
         wordBundle2.setWord("hell");
-        wordBundle2.setTransFromString("hello");
+        wordBundle2.setTrans("hello");
         helper.addWord(wordBundle2);
         WordBundle wordBundle3 = new WordBundle();
         wordBundle3.setWord("help");
