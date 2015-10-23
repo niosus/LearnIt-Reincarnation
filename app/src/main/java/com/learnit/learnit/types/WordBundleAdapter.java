@@ -1,8 +1,10 @@
 package com.learnit.learnit.types;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +27,16 @@ public class WordBundleAdapter
     private static String TAG = "word_bundle_adapter";
     private List<WordBundle> mWordBundles;
     private int mRowLayout;
+    private SparseBooleanArray mSelectedItems;
 
-    public WordBundleAdapter(List<WordBundle> mWordBundles, int mRowLayout, Context context) {
-        this.mWordBundles = mWordBundles;
-        this.mRowLayout = mRowLayout;
+    private void refreshSelectedMarkers() {
+        mSelectedItems = new SparseBooleanArray((mWordBundles == null)? 0: mWordBundles.size());
+    }
+
+    public WordBundleAdapter(List<WordBundle> wordBundles, int rowLayout) {
+        mWordBundles = wordBundles;
+        mRowLayout = rowLayout;
+        refreshSelectedMarkers();
     }
 
     @Override
@@ -38,9 +46,10 @@ public class WordBundleAdapter
     }
 
     @Override
-    public void onBindViewHolder(WordBundleViewHolder wordBundleViewHolder, int i) {
-        WordBundle wordBundle = mWordBundles.get(i);
+    public void onBindViewHolder(WordBundleViewHolder wordBundleViewHolder, int position) {
+        WordBundle wordBundle = mWordBundles.get(position);
         wordBundleViewHolder.setWordBundle(wordBundle);
+        wordBundleViewHolder.mLayout.setSelected(mSelectedItems.get(position, false));
     }
 
     @Override
@@ -65,13 +74,13 @@ public class WordBundleAdapter
 
     @Override
     public <OutType> void onFinish(OutType result) {
-        Log.d(Constants.LOG_TAG, "get help words task finished " + result);
         if (result == null) {
             mWordBundles = null;
         } else if (result instanceof List) {
             mWordBundles = (List<WordBundle>) result;
         }
         notifyDataSetChanged();
+        refreshSelectedMarkers();
     }
 
     @Override
@@ -80,7 +89,7 @@ public class WordBundleAdapter
     }
 
 
-    public static class WordBundleViewHolder
+    public class WordBundleViewHolder
             extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         @Bind(R.id.word_row) TextView mWordText;
@@ -107,6 +116,14 @@ public class WordBundleAdapter
 
         @Override
         public void onClick(View v) {
+            if (mSelectedItems.get(getAdapterPosition(), false)) {
+                mSelectedItems.delete(getAdapterPosition());
+                mLayout.setSelected(false);
+            }
+            else {
+                mSelectedItems.put(getAdapterPosition(), true);
+                mLayout.setSelected(true);
+            }
             Log.d(Constants.LOG_TAG, "item clicked. Word is: " + mWordBundle.word());
         }
     }

@@ -8,21 +8,19 @@
     android:layout_marginEnd="8dip"
     android:layout_marginRight="8dip"
     android:layout_marginStart="8dip"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
+    android:layout_marginTop="8dp"
     card_view:cardCornerRadius="@dimen/cardview_default_radius">
 
     <RelativeLayout
         android:id="@+id/word_bundle_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/selectable_row">
 
         <TextView
             android:id="@+id/word_row"
             android:gravity="start"
             android:background="?android:selectableItemBackground"
-            android:focusable="true"
-            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -33,8 +31,6 @@
             android:id="@+id/trans_row"
             android:layout_below="@id/word_row"
             android:background="?android:selectableItemBackground"
-            android:focusable="true"
-            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"

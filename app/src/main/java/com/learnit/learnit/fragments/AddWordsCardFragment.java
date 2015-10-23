@@ -118,7 +118,7 @@ public class AddWordsCardFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, this.getActivity());
+        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout);
         mRecyclerView.setAdapter(mAdapter);
 
         ViewCompat.setElevation(rootView, 50);
