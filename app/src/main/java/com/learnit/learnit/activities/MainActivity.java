@@ -84,6 +84,7 @@ public class MainActivity
     @OnItemClick(R.id.nav_drawer_list)
     public void navDrawerOnSelected(int position) {
         Log.d(Constants.LOG_TAG, "selected " + position);
+        mDrawerLayout.closeDrawers();
         switch (position) {
             case 0:
                 startSettingsActivity();
