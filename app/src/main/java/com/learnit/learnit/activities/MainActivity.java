@@ -78,7 +78,12 @@ public class MainActivity
     protected void onResume() {
         super.onResume();
 
-        Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
+        if (!Utils.languagesAreDefined(this)) {
+            Log.w(Constants.LOG_TAG, "Languages are not defined. This should not happen...");
+            startSettingsActivity();
+        } else {
+            Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
+        }
     }
 
     @OnItemClick(R.id.nav_drawer_list)

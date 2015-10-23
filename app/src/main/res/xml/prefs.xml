@@ -18,10 +18,10 @@
             app:defaultValueIndex="9" />
     </com.jenzz.materialpreference.PreferenceCategory>
     <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_notifications">
-        <com.jenzz.materialpreference.SwitchPreference
+        <com.learnit.learnit.preferences.MySwitchPreference
             android:summaryOff="@string/pref_notifications_disabled"
             android:summaryOn="@string/pref_notifications_enabled"
-            android:title="@string/pref_notifications" />
+            android:title="@string/pref_notifications"/>
     </com.jenzz.materialpreference.PreferenceCategory>
 
 </PreferenceScreen>

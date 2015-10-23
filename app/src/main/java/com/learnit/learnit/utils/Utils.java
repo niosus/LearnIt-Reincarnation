@@ -149,12 +149,25 @@ public class Utils {
         return sd;
     }
 
+    public static boolean languagesAreDefined(Context context) {
+        // get the currently picked languages
+        int langToLearnIndex = Prefs.getInt(
+                context.getString(R.string.key_language_to_learn), Constants.UNDEFINED_INDEX);
+        if (langToLearnIndex == Constants.UNDEFINED_INDEX) {
+            return false;
+        }
+        int langYouKnowIndex = Prefs.getInt(
+                context.getString(R.string.key_language_you_know), Constants.UNDEFINED_INDEX);
+        if (langYouKnowIndex == Constants.UNDEFINED_INDEX) {
+            return false;
+        }
+        return true;
+    }
 
     public static void updateHelpDictIfNeeded(Context context,
                                               TaskSchedulerFragment taskScheduler,
                                               IAsyncTaskResultClient resultClient) {
         if (Utils.languagesHaveChanged(context)) {
-            // TODO: update the help dictionary
             LanguagePair.Tags currentLangTags = Utils.getCurrentLanguageTags(context);
             File dictFile = Utils.dictFileFromCurrentLanguageTags(currentLangTags);
             Log.d(Constants.LOG_TAG, "path do dict: " + dictFile.getPath());
