@@ -35,10 +35,14 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
 import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
@@ -59,6 +63,7 @@ public class MainActivity
 
     private ActionBarDrawerToggle mDrawerToggle;
     private TaskSchedulerFragment mTaskScheduler;
+    private List<IFabEventHandler> mFabEventHandlers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +116,15 @@ public class MainActivity
             @Override
             public void onClick(View v) {
                 Log.d(Constants.LOG_TAG, "fab clicked");
+                for (IFabEventHandler handler: mFabEventHandlers) {
+                    handler.fabClicked(mPager.getCurrentItem());
+                }
             }
         });
+        // Initialize all those fancy event handlers
+        // I still personally think it would be better to embed fab into a fragment,
+        // but google devs think differently. Well, who am I to object?
+        mFabEventHandlers = new ArrayList<>();
     }
 
     private void initTabbedViewPager() {
@@ -244,5 +256,10 @@ public class MainActivity
     @Override
     public void hideFab() {
         mFab.hide();
+    }
+
+    @Override
+    public void addFabEventHandler(IFabEventHandler handler) {
+        mFabEventHandlers.add(handler);
     }
 }

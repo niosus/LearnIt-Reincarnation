@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.interfaces.IFabEventHandler;
+import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.fragments.AddWordsCardFragment;
 import com.learnit.learnit.fragments.CardFragment;
@@ -21,15 +23,17 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     public static final int LEARN_WORDS_ITEM = 2;
 
     private String[] TITLES = null;
-    private Context mContext;
+    private IFabStateController mFabStateController;
 
     public TabsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
-        mContext = context;
         TITLES = new String[]{
             context.getString(R.string.add_words_frag_title),
             context.getString(R.string.dictionary_frag_title),
             context.getString(R.string.learn_words_frag_title) };
+        if (context instanceof IFabStateController) {
+            mFabStateController = (IFabStateController) context;
+        }
     }
 
     @Override
@@ -45,14 +49,21 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Log.d(Constants.LOG_TAG, "asking frag at pos " + position);
+        Fragment pickFragment = null;
         switch (position) {
             case ADD_WORDS_ITEM:
-                return AddWordsCardFragment.newInstance(position);
+                pickFragment = AddWordsCardFragment.newInstance(position);
+                break;
             case DICT_ITEM:
-                return CardFragment.newInstance(position);
+                pickFragment = CardFragment.newInstance(position);
+                break;
             case LEARN_WORDS_ITEM:
-                return CardFragment.newInstance(position);
+                pickFragment =  CardFragment.newInstance(position);
+                break;
         }
-        return CardFragment.newInstance(position);
+        if (pickFragment instanceof IFabEventHandler) {
+            mFabStateController.addFabEventHandler((IFabEventHandler) pickFragment);
+        }
+        return pickFragment;
     }
 }

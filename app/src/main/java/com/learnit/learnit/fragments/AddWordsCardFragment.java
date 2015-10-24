@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.LanguagePair;
@@ -57,7 +58,7 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
 public class AddWordsCardFragment extends Fragment
-        implements IAddWordsFragmentUiEvents {
+        implements IAddWordsFragmentUiEvents, IFabEventHandler {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -236,5 +237,10 @@ public class AddWordsCardFragment extends Fragment
         animator.setDuration(300);
         animator.addListener(new MyAnimatorListener(this, id, visibility));
         animator.start();
+    }
+
+    @Override
+    public void fabClicked(int viewPagerPos) {
+        Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked");
     }
 }
