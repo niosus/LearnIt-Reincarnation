@@ -6,10 +6,13 @@
 
 package com.learnit.learnit.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
@@ -153,15 +156,10 @@ public class Utils {
         // get the currently picked languages
         int langToLearnIndex = Prefs.getInt(
                 context.getString(R.string.key_language_to_learn), Constants.UNDEFINED_INDEX);
-        if (langToLearnIndex == Constants.UNDEFINED_INDEX) {
-            return false;
-        }
         int langYouKnowIndex = Prefs.getInt(
                 context.getString(R.string.key_language_you_know), Constants.UNDEFINED_INDEX);
-        if (langYouKnowIndex == Constants.UNDEFINED_INDEX) {
-            return false;
-        }
-        return true;
+        return langToLearnIndex != Constants.UNDEFINED_INDEX
+                && langYouKnowIndex != Constants.UNDEFINED_INDEX;
     }
 
     public static void updateHelpDictIfNeeded(Context context,
@@ -193,4 +191,25 @@ public class Utils {
         }
     }
 
+    public static void showKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        inputMethodManager.showSoftInput(view, 0);
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 }

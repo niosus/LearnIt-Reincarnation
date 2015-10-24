@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.utils.Constants;
 
 import java.util.List;
@@ -28,15 +29,22 @@ public class WordBundleAdapter
     private List<WordBundle> mWordBundles;
     private int mRowLayout;
     private SparseBooleanArray mSelectedItems;
+    private IFabStateController mFabStateController;
 
     private void refreshSelectedMarkers() {
         mSelectedItems = new SparseBooleanArray((mWordBundles == null)? 0: mWordBundles.size());
+        mFabStateController.hideFab();
     }
 
-    public WordBundleAdapter(List<WordBundle> wordBundles, int rowLayout) {
+    public WordBundleAdapter(List<WordBundle> wordBundles, int rowLayout, IFabStateController fabStateController) {
         mWordBundles = wordBundles;
         mRowLayout = rowLayout;
+        connectToFab(fabStateController);
         refreshSelectedMarkers();
+    }
+
+    public void connectToFab(IFabStateController fabStateController) {
+        mFabStateController = fabStateController;
     }
 
     @Override
@@ -72,11 +80,12 @@ public class WordBundleAdapter
 
     }
 
-    @Override
+    @Override @SuppressWarnings("unchecked")
     public <OutType> void onFinish(OutType result) {
         if (result == null) {
             mWordBundles = null;
         } else if (result instanceof List) {
+
             mWordBundles = (List<WordBundle>) result;
         }
         notifyDataSetChanged();
@@ -119,10 +128,14 @@ public class WordBundleAdapter
             if (mSelectedItems.get(getAdapterPosition(), false)) {
                 mSelectedItems.delete(getAdapterPosition());
                 mLayout.setSelected(false);
+                if (mSelectedItems.size() == 0) {
+                    mFabStateController.hideFab();
+                }
             }
             else {
                 mSelectedItems.put(getAdapterPosition(), true);
                 mLayout.setSelected(true);
+                mFabStateController.showFab();
             }
             Log.d(Constants.LOG_TAG, "item clicked. Word is: " + mWordBundle.word());
         }

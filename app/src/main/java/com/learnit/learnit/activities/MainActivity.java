@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -34,6 +35,7 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
 import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
@@ -46,11 +48,12 @@ import butterknife.OnItemClick;
 
 public class MainActivity
         extends AppCompatActivity
-        implements IAsyncTaskResultClient{
+        implements IAsyncTaskResultClient, IFabStateController {
     @Bind(R.id.toolbar)             Toolbar mToolbar;
     @Bind(R.id.tab_layout)          TabLayout mTabLayout;
     @Bind(R.id.pager)               ViewPager mPager;
     @Bind(R.id.drawer_layout)       DrawerLayout mDrawerLayout;
+    @Bind(R.id.fab)                 FloatingActionButton mFab;
 
     @BindDrawable(R.drawable.logo_white) Drawable mLogo;
 
@@ -72,6 +75,7 @@ public class MainActivity
         initActionBar();
         initTabbedViewPager();
         initTaskScheduler();
+        initFab();
     }
 
     @Override
@@ -102,6 +106,15 @@ public class MainActivity
         startActivity(intent);
     }
 
+    private void initFab() {
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(Constants.LOG_TAG, "fab clicked");
+            }
+        });
+    }
+
     private void initTabbedViewPager() {
         FragmentPagerAdapter mPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
         mPager.setAdapter(mPagerAdapter);
@@ -110,6 +123,13 @@ public class MainActivity
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TabsPagerAdapter.ADD_WORDS_ITEM:
+                        mFab.show();
+                        break;
+                    default:
+                        mFab.hide();
+                }
                 mPager.setCurrentItem(tab.getPosition());
             }
 
@@ -214,6 +234,15 @@ public class MainActivity
     }
     @Override
     public void onCancelled() {
+    }
 
+    @Override
+    public void showFab() {
+        mFab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        mFab.hide();
     }
 }

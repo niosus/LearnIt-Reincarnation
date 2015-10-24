@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.WordBundleAdapter;
@@ -72,11 +73,15 @@ public class AddWordsCardFragment extends Fragment
     LinearLayout addWordLayout;
 
     private TaskSchedulerFragment mTaskScheduler;
+    private IFabStateController mFabStateController;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         initTaskScheduler(context);
+        if (context instanceof IFabStateController) {
+            mFabStateController = (IFabStateController) context;
+        }
     }
 
     private void initTaskScheduler(Context context) {
@@ -112,28 +117,6 @@ public class AddWordsCardFragment extends Fragment
         mEditText.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
     }
 
-    private static void hideKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    private static void showKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        inputMethodManager.showSoftInput(view, 0);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(Constants.LOG_TAG, "creating view");
@@ -144,19 +127,19 @@ public class AddWordsCardFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout);
+        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, mFabStateController);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isDetached()) {
+                if (!isAdded()) {
                     // means there is no activity to use
                     return;
                 }
                 int threshold = 2;
                 if (Math.abs(dy) > threshold) {
-                    hideKeyboard(getActivity());
+                    Utils.hideKeyboard(getActivity());
                 }
             }
         });
@@ -214,11 +197,11 @@ public class AddWordsCardFragment extends Fragment
     @Override
     public void clearWord() {
         mEditText.setText(null);
-        if (isDetached()) {
+        if (!isAdded()) {
             // no activity, so we can't do anything
             return;
         }
-        showKeyboard(getActivity());
+        Utils.showKeyboard(getActivity());
     }
 
     private void animateToVisibilityState(final int id, final int visibility) {

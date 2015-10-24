@@ -16,9 +16,9 @@ import com.learnit.learnit.fragments.AddWordsCardFragment;
 import com.learnit.learnit.fragments.CardFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
-    private static final int ADD_WORDS_ITEM = 0;
-    private static final int DICT_ITEM = 1;
-    private static final int LEARN_WORDS_ITEM = 2;
+    public static final int ADD_WORDS_ITEM = 0;
+    public static final int DICT_ITEM = 1;
+    public static final int LEARN_WORDS_ITEM = 2;
 
     private String[] TITLES = null;
     private Context mContext;
