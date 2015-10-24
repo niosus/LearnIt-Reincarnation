@@ -20,7 +20,6 @@ package com.learnit.learnit.fragments;/*
  * limitations under the License.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
@@ -79,6 +77,7 @@ public class AddWordsCardFragment extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(Constants.LOG_TAG, "fragment is attached");
         initTaskScheduler(context);
         if (context instanceof IFabStateController) {
             mFabStateController = (IFabStateController) context;
@@ -98,6 +97,7 @@ public class AddWordsCardFragment extends Fragment
     }
 
     public static AddWordsCardFragment newInstance(int position) {
+        Log.d(Constants.LOG_TAG, "creating new instance of fragment");
         AddWordsCardFragment f = new AddWordsCardFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
@@ -116,6 +116,8 @@ public class AddWordsCardFragment extends Fragment
         super.onResume();
         LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
         mEditText.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
+        mFabStateController.addFabEventHandler(TAG, this);
+        startLoadingHelpWordsAsync();
     }
 
     @Override
@@ -160,26 +162,51 @@ public class AddWordsCardFragment extends Fragment
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        updateDeleteButtonStateAnimate();
+    }
+
+    private void startLoadingHelpWordsAsync() {
+        // load new helper words
+        mTaskScheduler.newTaskForClient(
+                new GetHelpWordsTask(this.getContext(),
+                        mEditText.getText().toString()), mAdapter);
+    }
+
+    private void updateDeleteButtonStateAnimate() {
+        if (mEditText.getText().toString().isEmpty()
+                && btnDeleteWord.getVisibility() == View.VISIBLE) {
+            this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
+        } else {
+            if (btnDeleteWord.getVisibility() == View.INVISIBLE
+                    && !mEditText.getText().toString().isEmpty()) {
+                this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
+            }
+        }
+    }
+
+    private void updateDeleteButtonStateInstant() {
+        if (mEditText.getText().toString().isEmpty()
+                && btnDeleteWord.getVisibility() == View.VISIBLE) {
+            this.setViewVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
+        } else {
+            if (btnDeleteWord.getVisibility() == View.INVISIBLE
+                    && !mEditText.getText().toString().isEmpty()) {
+                this.setViewVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
     public void wordTextChanged() {
         try {
             Log.d(Constants.LOG_TAG, "changed text on edit text");
-            if (mEditText.getText().toString().isEmpty()
-                    && btnDeleteWord.getVisibility() == View.VISIBLE) {
-                this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
-                // the word is empty, clear the recycleview
-                // mRecyclerView.swapAdapter(null, true);
-            } else {
-                if (btnDeleteWord.getVisibility() == View.INVISIBLE
-                        && !mEditText.getText().toString().isEmpty()) {
-                    this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
-                }
-            }
-            // load new helper words
-            mTaskScheduler.newTaskForClient(
-                    new GetHelpWordsTask(this.getContext(),
-                            mEditText.getText().toString()), mAdapter);
+            updateDeleteButtonStateAnimate();
+            startLoadingHelpWordsAsync();
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
+            updateDeleteButtonStateInstant();
         }
     }
 
@@ -241,6 +268,6 @@ public class AddWordsCardFragment extends Fragment
 
     @Override
     public void fabClicked(int viewPagerPos) {
-        Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked");
+        Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
     }
 }
