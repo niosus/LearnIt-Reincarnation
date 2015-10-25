@@ -65,7 +65,7 @@ public class MainActivity
 
     private ActionBarDrawerToggle mDrawerToggle;
     private TaskSchedulerFragment mTaskScheduler;
-    private Map<String, IFabEventHandler> mFabEventHandlers;
+    private Map<Integer, IFabEventHandler> mFabEventHandlers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +118,7 @@ public class MainActivity
             @Override
             public void onClick(View v) {
                 Log.d(Constants.LOG_TAG, "fab clicked");
-                for (IFabEventHandler handler: mFabEventHandlers.values()) {
+                for (IFabEventHandler handler : mFabEventHandlers.values()) {
                     handler.fabClicked(mPager.getCurrentItem());
                 }
             }
@@ -137,12 +137,11 @@ public class MainActivity
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case TabsPagerAdapter.ADD_WORDS_ITEM:
-                        mFab.show();
-                        break;
-                    default:
-                        mFab.hide();
+                IFabEventHandler currentFabEventHandler = mFabEventHandlers.get(tab.getPosition());
+                if (currentFabEventHandler != null && currentFabEventHandler.fabNeeded()) {
+                    mFab.show();
+                } else {
+                    mFab.hide();
                 }
                 mPager.setCurrentItem(tab.getPosition());
             }
@@ -261,8 +260,8 @@ public class MainActivity
     }
 
     @Override
-    public void addFabEventHandler(String tag, IFabEventHandler handler) {
-        mFabEventHandlers.put(tag, handler);
+    public void addFabEventHandler(int position, IFabEventHandler handler) {
+        mFabEventHandlers.put(position, handler);
         Log.d(Constants.LOG_TAG, "there are " + mFabEventHandlers.size() + " handlers ready for fab events");
     }
 }

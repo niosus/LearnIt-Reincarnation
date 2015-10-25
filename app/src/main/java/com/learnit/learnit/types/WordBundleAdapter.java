@@ -36,6 +36,10 @@ public class WordBundleAdapter
         mFabStateController.hideFab();
     }
 
+    public boolean hasSelectedItems() {
+        return mSelectedItems != null && mSelectedItems.size() != 0;
+    }
+
     public WordBundleAdapter(List<WordBundle> wordBundles, int rowLayout, IFabStateController fabStateController) {
         mWordBundles = wordBundles;
         mRowLayout = rowLayout;

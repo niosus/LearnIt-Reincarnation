@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.LanguagePair;
+import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
@@ -61,6 +63,7 @@ public class AddWordsCardFragment extends Fragment
     private WordBundleAdapter mAdapter;
 
     private static String TAG = "add_words_card_fragment";
+    private static int POSITION = TabsPagerAdapter.ADD_WORDS_ITEM;
 
     @Bind(R.id.list)
     RecyclerView mRecyclerView;
@@ -116,7 +119,7 @@ public class AddWordsCardFragment extends Fragment
         super.onResume();
         LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
         mEditText.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
-        mFabStateController.addFabEventHandler(TAG, this);
+        mFabStateController.addFabEventHandler(POSITION, this);
         startLoadingHelpWordsAsync();
     }
 
@@ -269,5 +272,10 @@ public class AddWordsCardFragment extends Fragment
     @Override
     public void fabClicked(int viewPagerPos) {
         Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
+    }
+
+    @Override
+    public boolean fabNeeded() {
+        return mAdapter.hasSelectedItems();
     }
 }

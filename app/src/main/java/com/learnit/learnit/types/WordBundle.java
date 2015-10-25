@@ -72,8 +72,16 @@ public class WordBundle {
         }
 
         public WordBundle.Constructor setTrans(final String trans) {
+            return setTrans(trans, TRANS_DIVIDER);
+        }
+
+        public WordBundle.Constructor setTrans(final String trans, final String divider) {
             if (trans == null) { return this; }
-            this.mNestedTrans = trans.split(TRANS_DIVIDER);
+            String[] translations = trans.split(divider);
+            for (int i = 0; i < translations.length; ++i) {
+                translations[i] = translations[i].trim();
+            }
+            this.mNestedTrans = translations;
             return this;
         }
 

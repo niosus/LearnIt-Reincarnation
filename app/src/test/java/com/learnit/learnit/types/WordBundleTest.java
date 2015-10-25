@@ -30,12 +30,18 @@ public class WordBundleTest extends TestCase {
         assertThat(testWordBundle.transAsString(), is(""));
     }
 
-    public void testTrans() throws Exception {
+    public void testTransFromStringCustomDivider() throws Exception {
         WordBundle testWordBundle = new WordBundle();
-        String trans1 = "trans1.1, trans1.2";
-        String trans2 = "trans2.1, trans2.2; trans2.3";
+        testWordBundle.setTrans((String[]) null);
+        assertThat(testWordBundle.transAsString(), is(""));
+    }
+
+    public void testTrans() throws Exception {
+        String trans = "trans2.1, trans2.2; trans2.3";
+        String trans1 = "trans2.1, trans2.2";
+        String trans2 = "trans2.3";
         String[] fullTrans = new String[] {trans1, trans2};
-        testWordBundle.setTrans(fullTrans);
+        WordBundle testWordBundle = new WordBundle.Constructor().setTrans(trans, ";").construct();
         assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
@@ -45,7 +51,7 @@ public class WordBundleTest extends TestCase {
     }
 
     public void testEquals() throws Exception {
-        WordBundle bundle = new WordBundle();
+        WordBundle bundle;
         WordBundle.Constructor constructor = new WordBundle.Constructor();
         bundle = constructor.setId(2)
                 .setWord("fallen")
