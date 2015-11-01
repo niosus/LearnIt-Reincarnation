@@ -36,8 +36,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
-import com.learnit.learnit.async_tasks.GetHelpWordsTask;
-import com.learnit.learnit.async_tasks.GetMyDictWordsTask;
+import com.learnit.learnit.async_tasks.GetUserDictWordsTask;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
@@ -54,7 +53,7 @@ import at.markushi.ui.CircleButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MyDictCardFragment extends Fragment
+public class UserDictCardFragment extends Fragment
         implements IUiEvents, IFabEventHandler {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
@@ -95,9 +94,9 @@ public class MyDictCardFragment extends Fragment
         }
     }
 
-    public static MyDictCardFragment newInstance(int position) {
+    public static UserDictCardFragment newInstance(int position) {
         Log.d(Constants.LOG_TAG, "creating new instance of fragment");
-        MyDictCardFragment f = new MyDictCardFragment();
+        UserDictCardFragment f = new UserDictCardFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         f.setArguments(b);
@@ -123,7 +122,7 @@ public class MyDictCardFragment extends Fragment
     private void startLoadingMyDictWordsAsync() {
         // load new words from my dict
         mTaskScheduler.newTaskForClient(
-                new GetMyDictWordsTask(this.getContext(),
+                new GetUserDictWordsTask(this.getContext(),
                         mEditText.getText().toString()), mAdapter);
     }
 

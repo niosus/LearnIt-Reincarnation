@@ -15,12 +15,12 @@ import com.learnit.learnit.utils.Constants;
 
 import java.util.List;
 
-public class GetMyDictWordsTask extends MySmartAsyncTask<String, List<WordBundle>> {
+public class GetUserDictWordsTask extends MySmartAsyncTask<String, List<WordBundle>> {
 
-    protected String TAG = "get_help_words_task";
+    protected String TAG = "get_user_words_task";
 
-    public GetMyDictWordsTask(Context context,
-                              String queryWord) {
+    public GetUserDictWordsTask(Context context,
+                                String queryWord) {
         super(context, queryWord);
     }
 
@@ -43,7 +43,7 @@ public class GetMyDictWordsTask extends MySmartAsyncTask<String, List<WordBundle
         String queryWord = queryWords[0];
         DbHandler dbHandler = DbHandler.Factory.createLocalizedHelper(mContext, DbHandler.DB_USER_DICT);
         if (dbHandler == null) {
-            Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting help words");
+            Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting words from user dict");
             return null;
         }
         return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ALL);
