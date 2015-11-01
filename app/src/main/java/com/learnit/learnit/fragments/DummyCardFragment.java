@@ -27,7 +27,7 @@ import com.learnit.learnit.R;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
-public class CardFragment extends Fragment {
+public class DummyCardFragment extends Fragment {
 
     private static final String ARG_POSITION = "position";
 
@@ -36,8 +36,8 @@ public class CardFragment extends Fragment {
 
     private int position;
 
-    public static CardFragment newInstance(int position) {
-        CardFragment f = new CardFragment();
+    public static DummyCardFragment newInstance(int position) {
+        DummyCardFragment f = new DummyCardFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         f.setArguments(b);

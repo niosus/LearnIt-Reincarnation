@@ -36,6 +36,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.async_tasks.GetHelpWordsTask;
+import com.learnit.learnit.async_tasks.GetMyDictWordsTask;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
@@ -58,7 +60,6 @@ public class MyDictCardFragment extends Fragment
     private WordBundleAdapter mAdapter;
 
     private static String TAG = "dict_card_fragment";
-    private static int POSITION = TabsPagerAdapter.DICT_ITEM;
 
     @Bind(R.id.lst_my_words)
     RecyclerView mRecyclerView;
@@ -115,7 +116,15 @@ public class MyDictCardFragment extends Fragment
         LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
         mEditText.setHint(String.format(getString(R.string.my_dict_word_hint),
                 langPair.langToLearn(), langPair.langYouKnow()));
-        mFabStateController.addFabEventHandler(POSITION, this);
+        mFabStateController.addFabEventHandler(TabsPagerAdapter.DICT_ITEM, this);
+        startLoadingMyDictWordsAsync();
+    }
+
+    private void startLoadingMyDictWordsAsync() {
+        // load new words from my dict
+        mTaskScheduler.newTaskForClient(
+                new GetMyDictWordsTask(this.getContext(),
+                        mEditText.getText().toString()), mAdapter);
     }
 
     @Override
@@ -194,6 +203,7 @@ public class MyDictCardFragment extends Fragment
         try {
             Log.w(Constants.LOG_TAG, "changed text on edit text, should load some words now!");
             updateDeleteButtonStateAnimate();
+            startLoadingMyDictWordsAsync();
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
             updateDeleteButtonStateInstant();

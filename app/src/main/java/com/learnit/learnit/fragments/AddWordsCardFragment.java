@@ -63,7 +63,6 @@ public class AddWordsCardFragment extends Fragment
     private WordBundleAdapter mAdapter;
 
     private static String TAG = "add_words_card_fragment";
-    private static int POSITION = TabsPagerAdapter.ADD_WORDS_ITEM;
 
     @Bind(R.id.helper_list)
     RecyclerView mRecyclerView;
@@ -119,7 +118,7 @@ public class AddWordsCardFragment extends Fragment
         super.onResume();
         LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
         mEditText.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
-        mFabStateController.addFabEventHandler(POSITION, this);
+        mFabStateController.addFabEventHandler(TabsPagerAdapter.ADD_WORDS_ITEM, this);
         startLoadingHelpWordsAsync();
     }
 
