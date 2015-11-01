@@ -61,13 +61,14 @@ public abstract class DbHandler extends SQLiteOpenHelper
             LanguagePair.Tags langTags = Utils.getCurrentLanguageTags(context);
             String localizedDbName = String.format("%s_%s_%s",
                     dbName, langTags.langToLearnTag(), langTags.langYouKnowTag());
-            if (dbName.equals(DB_USER_DICT)) {
-                return new DbUserDictHandler(context, localizedDbName, null, 1);
-            } else if (dbName.equals(DB_HELPER_DICT)) {
-                return new DbHandlerDictHandler(context, localizedDbName, null, 1);
-            } else {
-                Log.e(Constants.LOG_TAG, "Trying to create unspecified database. Failure.");
-                return null;
+            switch (dbName) {
+                case DB_USER_DICT:
+                    return new DbUserDictHandler(context, localizedDbName, null, 1);
+                case DB_HELPER_DICT:
+                    return new DbHelperDictHandler(context, localizedDbName, null, 1);
+                default:
+                    Log.e(Constants.LOG_TAG, "Trying to create unspecified database. Failure.");
+                    return null;
             }
         }
     }

@@ -11,10 +11,10 @@ import com.learnit.learnit.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbHandlerDictHandler extends DbHandler {
-    protected DbHandlerDictHandler(Context context, String name,
-                                   SQLiteDatabase.CursorFactory factory,
-                                   int version) {
+public class DbHelperDictHandler extends DbHandler {
+    protected DbHelperDictHandler(Context context, String name,
+                                  SQLiteDatabase.CursorFactory factory,
+                                  int version) {
         super(context, name, factory, version);
     }
 
@@ -34,8 +34,8 @@ public class DbHandlerDictHandler extends DbHandler {
 
     @Override
     public List<WordBundle> queryWord(final String word, final Constants.QueryStyle queryStyle) {
-        String matchingRule = null;
-        String[] matchingParams = null;
+        String matchingRule;
+        String[] matchingParams;
         switch (queryStyle) {
             case EXACT:
                 matchingRule = HELPER_WORD_COLUMN_NAME + " = ? ";
@@ -75,9 +75,9 @@ public class DbHandlerDictHandler extends DbHandler {
     }
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {
-        WordBundle wordBundle = new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(HELPER_WORD_COLUMN_NAME)))
+        // TODO: there needs to be some sophisticated parsing here
+        return new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(HELPER_WORD_COLUMN_NAME)))
                 .setTrans(cursor.getString(cursor.getColumnIndex(HELPER_MEANING_COLUMN_NAME)))
                 .setId(cursor.getInt(cursor.getColumnIndex(HELPER_ID_COLUMN_NAME))).construct();
-        return wordBundle;
     }
 }
