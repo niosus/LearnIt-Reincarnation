@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,7 +64,7 @@ public class AddWordsCardFragment extends Fragment
     private static String TAG = "add_words_card_fragment";
     private static int POSITION = TabsPagerAdapter.ADD_WORDS_ITEM;
 
-    @Bind(R.id.list)
+    @Bind(R.id.helper_list)
     RecyclerView mRecyclerView;
     @Bind(R.id.addWord)
     AppCompatEditText mEditText;
