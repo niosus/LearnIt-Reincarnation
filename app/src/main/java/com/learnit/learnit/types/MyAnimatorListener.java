@@ -8,16 +8,16 @@ package com.learnit.learnit.types;
 
 import android.view.View;
 
-import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.interfaces.IUiEvents;
 
 import io.codetail.animation.SupportAnimator;
 
 public class MyAnimatorListener implements SupportAnimator.AnimatorListener {
     int mViewId;
     int mTargetVisibility;
-    IAddWordsFragmentUiEvents mCallback = null;
+    IUiEvents mCallback = null;
 
-    public MyAnimatorListener(IAddWordsFragmentUiEvents callback, final int viewId, final int targetVisibility) {
+    public MyAnimatorListener(IUiEvents callback, final int viewId, final int targetVisibility) {
         mViewId = viewId;
         mTargetVisibility = targetVisibility;
         mCallback = callback;

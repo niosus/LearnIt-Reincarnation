@@ -38,7 +38,7 @@ import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
-import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
@@ -47,6 +47,7 @@ import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
+import com.learnit.learnit.utils.AnimationUtils;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
@@ -57,7 +58,7 @@ import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
 public class AddWordsCardFragment extends Fragment
-        implements IAddWordsFragmentUiEvents, IFabEventHandler {
+        implements IUiEvents, IFabEventHandler {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -179,11 +180,11 @@ public class AddWordsCardFragment extends Fragment
     private void updateDeleteButtonStateAnimate() {
         if (mEditText.getText().toString().isEmpty()
                 && btnDeleteWord.getVisibility() == View.VISIBLE) {
-            this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
+            AnimationUtils.animateToVisibilityState(btnDeleteWord, View.INVISIBLE, this);
         } else {
             if (btnDeleteWord.getVisibility() == View.INVISIBLE
                     && !mEditText.getText().toString().isEmpty()) {
-                this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
+                AnimationUtils.animateToVisibilityState(btnDeleteWord, View.VISIBLE, this);
             }
         }
     }
@@ -232,40 +233,6 @@ public class AddWordsCardFragment extends Fragment
             return;
         }
         Utils.showKeyboard(getActivity());
-    }
-
-    private void animateToVisibilityState(final int id, final int visibility) {
-        View myView = null;
-        switch (id) {
-            case R.id.btn_delete_word_add_words:
-                myView = btnDeleteWord;
-                break;
-        }
-        if (myView == null) {
-            return;
-        }
-
-        // get the center for the clipping circle
-        int cx = (myView.getLeft() + myView.getRight()) / 2;
-        int cy = (myView.getTop() + myView.getBottom()) / 2;
-
-        // get the final radius for the clipping circle
-        int finalRadius = Math.max(myView.getWidth(), myView.getHeight());
-        float start;
-        float end;
-        if (visibility == View.VISIBLE) {
-            start = 0;
-            end = finalRadius;
-        } else {
-            start = finalRadius;
-            end = 0;
-        }
-        SupportAnimator animator =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, start, end);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.setDuration(300);
-        animator.addListener(new MyAnimatorListener(this, id, visibility));
-        animator.start();
     }
 
     @Override

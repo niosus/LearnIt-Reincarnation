@@ -9,13 +9,13 @@ package com.learnit.learnit.types;
 import android.view.View;
 
 import com.learnit.learnit.R;
-import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.interfaces.IUiEvents;
 
 public class ClearBtnOnClickListener implements View.OnClickListener {
 
-    IAddWordsFragmentUiEvents mCallback;
+    IUiEvents mCallback;
 
-    public ClearBtnOnClickListener(IAddWordsFragmentUiEvents callback) {
+    public ClearBtnOnClickListener(IUiEvents callback) {
         mCallback = callback;
     }
 

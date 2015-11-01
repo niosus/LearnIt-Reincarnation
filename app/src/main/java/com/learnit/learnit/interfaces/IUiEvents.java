@@ -6,7 +6,7 @@
 
 package com.learnit.learnit.interfaces;
 
-public interface IAddWordsFragmentUiEvents {
+public interface IUiEvents {
     void wordTextChanged();
 
     void setViewVisibilityState(final int id, final int visibility);

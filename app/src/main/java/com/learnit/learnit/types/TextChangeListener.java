@@ -10,13 +10,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 import com.learnit.learnit.R;
-import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
+import com.learnit.learnit.interfaces.IUiEvents;
 
 public class TextChangeListener implements TextWatcher {
-    IAddWordsFragmentUiEvents mCallback;
+    IUiEvents mCallback;
     int mViewId;
 
-    public TextChangeListener(IAddWordsFragmentUiEvents callback, final int id) {
+    public TextChangeListener(IUiEvents callback, final int id) {
         mCallback = callback;
         mViewId = id;
     }
