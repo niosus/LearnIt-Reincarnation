@@ -41,7 +41,7 @@
     <string name="add_words_frag_help_text_trans">Possible translations</string>
 
     <!-- my dictionary fragment texts -->
-    <string name="search_word_hint">Start typing to search</string>
+    <string name="my_dict_word_hint">Word in %1$s or %2$s</string>
 
     <!-- learn fragment texts -->
     <string name="learn_no_words">No words to display yet.</string>

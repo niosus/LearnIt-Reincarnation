@@ -37,6 +37,9 @@ public class TextChangeListener implements TextWatcher {
             case R.id.addWord:
                 mCallback.wordTextChanged();
                 break;
+            case R.id.edt_search_word:
+                mCallback.wordTextChanged();
+                break;
         }
     }
 }

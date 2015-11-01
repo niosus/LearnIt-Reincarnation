@@ -37,16 +37,15 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
-import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IAddWordsFragmentUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.LanguagePair;
-import com.learnit.learnit.types.TabsPagerAdapter;
-import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.MyAnimatorListener;
+import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.types.TextChangeListener;
+import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
@@ -56,22 +55,22 @@ import butterknife.ButterKnife;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
-public class AddWordsCardFragment extends Fragment
+public class MyDictCardFragment extends Fragment
         implements IAddWordsFragmentUiEvents, IFabEventHandler {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
-    private static String TAG = "add_words_card_fragment";
-    private static int POSITION = TabsPagerAdapter.ADD_WORDS_ITEM;
+    private static String TAG = "dict_card_fragment";
+    private static int POSITION = TabsPagerAdapter.DICT_ITEM;
 
-    @Bind(R.id.helper_list)
+    @Bind(R.id.lst_my_words)
     RecyclerView mRecyclerView;
-    @Bind(R.id.addWord)
+    @Bind(R.id.edt_search_word)
     AppCompatEditText mEditText;
-    @Bind(R.id.btn_delete_word_add_words)
-    CircleButton btnDeleteWord;
-    @Bind(R.id.add_word_layout)
-    LinearLayout addWordLayout;
+    @Bind(R.id.btn_delete_word_dict)
+    CircleButton mDeleteWordButton;
+    @Bind(R.id.dict_layout)
+    LinearLayout mDictLayout;
 
     private TaskSchedulerFragment mTaskScheduler;
     private IFabStateController mFabStateController;
@@ -98,9 +97,9 @@ public class AddWordsCardFragment extends Fragment
         }
     }
 
-    public static AddWordsCardFragment newInstance(int position) {
+    public static MyDictCardFragment newInstance(int position) {
         Log.d(Constants.LOG_TAG, "creating new instance of fragment");
-        AddWordsCardFragment f = new AddWordsCardFragment();
+        MyDictCardFragment f = new MyDictCardFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         f.setArguments(b);
@@ -117,15 +116,15 @@ public class AddWordsCardFragment extends Fragment
     public void onResume() {
         super.onResume();
         LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
-        mEditText.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
+        mEditText.setHint(String.format(getString(R.string.my_dict_word_hint),
+                langPair.langToLearn(), langPair.langYouKnow()));
         mFabStateController.addFabEventHandler(POSITION, this);
-        startLoadingHelpWordsAsync();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(Constants.LOG_TAG, "creating view");
-        View rootView = inflater.inflate(R.layout.fragment_add_words, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_dict, container, false);
 
         ButterKnife.bind(this, rootView);
 
@@ -153,10 +152,10 @@ public class AddWordsCardFragment extends Fragment
         mEditText.addTextChangedListener(new TextChangeListener(this, mEditText.getId()));
 
         View.OnClickListener myOnClickListener = new ClearBtnOnClickListener(this);
-        btnDeleteWord.setOnClickListener(myOnClickListener);
-        btnDeleteWord.setVisibility(View.INVISIBLE);
+        mDeleteWordButton.setOnClickListener(myOnClickListener);
+        mDeleteWordButton.setVisibility(View.INVISIBLE);
 
-        if (addWordLayout != null) {
+        if (mDictLayout != null) {
             Log.d(Constants.LOG_TAG, "relative layout initialized");
         }
 
@@ -169,33 +168,26 @@ public class AddWordsCardFragment extends Fragment
         updateDeleteButtonStateAnimate();
     }
 
-    private void startLoadingHelpWordsAsync() {
-        // load new helper words
-        mTaskScheduler.newTaskForClient(
-                new GetHelpWordsTask(this.getContext(),
-                        mEditText.getText().toString()), mAdapter);
-    }
-
     private void updateDeleteButtonStateAnimate() {
         if (mEditText.getText().toString().isEmpty()
-                && btnDeleteWord.getVisibility() == View.VISIBLE) {
-            this.animateToVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
+                && mDeleteWordButton.getVisibility() == View.VISIBLE) {
+            this.animateToVisibilityState(mDeleteWordButton.getId(), View.INVISIBLE);
         } else {
-            if (btnDeleteWord.getVisibility() == View.INVISIBLE
+            if (mDeleteWordButton.getVisibility() == View.INVISIBLE
                     && !mEditText.getText().toString().isEmpty()) {
-                this.animateToVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
+                this.animateToVisibilityState(mDeleteWordButton.getId(), View.VISIBLE);
             }
         }
     }
 
     private void updateDeleteButtonStateInstant() {
         if (mEditText.getText().toString().isEmpty()
-                && btnDeleteWord.getVisibility() == View.VISIBLE) {
-            this.setViewVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
+                && mDeleteWordButton.getVisibility() == View.VISIBLE) {
+            this.setViewVisibilityState(mDeleteWordButton.getId(), View.INVISIBLE);
         } else {
-            if (btnDeleteWord.getVisibility() == View.INVISIBLE
+            if (mDeleteWordButton.getVisibility() == View.INVISIBLE
                     && !mEditText.getText().toString().isEmpty()) {
-                this.setViewVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
+                this.setViewVisibilityState(mDeleteWordButton.getId(), View.VISIBLE);
             }
         }
     }
@@ -203,9 +195,8 @@ public class AddWordsCardFragment extends Fragment
     @Override
     public void wordTextChanged() {
         try {
-            Log.d(Constants.LOG_TAG, "changed text on edit text");
+            Log.w(Constants.LOG_TAG, "changed text on edit text, should load some words now!");
             updateDeleteButtonStateAnimate();
-            startLoadingHelpWordsAsync();
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
             updateDeleteButtonStateInstant();
@@ -216,8 +207,8 @@ public class AddWordsCardFragment extends Fragment
     public void setViewVisibilityState(int id, int visibility) {
         Log.d(Constants.LOG_TAG, "changing visibility of " + id + " to " + visibility);
         switch (id) {
-            case R.id.btn_delete_word_add_words:
-                btnDeleteWord.setVisibility(visibility);
+            case R.id.btn_delete_word_dict:
+                mDeleteWordButton.setVisibility(visibility);
                 break;
             default:
                 Log.e(Constants.LOG_TAG, "unhandled switch setViewVisibilityState");
@@ -237,8 +228,8 @@ public class AddWordsCardFragment extends Fragment
     private void animateToVisibilityState(final int id, final int visibility) {
         View myView = null;
         switch (id) {
-            case R.id.btn_delete_word_add_words:
-                myView = btnDeleteWord;
+            case R.id.btn_delete_word_dict:
+                myView = mDeleteWordButton;
                 break;
         }
         if (myView == null) {

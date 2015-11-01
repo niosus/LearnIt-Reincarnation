@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.fragments.MyDictCardFragment;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.fragments.AddWordsCardFragment;
 import com.learnit.learnit.fragments.CardFragment;
@@ -47,7 +48,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case ADD_WORDS_ITEM:
                 return AddWordsCardFragment.newInstance(position);
             case DICT_ITEM:
-                return CardFragment.newInstance(position);
+                return MyDictCardFragment.newInstance(position);
             case LEARN_WORDS_ITEM:
                 return CardFragment.newInstance(position);
         }

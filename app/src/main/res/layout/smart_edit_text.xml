@@ -33,7 +33,7 @@
         android:layout_alignRight="@id/addWord">
         <at.markushi.ui.CircleButton
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/btnDeleteWord"
+            android:id="@+id/btn_delete_word_add_words"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="3dip"

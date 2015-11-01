@@ -22,7 +22,10 @@ public class ClearBtnOnClickListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnDeleteWord:
+            case R.id.btn_delete_word_add_words:
+                mCallback.clearWord();
+                break;
+            case R.id.btn_delete_word_dict:
                 mCallback.clearWord();
                 break;
         }

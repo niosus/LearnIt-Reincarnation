@@ -7,7 +7,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
-    android:id="@+id/add_words_relative_layout"
+    android:id="@+id/dict_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_window"
@@ -16,7 +16,7 @@
     <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/add_word_card"
+        android:id="@+id/dict_card"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -28,15 +28,15 @@
         card_view:cardElevation="4dp"
         card_view:cardCornerRadius="@dimen/cardview_default_radius">
         <LinearLayout
-            android:id="@+id/add_word_layout"
+            android:id="@+id/dict_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/highlight">
+            android:background="@color/green">
 
             <android.support.v7.widget.AppCompatEditText
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/addWord"
+                android:id="@+id/edt_search_word"
                 android:layout_weight="7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:drawableLeft="@android:drawable/ic_menu_search"
                 android:drawableStart="@android:drawable/ic_menu_search"
-                android:hint="@string/add_word_hint"/>
+                android:hint="@string/my_dict_word_hint"/>
 
             <io.codetail.widget.RevealFrameLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -54,7 +54,7 @@
                 android:layout_gravity="center_vertical">
                 <at.markushi.ui.CircleButton
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/btn_delete_word_add_words"
+                    android:id="@+id/btn_delete_word_dict"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_action_delete"
@@ -63,8 +63,8 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/helper_list"
-        android:layout_below="@id/add_word_card"
+        android:id="@+id/lst_my_words"
+        android:layout_below="@id/dict_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:context=".MainActivity"
