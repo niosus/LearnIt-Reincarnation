@@ -80,8 +80,8 @@ public class GetUserDictWordsTaskTest implements IAsyncTaskResultClient {
     @Override
     public <OutType> void onFinish(OutType result) {
         if (result instanceof List) {
+            @SuppressWarnings("unchecked")
             List<WordBundle> list = (List<WordBundle>) result;
-            assertThat(list == null, is(false));
             assertThat(list.size(), is(4));
             assertThat(list.get(0).word(), is("hello"));
             assertThat(list.get(1).word(), is("hell"));

@@ -16,6 +16,7 @@ import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -34,6 +35,17 @@ public class WordBundleAdapter
     private void refreshSelectedMarkers() {
         mSelectedItems = new SparseBooleanArray((mWordBundles == null)? 0: mWordBundles.size());
         mFabStateController.hideFab();
+    }
+
+    public List<WordBundle> getSelectedItems() {
+        List<WordBundle> bundles = new ArrayList<>();
+        for (int i = 0; i < mSelectedItems.size(); ++i) {
+            int currentKey = mSelectedItems.keyAt(i);
+            if (mSelectedItems.get(currentKey)) {
+                bundles.add(mWordBundles.get(currentKey));
+            }
+        }
+        return bundles;
     }
 
     public boolean hasSelectedItems() {
@@ -89,7 +101,6 @@ public class WordBundleAdapter
         if (result == null) {
             mWordBundles = null;
         } else if (result instanceof List) {
-
             mWordBundles = (List<WordBundle>) result;
         }
         notifyDataSetChanged();

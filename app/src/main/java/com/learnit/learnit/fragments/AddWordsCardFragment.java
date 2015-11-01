@@ -44,6 +44,7 @@ import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.TabsPagerAdapter;
+import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
@@ -236,7 +237,11 @@ public class AddWordsCardFragment extends Fragment
 
     @Override
     public void fabClicked(int viewPagerPos) {
+        // TODO: add a snackbar showing how many items are selected and a button to show them all
         Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
+        for (WordBundle bundle: mAdapter.getSelectedItems()) {
+            Log.d(Constants.LOG_TAG, "selected word: " + bundle.word());
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.learnit.learnit.types;
 
+import android.content.Context;
+
 import com.learnit.learnit.utils.StringUtils;
 import com.learnit.learnit.utils.Utils;
 
@@ -14,7 +16,6 @@ public class WordBundle {
     private float mWeight;
 
     public static class Constructor {
-        private WordBundle mWordBundle;
         private int mNestedId = -1;
         private int mNestedWordType = WordType.NONE;
         private String mNestedArticle = null;
