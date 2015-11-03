@@ -81,4 +81,22 @@ public class WordBundleTest extends TestCase {
                 .construct();
         assertThat(bundle.equals(bundle_diff), is(false));
     }
+
+    public void testParser() throws Exception {
+        String trans = "(v) анулювати; зменшитися; зменшуватися; знижувати; знизити; ослабити; ослабляти; припинити; припиняти; скасовувати; скасувати";
+        WordBundle bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
+        assertThat(bundle.wordType(), is(WordBundle.WordType.VERB));
+
+        trans = "(0) консультація";
+        bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
+        assertThat(bundle.wordType(), is(WordBundle.WordType.NONE));
+
+        trans = "(a) деспотичний; довільний; примхливий; свавільний";
+        bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
+        assertThat(bundle.wordType(), is(WordBundle.WordType.ADJECTIVE));
+
+        trans = "(d) коли; оскільки; як";
+        bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
+        assertThat(bundle.wordType(), is(WordBundle.WordType.PREPOSITION));
+    }
 }

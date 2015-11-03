@@ -1,9 +1,16 @@
 package com.learnit.learnit.types;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.StringUtils;
 import com.learnit.learnit.utils.Utils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import butterknife.internal.ListenerClass;
 
 public class WordBundle {
     public static final String TRANS_DIVIDER = "___,___";
@@ -14,6 +21,11 @@ public class WordBundle {
     private String mWord;
     private String[] mTrans;
     private float mWeight;
+
+    enum ParseStyle {
+        BABYLON,
+        STARDICT
+    }
 
     public static class Constructor {
         private int mNestedId = -1;
@@ -83,6 +95,45 @@ public class WordBundle {
                 translations[i] = translations[i].trim();
             }
             this.mNestedTrans = translations;
+            return this;
+        }
+
+        public WordBundle.Constructor parseTrans(final String trans, final ParseStyle style) {
+            switch (style) {
+                case BABYLON:
+                    Pattern wordTypePattern = Pattern.compile("\\([\\w\\W]\\)");
+                    Matcher matcher = wordTypePattern.matcher(trans);
+                    if (matcher.find()) {
+                        String wordType = matcher.group();
+                        switch (wordType) {
+                            case "(0)":
+                                mNestedWordType = WordType.NONE;
+                                break;
+                            case "(n)":
+                                mNestedWordType = WordType.NOUN;
+                                break;
+                            case "(v)":
+                                mNestedWordType = WordType.VERB;
+                                break;
+                            case "(a)":
+                                mNestedWordType = WordType.ADJECTIVE;
+                                break;
+                            case "(p)":
+                            case "(d)":
+                                mNestedWordType = WordType.PREPOSITION;
+                                break;
+                            default:
+                                mNestedWordType = WordType.NONE;
+                        }
+                    }
+                    // TODO: parse also the translations
+                    break;
+                case STARDICT:
+                    Log.e(Constants.LOG_TAG, "not implemented yet");
+                    break;
+                default:
+                    Log.e(Constants.LOG_TAG, "unknown parser style.");
+            }
             return this;
         }
 
@@ -196,6 +247,7 @@ public class WordBundle {
         public static final int ADJECTIVE = 2;
         public static final int ADVERB = 3;
         public static final int PREPOSITION = 4;
+        public static final int CONJUNCTION = 5;
         public static final int NONE = 666;
     }
 
