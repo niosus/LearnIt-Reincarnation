@@ -7,6 +7,7 @@ import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.StringUtils;
 import com.learnit.learnit.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,32 +102,22 @@ public class WordBundle {
         public WordBundle.Constructor parseTrans(final String trans, final ParseStyle style) {
             switch (style) {
                 case BABYLON:
-                    Pattern wordTypePattern = Pattern.compile("\\([\\w\\W]\\)");
-                    Matcher matcher = wordTypePattern.matcher(trans);
-                    if (matcher.find()) {
-                        String wordType = matcher.group();
-                        switch (wordType) {
-                            case "(0)":
-                                mNestedWordType = WordType.NONE;
-                                break;
-                            case "(n)":
-                                mNestedWordType = WordType.NOUN;
-                                break;
-                            case "(v)":
-                                mNestedWordType = WordType.VERB;
-                                break;
-                            case "(a)":
-                                mNestedWordType = WordType.ADJECTIVE;
-                                break;
-                            case "(p)":
-                            case "(d)":
-                                mNestedWordType = WordType.PREPOSITION;
-                                break;
-                            default:
-                                mNestedWordType = WordType.NONE;
-                        }
+                    // parse word type
+                    Pattern wordTypePattern = Pattern.compile("\\(.\\)");
+                    Matcher wordTypeMatcher = wordTypePattern.matcher(trans);
+                    if (wordTypeMatcher.find()) {
+                        String wordType = wordTypeMatcher.group();
+                        mNestedWordType = StringUtils.wordTypeFromString(wordType);
                     }
                     // TODO: parse also the translations
+                    // parse translations
+                    Pattern translationsPattern = Pattern.compile("\\s\\p{L}[\\p{L}\\s,]*");
+                    Matcher translationsMatcher = translationsPattern.matcher(trans);
+                    String tempTrans = "";
+                    while (translationsMatcher.find()) {
+                        tempTrans += translationsMatcher.group().trim() + WordBundle.TRANS_DIVIDER;
+                    }
+                    mNestedTrans = tempTrans.split(TRANS_DIVIDER);
                     break;
                 case STARDICT:
                     Log.e(Constants.LOG_TAG, "not implemented yet");

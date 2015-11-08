@@ -87,16 +87,25 @@ public class WordBundleTest extends TestCase {
         WordBundle bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
         assertThat(bundle.wordType(), is(WordBundle.WordType.VERB));
 
-        trans = "(0) консультація";
+        trans = "(0) консультація, порада";
         bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
         assertThat(bundle.wordType(), is(WordBundle.WordType.NONE));
+        assertThat(bundle.transAsArray()[0], is("консультація, порада"));
 
         trans = "(a) деспотичний; довільний; примхливий; свавільний";
         bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
         assertThat(bundle.wordType(), is(WordBundle.WordType.ADJECTIVE));
+        assertThat(bundle.transAsArray()[0], is("деспотичний"));
+        assertThat(bundle.transAsArray()[1], is("довільний"));
+        assertThat(bundle.transAsArray()[2], is("примхливий"));
+        assertThat(bundle.transAsArray()[3], is("свавільний"));
+
 
         trans = "(d) коли; оскільки; як";
         bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
         assertThat(bundle.wordType(), is(WordBundle.WordType.PREPOSITION));
+        assertThat(bundle.transAsArray()[0], is("коли"));
+        assertThat(bundle.transAsArray()[1], is("оскільки"));
+        assertThat(bundle.transAsArray()[2], is("як"));
     }
 }

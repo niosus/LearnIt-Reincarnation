@@ -6,6 +6,9 @@
 
 package com.learnit.learnit.utils;
 
+import com.learnit.learnit.types.WordBundle;
+import com.learnit.learnit.types.WordBundleAdapter;
+
 public class StringUtils {
     public static String join(final String[] array, final String divider) {
         if (array == null || divider == null) {
@@ -32,5 +35,23 @@ public class StringUtils {
             return null;
         }
         return res;
+    }
+
+    public static int wordTypeFromString(final String wordType) {
+        switch (wordType) {
+            case "(0)":
+                return WordBundle.WordType.NONE;
+            case "(n)":
+               return WordBundle.WordType.NOUN;
+            case "(v)":
+                return  WordBundle.WordType.VERB;
+            case "(a)":
+                return WordBundle.WordType.ADJECTIVE;
+            case "(p)":
+            case "(d)":
+                return WordBundle.WordType.PREPOSITION;
+            default:
+                return WordBundle.WordType.NONE;
+        }
     }
 }
