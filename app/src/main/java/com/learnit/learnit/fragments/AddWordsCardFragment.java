@@ -171,10 +171,11 @@ public class AddWordsCardFragment extends Fragment
     }
 
     private void startLoadingHelpWordsAsync() {
+        Integer limit = 20;
         // load new helper words
         mTaskScheduler.newTaskForClient(
                 new GetHelpWordsTask(this.getContext(),
-                        mEditText.getText().toString()), mAdapter);
+                        mEditText.getText().toString(), limit), mAdapter);
     }
 
     private void updateDeleteButtonStateAnimate() {

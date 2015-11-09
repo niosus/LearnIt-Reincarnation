@@ -18,10 +18,13 @@ import java.util.List;
 public class GetHelpWordsTask extends MySmartAsyncTask<String, List<WordBundle>> {
 
     protected String TAG = "get_help_words_task";
+    protected Integer mLimit;
 
     public GetHelpWordsTask(Context context,
-                            String queryWord) {
+                            String queryWord,
+                            Integer limit) {
         super(context, queryWord);
+        mLimit = limit;
     }
 
     @Override
@@ -51,6 +54,6 @@ public class GetHelpWordsTask extends MySmartAsyncTask<String, List<WordBundle>>
             Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting help words");
             return null;
         }
-        return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ENDING);
+        return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ENDING, mLimit);
     }
 }

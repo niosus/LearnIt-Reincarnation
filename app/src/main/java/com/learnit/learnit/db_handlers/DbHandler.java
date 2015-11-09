@@ -132,5 +132,10 @@ public abstract class DbHandler extends SQLiteOpenHelper
                                            final String matchingRule,
                                            final String[] matchingParams);
 
+    @Override
+    public List<WordBundle> queryWord(final String word, final Constants.QueryStyle queryStyle) {
+        return queryWord(word, queryStyle, null);
+    }
+
     abstract protected WordBundle wordBundleFromCursor(final Cursor cursor);
 }

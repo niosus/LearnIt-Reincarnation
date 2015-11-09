@@ -33,26 +33,31 @@ public class DbHelperDictHandler extends DbHandler {
     }
 
     @Override
-    public List<WordBundle> queryWord(final String word, final Constants.QueryStyle queryStyle) {
+    public List<WordBundle> queryWord(String word, Constants.QueryStyle queryStyle, Integer limit) {
+        String limitStr = (limit == null) ? "" : String.format(" limit %s ", limit);
         String matchingRule;
         String[] matchingParams;
         switch (queryStyle) {
             case EXACT:
-                matchingRule = HELPER_WORD_COLUMN_NAME + " = ? ";
+                matchingRule = " = ? ";
                 matchingParams = new String[]{word};
                 break;
             case APPROXIMATE_ENDING:
-                matchingRule = HELPER_WORD_COLUMN_NAME + " like ? ";
+                matchingRule = " like ? ";
                 matchingParams = new String[]{word + "%"};
                 break;
             case APPROXIMATE_ALL:
-                matchingRule = HELPER_WORD_COLUMN_NAME + " like ? ";
+                matchingRule = " like ? ";
                 matchingParams = new String[]{"%" + word + "%"};
                 break;
             default:
                 return null;
         }
-        return queryFromDB(getDatabaseName(), getReadableDatabase(), matchingRule, matchingParams);
+        return queryFromDB(
+                getDatabaseName(),
+                getReadableDatabase(),
+                HELPER_WORD_COLUMN_NAME + matchingRule + limitStr,
+                matchingParams);
     }
 
     protected List<WordBundle> queryFromDB(final String dbName,
@@ -75,9 +80,9 @@ public class DbHelperDictHandler extends DbHandler {
     }
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {
-        // TODO: there needs to be some sophisticated parsing here
+        // TODO: we need to check what dictionary are we using to set the correct parse style
         return new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(HELPER_WORD_COLUMN_NAME)))
-                .setTrans(cursor.getString(cursor.getColumnIndex(HELPER_MEANING_COLUMN_NAME)))
+                .parseTrans(cursor.getString(cursor.getColumnIndex(HELPER_MEANING_COLUMN_NAME)), WordBundle.ParseStyle.BABYLON)
                 .setId(cursor.getInt(cursor.getColumnIndex(HELPER_ID_COLUMN_NAME))).construct();
     }
 }

@@ -41,26 +41,31 @@ public class DbUserDictHandler extends DbHandler {
     }
 
     @Override
-    public List<WordBundle> queryWord(final String word, final Constants.QueryStyle queryStyle) {
-        String matchingRule = null;
-        String[] matchingParams = null;
+    public List<WordBundle> queryWord(String word, Constants.QueryStyle queryStyle, Integer limit) {
+        String limitStr = (limit == null) ? "" : String.format(" limit %s ", limit);
+        String matchingRule;
+        String[] matchingParams;
         switch (queryStyle) {
             case EXACT:
-                matchingRule = WORD_COLUMN_NAME + " = ? ";
+                matchingRule = " = ? ";
                 matchingParams = new String[]{word};
                 break;
             case APPROXIMATE_ENDING:
-                matchingRule = WORD_COLUMN_NAME + " like ? ";
+                matchingRule = " like ? ";
                 matchingParams = new String[]{word + "%"};
                 break;
             case APPROXIMATE_ALL:
-                matchingRule = WORD_COLUMN_NAME + " like ? ";
+                matchingRule = " like ? ";
                 matchingParams = new String[]{"%" + word + "%"};
                 break;
             default:
                 return null;
         }
-        return queryFromDB(getDatabaseName(), getReadableDatabase(), matchingRule, matchingParams);
+        return queryFromDB(
+                getDatabaseName(),
+                getReadableDatabase(),
+                WORD_COLUMN_NAME + matchingRule + limitStr,
+                matchingParams);
     }
 
     protected List<WordBundle> queryFromDB(final String dbName,
@@ -82,7 +87,7 @@ public class DbUserDictHandler extends DbHandler {
     }
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {
-        WordBundle wordBundle = new WordBundle();
+        WordBundle wordBundle;
         wordBundle = new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
                 .setTrans(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)))
                 .setArticle(cursor.getString(cursor.getColumnIndex(ARTICLE_COLUMN_NAME)))

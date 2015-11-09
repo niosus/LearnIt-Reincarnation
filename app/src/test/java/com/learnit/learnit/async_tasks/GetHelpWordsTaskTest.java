@@ -2,13 +2,11 @@ package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.learnit.learnit.BuildConfig;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.types.WordBundle;
-import com.learnit.learnit.utils.Constants;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +24,82 @@ import static org.junit.Assert.assertTrue;
 
 @Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricTestRunner.class)
-public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
+public class GetHelpWordsTaskTest {
     SQLiteDatabase database;
+    int counter = 0;
+
+    public static class ResultReceiverHello implements IAsyncTaskResultClient{
+        @Override
+        public String tag() {
+            // TODO: probably something is wrong with the tags over here
+            return "get_words_task_test1";
+        }
+
+        @Override
+        public void onPreExecute() {
+
+        }
+
+        @Override
+        public void onProgressUpdate(Float progress) {
+
+        }
+
+        @Override @SuppressWarnings("unchecked")
+        public <OutType> void onFinish(OutType result) {
+            if (result instanceof List) {
+                List<WordBundle> list = (List<WordBundle>) result;
+                assertThat(list.size(), is(3));
+                assertThat(list.get(0).word(), is("hello"));
+                assertThat(list.get(1).word(), is("hell"));
+                assertThat(list.get(2).word(), is("help"));
+            } else {
+                // make sure this is not called
+                assertThat(true, is(false));
+            }
+        }
+
+        @Override
+        public void onCancelled() {
+
+        }
+    }
+
+    public static class ResultReceiverPararam implements IAsyncTaskResultClient{
+        @Override
+        public String tag() {
+            // TODO: probably something is wrong with the tags over here
+            return "get_words_task_test1";
+        }
+
+        @Override
+        public void onPreExecute() {
+
+        }
+
+        @Override
+        public void onProgressUpdate(Float progress) {
+
+        }
+
+        @Override @SuppressWarnings("unchecked")
+        public <OutType> void onFinish(OutType result) {
+            if (result instanceof List) {
+                List<WordBundle> list = (List<WordBundle>) result;
+                assertThat(list.size(), is(2));
+                assertThat(list.get(0).word(), is("paraparam"));
+                assertThat(list.get(1).word(), is("parapararam"));
+            } else {
+                // make sure this is not called
+                assertThat(true, is(false));
+            }
+        }
+
+        @Override
+        public void onCancelled() {
+
+        }
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -38,6 +110,9 @@ public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
             return;
         }
         DbHandler helper = DbHandler.Factory.createLocalizedHelper(context, DbHandler.DB_HELPER_DICT);
+        if (helper == null) {
+            return;
+        }
         WordBundle wordBundle1 = new WordBundle();
         wordBundle1.setWord("hello");
         wordBundle1.setTrans("hello");
@@ -49,6 +124,16 @@ public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
         WordBundle wordBundle3 = new WordBundle();
         wordBundle3.setWord("help");
         helper.addWord(wordBundle3);
+
+        WordBundle wordBundle4 = new WordBundle();
+        wordBundle4.setWord("paraparam");
+        helper.addWord(wordBundle4);
+        WordBundle wordBundle5 = new WordBundle();
+        wordBundle5.setWord("parapararam");
+        helper.addWord(wordBundle5);
+        WordBundle wordBundle6 = new WordBundle();
+        wordBundle6.setWord("pum-purumparapam");
+        helper.addWord(wordBundle6);
     }
 
     @Test
@@ -59,43 +144,21 @@ public class GetHelpWordsTaskTest implements IAsyncTaskResultClient {
             assertThat(true, is(false));
             return;
         }
-        GetHelpWordsTask getWordsTask = new GetHelpWordsTask(context, "hel");
-        getWordsTask.setResultClient(this);
+        GetHelpWordsTask getWordsTask = new GetHelpWordsTask(context, "hel", null);
+        getWordsTask.setResultClient(new ResultReceiverHello());
         getWordsTask.execute();
     }
 
-    @Override
-    public void onProgressUpdate(Float progress) {
-    }
-
-    @Override
-    public <OutType> void onFinish(OutType result) {
-        if (result instanceof List) {
-            List<WordBundle> list = (List<WordBundle>) result;
-            assertThat(list == null, is(false));
-            assertThat(list.size(), is(3));
-            assertThat(list.get(0).word(), is("hello"));
-            assertThat(list.get(1).word(), is("hell"));
-            assertThat(list.get(2).word(), is("help"));
-        } else {
-            // make sure this is not called
+    @Test
+    public void testGetWordsLimited() {
+        Context context = RuntimeEnvironment.application;
+        assertThat(context == null, is(false));
+        if (context == null) {
             assertThat(true, is(false));
+            return;
         }
-    }
-
-    @Override
-    public String tag() {
-        // TODO: probably something is wrong with the tags over here
-        return "get_words_task_test";
-    }
-
-    @Override
-    public void onPreExecute() {
-
-    }
-
-    @Override
-    public void onCancelled() {
-        Log.d(Constants.LOG_TAG, "I am cancelled: " + this.getClass().getCanonicalName());
+        GetHelpWordsTask getWordsTask = new GetHelpWordsTask(context, "par", 2);
+        getWordsTask.setResultClient(new ResultReceiverPararam());
+        getWordsTask.execute();
     }
 }

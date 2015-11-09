@@ -15,6 +15,7 @@ import butterknife.internal.ListenerClass;
 
 public class WordBundle {
     public static final String TRANS_DIVIDER = "___,___";
+    public static final String HUMAN_TRANS_DIVIDER = ";";
     private int mId;
     private int mWordType;
     private String mArticle;
@@ -23,7 +24,7 @@ public class WordBundle {
     private String[] mTrans;
     private float mWeight;
 
-    enum ParseStyle {
+    public enum ParseStyle {
         BABYLON,
         STARDICT
     }
@@ -109,7 +110,6 @@ public class WordBundle {
                         String wordType = wordTypeMatcher.group();
                         mNestedWordType = StringUtils.wordTypeFromString(wordType);
                     }
-                    // TODO: parse also the translations
                     // parse translations
                     Pattern translationsPattern = Pattern.compile("\\s\\p{L}[\\p{L}\\s,]*");
                     Matcher translationsMatcher = translationsPattern.matcher(trans);
