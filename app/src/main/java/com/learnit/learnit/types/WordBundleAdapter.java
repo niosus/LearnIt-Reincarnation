@@ -1,7 +1,4 @@
 package com.learnit.learnit.types;
-import android.content.Context;
-import android.graphics.Color;
-import android.support.design.widget.TabLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -118,6 +115,7 @@ public class WordBundleAdapter
             implements View.OnClickListener {
         @Bind(R.id.word_row) TextView mWordText;
         @Bind(R.id.trans_row) TextView mTransText;
+        @Bind(R.id.word_type_text) TextView mWordTypeText;
         @Bind(R.id.word_bundle_layout) RelativeLayout mLayout;
         private WordBundle mWordBundle;
 
@@ -135,7 +133,9 @@ public class WordBundleAdapter
 
         private void updateViewFromWordBundle(final WordBundle wordBundle) {
             mWordText.setText(wordBundle.word());
-            mTransText.setText(wordBundle.transAsString());
+            mTransText.setText(wordBundle.transAsHumanString());
+            // TODO: need to actually show something a user can understand and not just a number
+            mWordTypeText.setText("" + wordBundle.wordType());
         }
 
         @Override

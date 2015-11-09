@@ -15,7 +15,7 @@ import butterknife.internal.ListenerClass;
 
 public class WordBundle {
     public static final String TRANS_DIVIDER = "___,___";
-    public static final String HUMAN_TRANS_DIVIDER = ";";
+    public static final String HUMAN_TRANS_DIVIDER = "; ";
     private int mId;
     private int mWordType;
     private String mArticle;
@@ -188,6 +188,10 @@ public class WordBundle {
 
     public String transAsString() {
         return StringUtils.join(mTrans, TRANS_DIVIDER);
+    }
+
+    public String transAsHumanString() {
+        return StringUtils.join(mTrans, HUMAN_TRANS_DIVIDER);
     }
 
     public String[] transAsArray() {
