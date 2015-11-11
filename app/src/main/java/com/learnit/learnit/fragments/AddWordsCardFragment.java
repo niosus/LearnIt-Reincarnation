@@ -33,11 +33,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
@@ -46,20 +47,19 @@ import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.types.WordBundleAdapter;
-import com.learnit.learnit.types.MyAnimatorListener;
 import com.learnit.learnit.types.TextChangeListener;
 import com.learnit.learnit.utils.AnimationUtils;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
+import java.util.List;
+
 import at.markushi.ui.CircleButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.codetail.animation.SupportAnimator;
-import io.codetail.animation.ViewAnimationUtils;
 
 public class AddWordsCardFragment extends Fragment
-        implements IUiEvents, IFabEventHandler {
+        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -240,6 +240,7 @@ public class AddWordsCardFragment extends Fragment
     public void fabClicked(int viewPagerPos) {
         // TODO: add a snackbar showing how many items are selected and a button to show them all
         Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
+        mTaskScheduler.newTaskForClient(new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
         for (WordBundle bundle: mAdapter.getSelectedItems()) {
             Log.d(Constants.LOG_TAG, "selected word: " + bundle.word());
         }
@@ -248,5 +249,34 @@ public class AddWordsCardFragment extends Fragment
     @Override
     public boolean fabNeeded() {
         return mAdapter.hasSelectedItems();
+    }
+
+    @Override
+    public String tag() {
+        return null;
+    }
+
+    @Override
+    public void onPreExecute() {
+    }
+
+    @Override
+    public void onProgressUpdate(Float progress) {
+    }
+
+    @Override
+    public <OutType> void onFinish(OutType result) {
+        Log.d(Constants.LOG_TAG, "words added");
+        if (result instanceof List) {
+            List<Constants.AddWordReturnCode> codes = (List<Constants.AddWordReturnCode>) result;
+            for (Constants.AddWordReturnCode code: codes) {
+                Log.d(Constants.LOG_TAG, "return code is: " + code);
+            }
+        }
+    }
+
+    @Override
+    public void onCancelled() {
+
     }
 }

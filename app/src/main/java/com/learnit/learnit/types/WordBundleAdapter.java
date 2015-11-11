@@ -1,4 +1,5 @@
 package com.learnit.learnit.types;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
