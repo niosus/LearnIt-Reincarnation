@@ -238,12 +238,10 @@ public class AddWordsCardFragment extends Fragment
 
     @Override
     public void fabClicked(int viewPagerPos) {
-        // TODO: add a snackbar showing how many items are selected and a button to show them all
+        // TODO: add a notification of the status of the added words. Was it successful? which ones failed?
         Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
         mTaskScheduler.newTaskForClient(new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
-        for (WordBundle bundle: mAdapter.getSelectedItems()) {
-            Log.d(Constants.LOG_TAG, "selected word: " + bundle.word());
-        }
+        mEditText.setText("");
     }
 
     @Override
@@ -264,7 +262,7 @@ public class AddWordsCardFragment extends Fragment
     public void onProgressUpdate(Float progress) {
     }
 
-    @Override
+    @Override @SuppressWarnings("unchecked")
     public <OutType> void onFinish(OutType result) {
         Log.d(Constants.LOG_TAG, "words added");
         if (result instanceof List) {

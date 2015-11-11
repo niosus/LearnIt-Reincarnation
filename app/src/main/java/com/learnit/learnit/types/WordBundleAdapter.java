@@ -152,6 +152,9 @@ public class WordBundleAdapter
                 mSelectedItems.put(getAdapterPosition(), true);
                 mLayout.setSelected(true);
                 mFabStateController.showFab();
+                // TODO: we need to notify somebody that we would like to show the smackbar.
+                // That somebody should know hom many items are selected and probably also to
+                // be able to show them on demand.
             }
             Log.d(Constants.LOG_TAG, "item clicked. Word is: " + mWordBundle.word());
         }
