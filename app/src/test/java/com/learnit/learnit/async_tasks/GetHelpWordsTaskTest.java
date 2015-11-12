@@ -25,13 +25,9 @@ import static org.junit.Assert.assertTrue;
 @Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricTestRunner.class)
 public class GetHelpWordsTaskTest {
-    SQLiteDatabase database;
-    int counter = 0;
-
     public static class ResultReceiverHello implements IAsyncTaskResultClient{
         @Override
         public String tag() {
-            // TODO: probably something is wrong with the tags over here
             return "get_words_task_test1";
         }
 
@@ -68,8 +64,7 @@ public class GetHelpWordsTaskTest {
     public static class ResultReceiverPararam implements IAsyncTaskResultClient{
         @Override
         public String tag() {
-            // TODO: probably something is wrong with the tags over here
-            return "get_words_task_test1";
+            return "get_words_task_test2";
         }
 
         @Override

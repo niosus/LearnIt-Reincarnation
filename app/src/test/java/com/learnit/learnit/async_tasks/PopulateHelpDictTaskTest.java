@@ -57,7 +57,6 @@ public class PopulateHelpDictTaskTest implements IAsyncTaskResultClient {
 
     @Override
     public String tag() {
-        // TODO: probably something is wrong with the tags over here
         return "populate_dict_test_tag";
     }
 

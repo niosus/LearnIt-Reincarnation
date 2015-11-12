@@ -25,8 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
 @RunWith(RobolectricTestRunner.class)
 public class GetUserDictWordsTaskTest implements IAsyncTaskResultClient {
-    SQLiteDatabase database;
-
     @Before
     public void setUp() throws Exception {
         Context context = RuntimeEnvironment.application;
@@ -95,7 +93,6 @@ public class GetUserDictWordsTaskTest implements IAsyncTaskResultClient {
 
     @Override
     public String tag() {
-        // TODO: probably something is wrong with the tags over here
         return "get_words_task_test";
     }
 
