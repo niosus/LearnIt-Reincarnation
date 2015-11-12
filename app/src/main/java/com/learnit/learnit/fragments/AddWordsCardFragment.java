@@ -240,8 +240,11 @@ public class AddWordsCardFragment extends Fragment
     public void fabClicked(int viewPagerPos) {
         // TODO: add a notification of the status of the added words. Was it successful? which ones failed?
         Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
-        mTaskScheduler.newTaskForClient(new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
-        mEditText.setText("");
+        if (viewPagerPos == TabsPagerAdapter.ADD_WORDS_ITEM) {
+            // the fab was clicked on the correct screen, we can process the event
+            mTaskScheduler.newTaskForClient(new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
+            mEditText.setText("");
+        }
     }
 
     @Override

@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
 import com.learnit.learnit.async_tasks.GetUserDictWordsTask;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
@@ -115,7 +116,7 @@ public class UserDictCardFragment extends Fragment
         LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
         mEditText.setHint(String.format(getString(R.string.my_dict_word_hint),
                 langPair.langToLearn(), langPair.langYouKnow()));
-        mFabStateController.addFabEventHandler(TabsPagerAdapter.DICT_ITEM, this);
+        mFabStateController.addFabEventHandler(TabsPagerAdapter.USER_DICT_ITEM, this);
         startLoadingMyDictWordsAsync();
     }
 
@@ -235,7 +236,10 @@ public class UserDictCardFragment extends Fragment
 
     @Override
     public void fabClicked(int viewPagerPos) {
-        Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
+        if (viewPagerPos == TabsPagerAdapter.USER_DICT_ITEM) {
+            Log.d(Constants.LOG_TAG, "user dict fragment knows that fab was clicked from " + viewPagerPos);
+            // TODO: delete selected items, show a snack bar to undo
+        }
     }
 
     @Override

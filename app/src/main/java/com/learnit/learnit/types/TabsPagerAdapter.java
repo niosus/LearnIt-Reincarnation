@@ -14,7 +14,7 @@ import com.learnit.learnit.fragments.DummyCardFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
     public static final int ADD_WORDS_ITEM = 0;
-    public static final int DICT_ITEM = 1;
+    public static final int USER_DICT_ITEM = 1;
     public static final int LEARN_WORDS_ITEM = 2;
 
     private String[] TITLES = null;
@@ -43,7 +43,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case ADD_WORDS_ITEM:
                 return AddWordsCardFragment.newInstance(position);
-            case DICT_ITEM:
+            case USER_DICT_ITEM:
                 return UserDictCardFragment.newInstance(position);
             case LEARN_WORDS_ITEM:
                 return DummyCardFragment.newInstance(position);
