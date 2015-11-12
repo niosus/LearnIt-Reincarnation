@@ -20,6 +20,7 @@ import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.types.LanguagePair;
+import com.learnit.learnit.types.WordBundle;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import java.io.File;
@@ -211,5 +212,23 @@ public class Utils {
             view = new View(activity);
         }
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static int localizedStringResForWordType(int wordType) {
+        switch (wordType) {
+            case WordBundle.WordType.NOUN:
+                return R.string.word_type_noun;
+            case WordBundle.WordType.VERB:
+                return R.string.word_type_verb;
+            case WordBundle.WordType.ADJECTIVE:
+                return R.string.word_type_adjective;
+            case WordBundle.WordType.ADVERB:
+                return R.string.word_type_adverb;
+            case WordBundle.WordType.CONJUNCTION:
+                return R.string.word_type_conjunction;
+            case WordBundle.WordType.PREPOSITION:
+                return R.string.word_type_preposition;
+        }
+        return R.string.word_type_none;
     }
 }

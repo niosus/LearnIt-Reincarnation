@@ -13,6 +13,7 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.utils.Constants;
+import com.learnit.learnit.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,8 +136,7 @@ public class WordBundleAdapter
         private void updateViewFromWordBundle(final WordBundle wordBundle) {
             mWordText.setText(wordBundle.word());
             mTransText.setText(wordBundle.transAsHumanString());
-            // TODO: need to actually show something a user can understand and not just a number
-            mWordTypeText.setText("" + wordBundle.wordType());
+            mWordTypeText.setText(Utils.localizedStringResForWordType(wordBundle.wordType()));
         }
 
         @Override
@@ -152,7 +152,7 @@ public class WordBundleAdapter
                 mSelectedItems.put(getAdapterPosition(), true);
                 mLayout.setSelected(true);
                 mFabStateController.showFab();
-                // TODO: we need to notify somebody that we would like to show the smackbar.
+                // TODO: we need to notify somebody that we would like to show the snack bar.
                 // That somebody should know hom many items are selected and probably also to
                 // be able to show them on demand.
             }

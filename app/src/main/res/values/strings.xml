@@ -69,11 +69,12 @@
     <string name="dialog_update_to_help_dict_needed_title">Help Dictionary Update</string>
 
     <!-- notification strings -->
+    <string name="title_activity_settings">Settings</string>
     <string name="notification_text">Please click to translate the word.</string>
 
     <!-- prefs categories -->
-    <string name="notification_group">Notification settings</string>
-    <string name="main_group">Main settings</string>
+    <string name="pref_header_general">Main settings</string>
+    <string name="pref_header_notifications">Notification settings</string>
 
     <!-- Pref Strings -->
     <string name="pref_reminder_freq">Reminder frequency</string>
@@ -208,5 +209,13 @@
         <item>Export</item>
         <item>Import</item>
     </string-array>
+
+    <string name="word_type_noun">(n)</string>
+    <string name="word_type_verb">(v)</string>
+    <string name="word_type_adjective">(adj)</string>
+    <string name="word_type_adverb">(adv)</string>
+    <string name="word_type_preposition">(prep)</string>
+    <string name="word_type_conjunction">(conj)</string>
+    <string name="word_type_none">(…)</string>
 
 </resources>
