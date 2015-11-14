@@ -48,8 +48,9 @@ public class StringUtils {
             case "(a)":
                 return WordBundle.WordType.ADJECTIVE;
             case "(p)":
-            case "(d)":
                 return WordBundle.WordType.PREPOSITION;
+            case "(d)":
+                return WordBundle.WordType.ADVERB;
             default:
                 return WordBundle.WordType.NONE;
         }

@@ -103,9 +103,14 @@ public class WordBundleTest extends TestCase {
 
         trans = "(d) коли; оскільки; як";
         bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
-        assertThat(bundle.wordType(), is(WordBundle.WordType.PREPOSITION));
+        assertThat(bundle.wordType(), is(WordBundle.WordType.ADVERB));
         assertThat(bundle.transAsArray()[0], is("коли"));
         assertThat(bundle.transAsArray()[1], is("оскільки"));
         assertThat(bundle.transAsArray()[2], is("як"));
+
+        trans = "(p) на";
+        bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
+        assertThat(bundle.wordType(), is(WordBundle.WordType.PREPOSITION));
+        assertThat(bundle.transAsArray()[0], is("на"));
     }
 }
