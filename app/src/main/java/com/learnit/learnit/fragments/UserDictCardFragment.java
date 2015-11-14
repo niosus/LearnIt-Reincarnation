@@ -137,7 +137,7 @@ public class UserDictCardFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, mFabStateController);
+        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, mFabStateController, this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -199,7 +199,11 @@ public class UserDictCardFragment extends Fragment
     }
 
     @Override
-    public void wordTextChanged() {
+    public void onTextChanged(EditTextType type) {
+        if (type != EditTextType.WORD) {
+            Log.e(Constants.LOG_TAG, "wrong word to be cleared in dict fragment");
+            return;
+        }
         try {
             Log.w(Constants.LOG_TAG, "changed text on edit text, should load some words now!");
             updateDeleteButtonStateAnimate();
@@ -223,7 +227,11 @@ public class UserDictCardFragment extends Fragment
     }
 
     @Override
-    public void clearWord() {
+    public void onClearWord(EditTextType type) {
+        if (type != EditTextType.WORD) {
+            Log.e(Constants.LOG_TAG, "wrong word to be cleared in dict fragment");
+            return;
+        }
         mEditText.setText(null);
         if (!isAdded()) {
             // no activity, so we can't do anything
@@ -232,6 +240,14 @@ public class UserDictCardFragment extends Fragment
         Utils.showKeyboard(getActivity());
     }
 
+    @Override
+    public void onResultEmpty() {
+        // not needed here? Can I do it better?
+    }
+
+    @Override
+    public void onResultFull() {
+    }
 
 
     @Override

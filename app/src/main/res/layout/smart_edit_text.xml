@@ -16,7 +16,7 @@
 
     <android.support.v7.widget.AppCompatEditText
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/addWord"
+        android:id="@+id/edt_add_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -29,8 +29,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="40dip"
         android:layout_height="40dip"
-        android:layout_alignEnd="@id/addWord"
-        android:layout_alignRight="@id/addWord">
+        android:layout_alignEnd="@id/edt_add_word"
+        android:layout_alignRight="@id/edt_add_word">
         <at.markushi.ui.CircleButton
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/btn_delete_word_add_words"

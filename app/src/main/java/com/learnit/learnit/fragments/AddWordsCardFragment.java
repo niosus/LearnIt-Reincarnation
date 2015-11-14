@@ -33,6 +33,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
@@ -45,7 +46,6 @@ import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.TabsPagerAdapter;
-import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.TextChangeListener;
 import com.learnit.learnit.utils.AnimationUtils;
@@ -67,12 +67,14 @@ public class AddWordsCardFragment extends Fragment
 
     @Bind(R.id.helper_list)
     RecyclerView mRecyclerView;
-    @Bind(R.id.addWord)
-    AppCompatEditText mEditText;
+    @Bind(R.id.edt_add_word)
+    AppCompatEditText mEdtAddWord;
+    @Bind(R.id.edt_add_trans)
+    AppCompatEditText mEdtAddTrans;
     @Bind(R.id.btn_delete_word_add_words)
-    CircleButton btnDeleteWord;
-    @Bind(R.id.add_word_layout)
-    LinearLayout addWordLayout;
+    CircleButton mBtnDeleteWord;
+    @Bind(R.id.btn_delete_trans_add_words)
+    CircleButton mBtnDeleteTrans;
 
     private TaskSchedulerFragment mTaskScheduler;
     private IFabStateController mFabStateController;
@@ -81,13 +83,13 @@ public class AddWordsCardFragment extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(Constants.LOG_TAG, "fragment is attached");
-        initTaskScheduler(context);
+        initTaskScheduler();
         if (context instanceof IFabStateController) {
             mFabStateController = (IFabStateController) context;
         }
     }
 
-    private void initTaskScheduler(Context context) {
+    private void initTaskScheduler() {
         FragmentManager fragmentManager = getFragmentManager();
         mTaskScheduler = (TaskSchedulerFragment)
                 fragmentManager.findFragmentByTag(TaskSchedulerFragment.TAG);
@@ -118,7 +120,8 @@ public class AddWordsCardFragment extends Fragment
     public void onResume() {
         super.onResume();
         LanguagePair.Names langPair = Utils.getCurrentLanguageNames(getContext());
-        mEditText.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
+        mEdtAddWord.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
+        mEdtAddTrans.setHint(String.format(getString(R.string.add_translation_hint), langPair.langYouKnow()));
         mFabStateController.addFabEventHandler(TabsPagerAdapter.ADD_WORDS_ITEM, this);
         startLoadingHelpWordsAsync();
     }
@@ -133,7 +136,10 @@ public class AddWordsCardFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, mFabStateController);
+        mAdapter = new WordBundleAdapter(null,
+                R.layout.word_bundle_layout,
+                mFabStateController,
+                this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -149,17 +155,17 @@ public class AddWordsCardFragment extends Fragment
                 }
             }
         });
+        mRecyclerView.setVisibility(View.GONE);
 
         ViewCompat.setElevation(rootView, 50);
-        mEditText.addTextChangedListener(new TextChangeListener(this, mEditText.getId()));
+        mEdtAddWord.addTextChangedListener(new TextChangeListener(this, mEdtAddWord.getId()));
+        mEdtAddTrans.addTextChangedListener(new TextChangeListener(this, mEdtAddTrans.getId()));
 
         View.OnClickListener myOnClickListener = new ClearBtnOnClickListener(this);
-        btnDeleteWord.setOnClickListener(myOnClickListener);
-        btnDeleteWord.setVisibility(View.INVISIBLE);
-
-        if (addWordLayout != null) {
-            Log.d(Constants.LOG_TAG, "relative layout initialized");
-        }
+        mBtnDeleteWord.setOnClickListener(myOnClickListener);
+        mBtnDeleteWord.setVisibility(View.INVISIBLE);
+        mBtnDeleteTrans.setOnClickListener(myOnClickListener);
+        mBtnDeleteTrans.setVisibility(View.INVISIBLE);
 
         return rootView;
     }
@@ -167,7 +173,8 @@ public class AddWordsCardFragment extends Fragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateDeleteButtonStateAnimate();
+        updateDeleteButtonState(mBtnDeleteWord);
+        updateDeleteButtonState(mBtnDeleteTrans);
     }
 
     private void startLoadingHelpWordsAsync() {
@@ -175,42 +182,54 @@ public class AddWordsCardFragment extends Fragment
         // load new helper words
         mTaskScheduler.newTaskForClient(
                 new GetHelpWordsTask(this.getContext(),
-                        mEditText.getText().toString(), limit), mAdapter);
+                        mEdtAddWord.getText().toString(), limit), mAdapter);
     }
 
-    private void updateDeleteButtonStateAnimate() {
-        if (mEditText.getText().toString().isEmpty()
-                && btnDeleteWord.getVisibility() == View.VISIBLE) {
-            AnimationUtils.animateToVisibilityState(btnDeleteWord, View.INVISIBLE, this);
+    private void updateDeleteButtonState(final View btnView) {
+        EditText editWordToCheck;
+        switch (btnView.getId()) {
+            case R.id.btn_delete_word_add_words:
+                editWordToCheck = mEdtAddWord;
+                break;
+            case R.id.btn_delete_trans_add_words:
+                editWordToCheck = mEdtAddTrans;
+                break;
+            default:
+                Log.e(Constants.LOG_TAG, "undefined case when updating delete button state");
+                return;
+        }
+        int resultVisibility = View.NO_ID;
+        if (editWordToCheck.getText().toString().isEmpty()
+                && btnView.getVisibility() == View.VISIBLE) {
+            resultVisibility = View.INVISIBLE;
         } else {
-            if (btnDeleteWord.getVisibility() == View.INVISIBLE
-                    && !mEditText.getText().toString().isEmpty()) {
-                AnimationUtils.animateToVisibilityState(btnDeleteWord, View.VISIBLE, this);
+            if (btnView.getVisibility() == View.INVISIBLE
+                    && !editWordToCheck.getText().toString().isEmpty()) {
+                resultVisibility = View.VISIBLE;
             }
         }
-    }
-
-    private void updateDeleteButtonStateInstant() {
-        if (mEditText.getText().toString().isEmpty()
-                && btnDeleteWord.getVisibility() == View.VISIBLE) {
-            this.setViewVisibilityState(btnDeleteWord.getId(), View.INVISIBLE);
-        } else {
-            if (btnDeleteWord.getVisibility() == View.INVISIBLE
-                    && !mEditText.getText().toString().isEmpty()) {
-                this.setViewVisibilityState(btnDeleteWord.getId(), View.VISIBLE);
-            }
+        if (resultVisibility == View.NO_ID) {
+            // there has been no update to visibility, no need to change
+            return;
+        }
+        try {
+            AnimationUtils.animateToVisibilityState(btnView, resultVisibility, this);
+        } catch (IllegalStateException e) {
+            Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
+            setViewVisibilityState(btnView.getId(), resultVisibility);
         }
     }
 
     @Override
-    public void wordTextChanged() {
-        try {
-            Log.d(Constants.LOG_TAG, "changed text on edit text");
-            updateDeleteButtonStateAnimate();
-            startLoadingHelpWordsAsync();
-        } catch (IllegalStateException e) {
-            Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
-            updateDeleteButtonStateInstant();
+    public void onTextChanged(EditTextType type) {
+        switch (type) {
+            case WORD:
+                updateDeleteButtonState(mBtnDeleteWord);
+                startLoadingHelpWordsAsync();
+                break;
+            case TRANS:
+                updateDeleteButtonState(mBtnDeleteTrans);
+                break;
         }
     }
 
@@ -219,7 +238,13 @@ public class AddWordsCardFragment extends Fragment
         Log.d(Constants.LOG_TAG, "changing visibility of " + id + " to " + visibility);
         switch (id) {
             case R.id.btn_delete_word_add_words:
-                btnDeleteWord.setVisibility(visibility);
+                mBtnDeleteWord.setVisibility(visibility);
+                break;
+            case R.id.btn_delete_trans_add_words:
+                mBtnDeleteTrans.setVisibility(visibility);
+                break;
+            case R.id.helper_list:
+                mRecyclerView.setVisibility(visibility);
                 break;
             default:
                 Log.e(Constants.LOG_TAG, "unhandled switch setViewVisibilityState");
@@ -227,13 +252,30 @@ public class AddWordsCardFragment extends Fragment
     }
 
     @Override
-    public void clearWord() {
-        mEditText.setText(null);
+    public void onClearWord(EditTextType type) {
+        switch (type) {
+            case WORD:
+                mEdtAddWord.setText(null);
+                break;
+            case TRANS:
+                mEdtAddTrans.setText(null);
+                break;
+        }
         if (!isAdded()) {
             // no activity, so we can't do anything
             return;
         }
         Utils.showKeyboard(getActivity());
+    }
+
+    @Override
+    public void onResultEmpty() {
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResultFull() {
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -243,7 +285,7 @@ public class AddWordsCardFragment extends Fragment
         if (viewPagerPos == TabsPagerAdapter.ADD_WORDS_ITEM) {
             // the fab was clicked on the correct screen, we can process the event
             mTaskScheduler.newTaskForClient(new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
-            mEditText.setText("");
+            mEdtAddWord.setText("");
         }
     }
 

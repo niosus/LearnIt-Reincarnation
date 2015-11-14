@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.learnit.learnit.R;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IFabStateController;
+import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
@@ -30,6 +31,7 @@ public class WordBundleAdapter
     private int mRowLayout;
     private SparseBooleanArray mSelectedItems;
     private IFabStateController mFabStateController;
+    private IUiEvents mUiEventsController;
 
     private void refreshSelectedMarkers() {
         mSelectedItems = new SparseBooleanArray((mWordBundles == null)? 0: mWordBundles.size());
@@ -51,9 +53,14 @@ public class WordBundleAdapter
         return mSelectedItems != null && mSelectedItems.size() != 0;
     }
 
-    public WordBundleAdapter(List<WordBundle> wordBundles, int rowLayout, IFabStateController fabStateController) {
+    public WordBundleAdapter(
+            List<WordBundle> wordBundles,
+            int rowLayout,
+            IFabStateController fabStateController,
+            IUiEvents uiEventsController) {
         mWordBundles = wordBundles;
         mRowLayout = rowLayout;
+        mUiEventsController = uiEventsController;
         connectToFab(fabStateController);
         refreshSelectedMarkers();
     }
@@ -99,8 +106,10 @@ public class WordBundleAdapter
     public <OutType> void onFinish(OutType result) {
         if (result == null) {
             mWordBundles = null;
+            mUiEventsController.onResultEmpty();
         } else if (result instanceof List) {
             mWordBundles = (List<WordBundle>) result;
+            mUiEventsController.onResultFull();
         }
         notifyDataSetChanged();
         refreshSelectedMarkers();

@@ -7,9 +7,15 @@
 package com.learnit.learnit.interfaces;
 
 public interface IUiEvents {
-    void wordTextChanged();
+    enum EditTextType {
+        WORD,
+        TRANS
+    }
+    void onTextChanged(EditTextType type);
+    void onClearWord(EditTextType type);
 
-    void setViewVisibilityState(final int id, final int visibility);
+    void onResultEmpty();
+    void onResultFull();
 
-    void clearWord();
+    void setViewVisibilityState(int id, int visibility);
 }

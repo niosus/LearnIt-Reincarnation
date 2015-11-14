@@ -34,11 +34,14 @@ public class TextChangeListener implements TextWatcher {
     @Override
     public void afterTextChanged(Editable editable) {
         switch (mViewId) {
-            case R.id.addWord:
-                mCallback.wordTextChanged();
+            case R.id.edt_add_word:
+                mCallback.onTextChanged(IUiEvents.EditTextType.WORD);
+                break;
+            case R.id.edt_add_trans:
+                mCallback.onTextChanged(IUiEvents.EditTextType.TRANS);
                 break;
             case R.id.edt_search_word:
-                mCallback.wordTextChanged();
+                mCallback.onTextChanged(IUiEvents.EditTextType.WORD);
                 break;
         }
     }
