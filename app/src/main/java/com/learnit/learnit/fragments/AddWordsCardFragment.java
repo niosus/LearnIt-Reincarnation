@@ -284,7 +284,8 @@ public class AddWordsCardFragment extends Fragment
         Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
         if (viewPagerPos == TabsPagerAdapter.ADD_WORDS_ITEM) {
             // the fab was clicked on the correct screen, we can process the event
-            mTaskScheduler.newTaskForClient(new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
+            mTaskScheduler.newTaskForClient(
+                    new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
             mEdtAddWord.setText("");
         }
     }
