@@ -46,12 +46,14 @@ import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.types.ClearBtnOnClickListener;
 import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.TabsPagerAdapter;
+import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.types.WordBundleAdapter;
 import com.learnit.learnit.types.TextChangeListener;
 import com.learnit.learnit.utils.AnimationUtils;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import at.markushi.ui.CircleButton;
@@ -220,6 +222,15 @@ public class AddWordsCardFragment extends Fragment
         }
     }
 
+    private boolean isCustomTransValid() {
+        if (mEdtAddTrans == null) { return false; }
+        if (mEdtAddTrans.getText().toString().isEmpty()) {
+            return false;
+        }
+        // TODO: add some more verifications here
+        return true;
+    }
+
     @Override
     public void onTextChanged(EditTextType type) {
         switch (type) {
@@ -229,6 +240,11 @@ public class AddWordsCardFragment extends Fragment
                 break;
             case TRANS:
                 updateDeleteButtonState(mBtnDeleteTrans);
+                if (isCustomTransValid()) {
+                    mFabStateController.showFab();
+                } else {
+                    mFabStateController.hideFab();
+                }
                 break;
         }
     }
@@ -284,9 +300,20 @@ public class AddWordsCardFragment extends Fragment
         Log.d(Constants.LOG_TAG, "fragment knows that fab was clicked from " + viewPagerPos);
         if (viewPagerPos == TabsPagerAdapter.ADD_WORDS_ITEM) {
             // the fab was clicked on the correct screen, we can process the event
-            mTaskScheduler.newTaskForClient(
-                    new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
+            if (mAdapter.hasSelectedItems()) {
+                mTaskScheduler.newTaskForClient(
+                        new AddUserDictWordsTask(this.getContext(), mAdapter.getSelectedItems()), this);
+            } else if (isCustomTransValid()) {
+                List<WordBundle> bundles = new ArrayList<>();
+                bundles.add(new WordBundle.Constructor()
+                        .setWord(mEdtAddWord.getText().toString())
+                        .setTrans(mEdtAddTrans.getText().toString())
+                        .construct());
+                mTaskScheduler.newTaskForClient(
+                        new AddUserDictWordsTask(this.getContext(), bundles), this);
+            }
             mEdtAddWord.setText("");
+            mEdtAddTrans.setText("");
         }
     }
 
