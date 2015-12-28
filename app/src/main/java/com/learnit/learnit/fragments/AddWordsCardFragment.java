@@ -22,6 +22,7 @@ package com.learnit.learnit.fragments;/*
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
@@ -40,6 +41,7 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
@@ -80,6 +82,7 @@ public class AddWordsCardFragment extends Fragment
 
     private TaskSchedulerFragment mTaskScheduler;
     private IFabStateController mFabStateController;
+    private ISnackBarController mSnackBarController;
 
     @Override
     public void onAttach(Context context) {
@@ -88,6 +91,9 @@ public class AddWordsCardFragment extends Fragment
         initTaskScheduler();
         if (context instanceof IFabStateController) {
             mFabStateController = (IFabStateController) context;
+        }
+        if (context instanceof ISnackBarController) {
+            mSnackBarController = (ISnackBarController) context;
         }
     }
 
@@ -343,6 +349,7 @@ public class AddWordsCardFragment extends Fragment
             for (Constants.AddWordReturnCode code: codes) {
                 Log.d(Constants.LOG_TAG, "return code is: " + code);
             }
+            mSnackBarController.showSnackBar("smth happened", Snackbar.LENGTH_SHORT);
         }
     }
 

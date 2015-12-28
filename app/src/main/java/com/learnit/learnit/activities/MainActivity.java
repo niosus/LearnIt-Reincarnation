@@ -6,15 +6,13 @@
 
 package com.learnit.learnit.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -25,13 +23,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
@@ -39,13 +32,12 @@ import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
+import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindDrawable;
@@ -56,12 +48,13 @@ import butterknife.OnItemClick;
 
 public class MainActivity
         extends AppCompatActivity
-        implements IAsyncTaskResultClient, IFabStateController {
+        implements IAsyncTaskResultClient, IFabStateController, ISnackBarController {
     @Bind(R.id.toolbar)             Toolbar mToolbar;
     @Bind(R.id.tab_layout)          TabLayout mTabLayout;
     @Bind(R.id.pager)               ViewPager mPager;
     @Bind(R.id.drawer_layout)       DrawerLayout mDrawerLayout;
     @Bind(R.id.fab)                 FloatingActionButton mFab;
+    @Bind(R.id.coordinator_layout)  CoordinatorLayout mCoordinatorLayout;
 
     @BindDrawable(R.drawable.logo_white) Drawable mLogo;
 
@@ -265,5 +258,32 @@ public class MainActivity
     public void addFabEventHandler(int position, IFabEventHandler handler) {
         mFabEventHandlers.put(position, handler);
         Log.d(Constants.LOG_TAG, "there are " + mFabEventHandlers.size() + " handlers ready for fab events");
+    }
+
+    @Override
+    public void showSnackBar(final String message, final int duration) {
+        int actualDuration;
+        switch (duration) {
+            case Snackbar.LENGTH_INDEFINITE:
+                actualDuration = Snackbar.LENGTH_INDEFINITE;
+                break;
+            case Snackbar.LENGTH_LONG:
+                actualDuration = Snackbar.LENGTH_LONG;
+                break;
+            case Snackbar.LENGTH_SHORT:
+                actualDuration = Snackbar.LENGTH_SHORT;
+                break;
+            default:
+                Log.e(Constants.LOG_TAG, "wrong duration for snack bar");
+                return;
+        }
+        Snackbar snackbar = Snackbar
+                .make(mCoordinatorLayout, message, actualDuration);
+        snackbar.show();
+    }
+
+    @Override
+    public void hideSnackBar() {
+
     }
 }
