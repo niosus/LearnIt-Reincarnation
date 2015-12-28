@@ -18,4 +18,7 @@ public interface IUiEvents {
     void onResultFull();
 
     void setViewVisibilityState(int id, int visibility);
+
+    void onWordsSelected();
+    void onNoWordsSelected();
 }

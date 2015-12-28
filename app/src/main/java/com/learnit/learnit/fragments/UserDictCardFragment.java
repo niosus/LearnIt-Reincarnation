@@ -137,7 +137,7 @@ public class UserDictCardFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, mFabStateController, this);
+        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -227,6 +227,16 @@ public class UserDictCardFragment extends Fragment
     }
 
     @Override
+    public void onWordsSelected() {
+        mFabStateController.showFab(R.drawable.ic_delete);
+    }
+
+    @Override
+    public void onNoWordsSelected() {
+        mFabStateController.hideFab();
+    }
+
+    @Override
     public void onClearWord(EditTextType type) {
         if (type != EditTextType.WORD) {
             Log.e(Constants.LOG_TAG, "wrong word to be cleared in dict fragment");
@@ -261,5 +271,10 @@ public class UserDictCardFragment extends Fragment
     @Override
     public boolean fabNeeded() {
         return mAdapter.hasSelectedItems();
+    }
+
+    @Override
+    public int getDrawable() {
+        return R.drawable.ic_delete;
     }
 }

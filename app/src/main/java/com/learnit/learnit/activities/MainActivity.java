@@ -134,6 +134,8 @@ public class MainActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 IFabEventHandler currentFabEventHandler = mFabEventHandlers.get(tab.getPosition());
                 if (currentFabEventHandler != null && currentFabEventHandler.fabNeeded()) {
+                    mFab.setImageDrawable(
+                            getResources().getDrawable(currentFabEventHandler.getDrawable()));
                     mFab.show();
                 } else {
                     mFab.hide();
@@ -245,7 +247,8 @@ public class MainActivity
     }
 
     @Override
-    public void showFab() {
+    public void showFab(int drawableId) {
+        mFab.setImageDrawable(getResources().getDrawable(drawableId));
         mFab.show();
     }
 
@@ -277,8 +280,7 @@ public class MainActivity
                 Log.e(Constants.LOG_TAG, "wrong duration for snack bar");
                 return;
         }
-        Snackbar snackbar = Snackbar
-                .make(mCoordinatorLayout, message, actualDuration);
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, message, actualDuration);
         snackbar.show();
     }
 

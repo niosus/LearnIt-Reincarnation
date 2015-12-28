@@ -1,5 +1,4 @@
 package com.learnit.learnit.types;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -30,12 +29,10 @@ public class WordBundleAdapter
     private List<WordBundle> mWordBundles;
     private int mRowLayout;
     private SparseBooleanArray mSelectedItems;
-    private IFabStateController mFabStateController;
     private IUiEvents mUiEventsController;
 
     private void refreshSelectedMarkers() {
-        mSelectedItems = new SparseBooleanArray((mWordBundles == null)? 0: mWordBundles.size());
-        mFabStateController.hideFab();
+        mSelectedItems = new SparseBooleanArray(getItemCount());
     }
 
     public List<WordBundle> getSelectedItems() {
@@ -56,17 +53,16 @@ public class WordBundleAdapter
     public WordBundleAdapter(
             List<WordBundle> wordBundles,
             int rowLayout,
-            IFabStateController fabStateController,
             IUiEvents uiEventsController) {
         mWordBundles = wordBundles;
         mRowLayout = rowLayout;
         mUiEventsController = uiEventsController;
-        connectToFab(fabStateController);
         refreshSelectedMarkers();
-    }
-
-    public void connectToFab(IFabStateController fabStateController) {
-        mFabStateController = fabStateController;
+        if (getItemCount() > 0) {
+            mUiEventsController.onWordsSelected();
+        } else {
+            mUiEventsController.onNoWordsSelected();
+        }
     }
 
     @Override
@@ -154,16 +150,13 @@ public class WordBundleAdapter
                 mSelectedItems.delete(getAdapterPosition());
                 mLayout.setSelected(false);
                 if (mSelectedItems.size() == 0) {
-                    mFabStateController.hideFab();
+                    mUiEventsController.onNoWordsSelected();
                 }
             }
             else {
                 mSelectedItems.put(getAdapterPosition(), true);
                 mLayout.setSelected(true);
-                mFabStateController.showFab();
-                // TODO: we need to notify somebody that we would like to show the snack bar.
-                // That somebody should know hom many items are selected and probably also to
-                // be able to show them on demand.
+                mUiEventsController.onWordsSelected();
             }
             Log.d(Constants.LOG_TAG, "item clicked. Word is: " + mWordBundle.word());
         }

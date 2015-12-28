@@ -35,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
@@ -146,7 +145,6 @@ public class AddWordsCardFragment extends Fragment
 
         mAdapter = new WordBundleAdapter(null,
                 R.layout.word_bundle_layout,
-                mFabStateController,
                 this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -247,7 +245,7 @@ public class AddWordsCardFragment extends Fragment
             case TRANS:
                 updateDeleteButtonState(mBtnDeleteTrans);
                 if (isCustomTransValid()) {
-                    mFabStateController.showFab();
+                    mFabStateController.showFab(R.drawable.ic_content_save);
                 } else {
                     mFabStateController.hideFab();
                 }
@@ -271,6 +269,16 @@ public class AddWordsCardFragment extends Fragment
             default:
                 Log.e(Constants.LOG_TAG, "unhandled switch setViewVisibilityState");
         }
+    }
+
+    @Override
+    public void onWordsSelected() {
+        mFabStateController.showFab(R.drawable.ic_content_save);
+    }
+
+    @Override
+    public void onNoWordsSelected() {
+        mFabStateController.hideFab();
     }
 
     @Override
@@ -329,6 +337,11 @@ public class AddWordsCardFragment extends Fragment
     }
 
     @Override
+    public int getDrawable() {
+        return R.drawable.ic_content_save;
+    }
+
+    @Override
     public String tag() {
         return null;
     }
@@ -346,10 +359,20 @@ public class AddWordsCardFragment extends Fragment
         Log.d(Constants.LOG_TAG, "words added");
         if (result instanceof List) {
             List<Constants.AddWordReturnCode> codes = (List<Constants.AddWordReturnCode>) result;
+            int failedWorldsCount = 0;
             for (Constants.AddWordReturnCode code: codes) {
+                if (code == Constants.AddWordReturnCode.WORD_EXISTS
+                        || code == Constants.AddWordReturnCode.FAILURE) { failedWorldsCount++; }
                 Log.d(Constants.LOG_TAG, "return code is: " + code);
             }
-            mSnackBarController.showSnackBar("smth happened", Snackbar.LENGTH_SHORT);
+            if (failedWorldsCount == 0) {
+                mSnackBarController.showSnackBar(
+                        getResources().getString(R.string.snack_done), Snackbar.LENGTH_SHORT);
+            } else {
+                String msg = getResources().getString(R.string.snack_fail);
+                mSnackBarController.showSnackBar(
+                        String.format(msg, failedWorldsCount, codes.size()), Snackbar.LENGTH_LONG);
+            }
         }
     }
 
