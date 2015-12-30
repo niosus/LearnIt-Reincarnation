@@ -82,6 +82,7 @@ public class DbHandlerTest extends DbUserDictHandler {
         assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_EXISTS));
 
         // test that we update similar words
+        // TODO: have a more sophisticated test for this
         bundle.setTrans(transToExpect + WordBundle.TRANS_DIVIDER + "something new");
         returnCode = helper.addWord(bundle);
         assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_UPDATED));
@@ -157,5 +158,46 @@ public class DbHandlerTest extends DbUserDictHandler {
         assertThat(res.size(), is(1));
         resultBundle = res.get(0);
         assertThat(resultBundle, is(bundle));
+    }
+
+    @Test
+    public void testDeleteFromDb() {
+        DbHandler helper = new DbUserDictHandler(
+                RuntimeEnvironment.application,
+                DbHandler.DB_USER_DICT,
+                null, 1);
+        String wordToQuery = "test_word";
+        String transToExpect = "test_trans";
+        WordBundle bundle = new WordBundle.Constructor()
+                .setWord(wordToQuery)
+                .setTrans(transToExpect)
+                .setWeight(0.9f)
+                .setId(666)
+                .construct();
+        Constants.AddWordReturnCode returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(Constants.AddWordReturnCode.SUCCESS));
+
+        // test that the word is correctly inserted
+        List<WordBundle> res = helper.queryWord(wordToQuery, Constants.QueryStyle.EXACT);
+        assertThat(res.size(), is(1));
+        WordBundle resultBundle = res.get(0);
+        assertThat(resultBundle.weight(), is(bundle.weight()));
+        assertThat(resultBundle.word(), is(bundle.word()));
+        assertThat(resultBundle.transAsString(), is(bundle.transAsString()));
+        assertThat(resultBundle.article(), is(bundle.article()));
+
+        // test that we don't insert the word twice
+        returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_EXISTS));
+
+        // test that we update similar words
+        bundle.setTrans(transToExpect + WordBundle.TRANS_DIVIDER + "something new");
+        returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(Constants.AddWordReturnCode.WORD_UPDATED));
+
+        bundle.setId(resultBundle.id());
+        helper.deleteWord(bundle);
+        returnCode = helper.addWord(bundle);
+        assertThat(returnCode, is(Constants.AddWordReturnCode.SUCCESS));
     }
 }

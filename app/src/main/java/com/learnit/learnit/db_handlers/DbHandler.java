@@ -40,14 +40,10 @@ public abstract class DbHandler extends SQLiteOpenHelper
             WORD_TYPE_COLUMN_NAME
     };
 
-    // names of DB_HELPER_DICT database fields
-    final public static String HELPER_ID_COLUMN_NAME = "s_id";
-    final public static String HELPER_WORD_COLUMN_NAME = "wname";
-    final public static String HELPER_MEANING_COLUMN_NAME = "wmean";
     final public static String[] ALL_COLUMNS_HELP_DICT = new String[] {
-            HELPER_ID_COLUMN_NAME,
-            HELPER_WORD_COLUMN_NAME,
-            HELPER_MEANING_COLUMN_NAME
+            ID_COLUMN_NAME,
+            WORD_COLUMN_NAME,
+            TRANSLATION_COLUMN_NAME
     };
 
     protected DbHandler(Context context, String name,
@@ -120,6 +116,21 @@ public abstract class DbHandler extends SQLiteOpenHelper
         }
         Log.e(Constants.LOG_TAG, "something unpredicted happened, so we have just failed. Congrats.");
         return Constants.AddWordReturnCode.FAILURE;
+    }
+
+    @Override
+    public void deleteWord(final WordBundle wordBundle) {
+        Log.d(Constants.LOG_TAG, this.getClass().getSimpleName() + " id of deleting = " + wordBundle.id());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(this.getDatabaseName(),
+                ID_COLUMN_NAME + "= ?", new String[]{Integer.toString(wordBundle.id())});
+        db.close();
+
+        // TODO: when we will have notifications someone has to know that one needs to be removed
+//        // if this word is currently shown - remove it from notifications
+//        NotificationManager mNotificationManager
+//                = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+//        mNotificationManager.cancel(id + NotificationBuilder.idModificator);
     }
 
     @Override

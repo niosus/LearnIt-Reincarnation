@@ -20,16 +20,16 @@ public class DbHelperDictHandler extends DbHandler {
 
     protected ContentValues contentValuesFromWordBundle(final WordBundle wordBundle) {
         ContentValues cv = new ContentValues();
-        cv.put(HELPER_WORD_COLUMN_NAME, wordBundle.word());
-        cv.put(HELPER_MEANING_COLUMN_NAME, wordBundle.transAsString());
+        cv.put(WORD_COLUMN_NAME, wordBundle.word());
+        cv.put(TRANSLATION_COLUMN_NAME, wordBundle.transAsString());
         return cv;
     }
 
     protected void executeDbCreation(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE " + getDatabaseName() + " ("
-                + HELPER_ID_COLUMN_NAME + " INTEGER primary key autoincrement,"
-                + HELPER_WORD_COLUMN_NAME + " TEXT,"
-                + HELPER_MEANING_COLUMN_NAME + " TEXT" + ");");
+                + ID_COLUMN_NAME + " INTEGER primary key autoincrement,"
+                + WORD_COLUMN_NAME + " TEXT,"
+                + TRANSLATION_COLUMN_NAME + " TEXT" + ");");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DbHelperDictHandler extends DbHandler {
         return queryFromDB(
                 getDatabaseName(),
                 getReadableDatabase(),
-                HELPER_WORD_COLUMN_NAME + matchingRule + limitStr,
+                WORD_COLUMN_NAME + matchingRule + limitStr,
                 matchingParams);
     }
 
@@ -81,8 +81,8 @@ public class DbHelperDictHandler extends DbHandler {
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {
         // TODO: we need to check what dictionary are we using to set the correct parse style
-        return new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(HELPER_WORD_COLUMN_NAME)))
-                .parseTrans(cursor.getString(cursor.getColumnIndex(HELPER_MEANING_COLUMN_NAME)), WordBundle.ParseStyle.BABYLON)
-                .setId(cursor.getInt(cursor.getColumnIndex(HELPER_ID_COLUMN_NAME))).construct();
+        return new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
+                .parseTrans(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)), WordBundle.ParseStyle.BABYLON)
+                .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME))).construct();
     }
 }

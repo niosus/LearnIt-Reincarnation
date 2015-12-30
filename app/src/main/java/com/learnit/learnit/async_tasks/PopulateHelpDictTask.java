@@ -55,8 +55,8 @@ public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
         }
         SQLiteDatabase db = dbHandler.getWritableDatabase();
         String sql = "INSERT INTO " + dbHandler.getDatabaseName()
-                + " (" + DbHandler.HELPER_WORD_COLUMN_NAME + ", "
-                + DbHandler.HELPER_MEANING_COLUMN_NAME + ")  VALUES (?, ?)";
+                + " (" + DbHandler.WORD_COLUMN_NAME + ", "
+                + DbHandler.TRANSLATION_COLUMN_NAME + ")  VALUES (?, ?)";
         SQLiteStatement stmt = db.compileStatement(sql);
         db.beginTransaction();
 
