@@ -22,6 +22,7 @@ package com.learnit.learnit.fragments;/*
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
@@ -36,8 +37,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.learnit.learnit.R;
-import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
+import com.learnit.learnit.async_tasks.DeleteWordFromUserDictTask;
 import com.learnit.learnit.async_tasks.GetUserDictWordsTask;
+import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
@@ -55,7 +58,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class UserDictCardFragment extends Fragment
-        implements IUiEvents, IFabEventHandler {
+        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -72,6 +75,7 @@ public class UserDictCardFragment extends Fragment
 
     private TaskSchedulerFragment mTaskScheduler;
     private IFabStateController mFabStateController;
+    private ISnackBarController mSnackBarController;
 
     @Override
     public void onAttach(Context context) {
@@ -80,6 +84,9 @@ public class UserDictCardFragment extends Fragment
         initTaskScheduler(context);
         if (context instanceof IFabStateController) {
             mFabStateController = (IFabStateController) context;
+        }
+        if (context instanceof ISnackBarController) {
+            mSnackBarController = (ISnackBarController) context;
         }
     }
 
@@ -264,7 +271,10 @@ public class UserDictCardFragment extends Fragment
     public void fabClicked(int viewPagerPos) {
         if (viewPagerPos == TabsPagerAdapter.USER_DICT_ITEM) {
             Log.d(Constants.LOG_TAG, "user dict fragment knows that fab was clicked from " + viewPagerPos);
-            // TODO: delete selected items, show a snack bar to undo
+            if (mAdapter.hasSelectedItems()) {
+                mTaskScheduler.newTaskForClient(
+                        new DeleteWordFromUserDictTask(this.getContext(), mAdapter.getSelectedItems()), this);
+            }
         }
     }
 
@@ -276,5 +286,42 @@ public class UserDictCardFragment extends Fragment
     @Override
     public int getDrawable() {
         return R.drawable.ic_delete;
+    }
+
+    @Override
+    public String tag() {
+        return "UserDictFragment";
+    }
+
+    @Override
+    public void onPreExecute() {
+
+    }
+
+    @Override
+    public void onProgressUpdate(Float progress) {
+
+    }
+
+    @Override
+    public <OutType> void onFinish(OutType result) {
+        Log.d(Constants.LOG_TAG, "words deleted");
+        if (result instanceof Constants.DeleteWordReturnCode) {
+            Constants.DeleteWordReturnCode code = (Constants.DeleteWordReturnCode) result;
+            if (code == Constants.DeleteWordReturnCode.SUCCESS) {
+                mSnackBarController.showSnackBar(
+                        getResources().getString(R.string.snack_delete_success), Snackbar.LENGTH_SHORT);
+            } else {
+                mSnackBarController.showSnackBar(
+                        getResources().getString(R.string.snack_delete_failure), Snackbar.LENGTH_LONG);
+            }
+            mEditText.setText("");
+            mFabStateController.hideFab();
+        }
+    }
+
+    @Override
+    public void onCancelled() {
+
     }
 }
