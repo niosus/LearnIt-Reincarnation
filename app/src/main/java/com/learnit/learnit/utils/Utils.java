@@ -163,7 +163,7 @@ public class Utils {
                 && langYouKnowIndex != Constants.UNDEFINED_INDEX;
     }
 
-    public static void updateHelpDictIfNeeded(Context context,
+    public static boolean updateHelpDictIfNeeded(Context context,
                                               TaskSchedulerFragment taskScheduler,
                                               IAsyncTaskResultClient resultClient) {
         if (Utils.languagesHaveChanged(context)) {
@@ -175,21 +175,23 @@ public class Utils {
             DbHandler helper = DbHandler.Factory.createLocalizedHelper(context, DbHandler.DB_HELPER_DICT);
             if (helper == null) {
                 Log.e(Constants.LOG_TAG, "helper is null. Exiting.");
-                return;
+                return false;
             }
             helper.deleteDatabase();
 
             if (!dictFile.exists()) {
                 Log.e(Constants.LOG_TAG, "dict does not exist in folder");
-                return;
+                return false;
             }
 
             if (taskScheduler == null) {
                 Log.e(Constants.LOG_TAG, "no task scheduler to load dict");
-                return;
+                return false;
             }
             taskScheduler.newTaskForClient(new PopulateHelpDictTask(context, dictFile.getPath()), resultClient);
+            return true;
         }
+        return false;
     }
 
     public static void showKeyboard(Activity activity) {

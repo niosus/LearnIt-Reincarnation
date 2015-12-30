@@ -367,9 +367,9 @@ public class AddWordsCardFragment extends Fragment
             }
             if (failedWorldsCount == 0) {
                 mSnackBarController.showSnackBar(
-                        getResources().getString(R.string.snack_done), Snackbar.LENGTH_SHORT);
+                        getResources().getString(R.string.snack_words_saved), Snackbar.LENGTH_SHORT);
             } else {
-                String msg = getResources().getString(R.string.snack_fail);
+                String msg = getResources().getString(R.string.snack_saved_some);
                 mSnackBarController.showSnackBar(
                         String.format(msg, failedWorldsCount, codes.size()), Snackbar.LENGTH_LONG);
             }

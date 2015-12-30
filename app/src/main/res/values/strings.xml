@@ -218,7 +218,14 @@
     <string name="word_type_conjunction">(conj)</string>
     <string name="word_type_none">(…)</string>
 
-    <string name="snack_done">Words saved!</string>
-    <string name="snack_fail">Cannot save %1$s out of %2$s words.</string>
+    <string name="snack_words_saved">Words saved!</string>
+    <string name="snack_saved_some">Cannot save %1$s out of %2$s words.</string>
+    <string name="snack_save_failed">Failed to save words.</string>
+
+    <string name="snack_delete_success">Words deleted!</string>
+    <string name="snack_delete_failure">Could not delete words!</string>
+
+    <string name="snack_loading_help_dict">Loading help dictionary</string>
+    <string name="snack_loaded_help_dict">Loaded %1$s-%2$s help dictionary</string>
 
 </resources>

@@ -33,6 +33,7 @@ import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.interfaces.ISnackBarController;
+import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.TabsPagerAdapter;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
@@ -88,7 +89,10 @@ public class MainActivity
             Log.w(Constants.LOG_TAG, "Languages are not defined. This should not happen...");
             startSettingsActivity();
         } else {
-            Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
+            boolean updating = Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
+            if (updating) {
+                showSnackBar(getString(R.string.snack_loading_help_dict), Snackbar.LENGTH_SHORT);
+            }
         }
     }
 
@@ -239,6 +243,10 @@ public class MainActivity
         if (result instanceof Integer) {
             if (result == PopulateHelpDictTask.SUCCESS) {
                 Log.d(Constants.LOG_TAG, "loaded help dictionary");
+                LanguagePair.Names languagePair = Utils.getCurrentLanguageNames(this);
+                String msg = String.format(getString(R.string.snack_loaded_help_dict),
+                        languagePair.langToLearn(), languagePair.langYouKnow());
+                showSnackBar(msg, Snackbar.LENGTH_SHORT);
             }
         }
     }

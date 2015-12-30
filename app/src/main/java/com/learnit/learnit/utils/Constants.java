@@ -31,6 +31,11 @@ public class Constants {
         FAILURE
     }
 
+    public enum DeleteWordReturnCode {
+        SUCCESS,
+        FAILURE
+    }
+
     public enum QueryStyle {
         EXACT,
         APPROXIMATE_ENDING,
