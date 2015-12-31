@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
@@ -45,6 +46,7 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemClick;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 
 public class MainActivity
@@ -56,6 +58,7 @@ public class MainActivity
     @Bind(R.id.drawer_layout)       DrawerLayout mDrawerLayout;
     @Bind(R.id.fab)                 FloatingActionButton mFab;
     @Bind(R.id.coordinator_layout)  CoordinatorLayout mCoordinatorLayout;
+    @Bind(R.id.toolbar_progress_bar) ProgressBar mProgressBar;
 
     @BindDrawable(R.drawable.logo_white) Drawable mLogo;
 
@@ -235,9 +238,22 @@ public class MainActivity
         return "main_activity";
     }
     @Override
-    public void onPreExecute() {}
+    public void onPreExecute() {
+        if (mProgressBar.getVisibility() == View.INVISIBLE) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        mProgressBar.setIndeterminate(true);
+    }
     @Override
-    public void onProgressUpdate(Float progress) {}
+    public void onProgressUpdate(Float progress) {
+        if (mProgressBar.getVisibility() == View.INVISIBLE) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+        if (mProgressBar.isIndeterminate()) {
+            mProgressBar.setIndeterminate(false);
+        }
+        mProgressBar.setProgress(Math.round(progress));
+    }
     @Override
     public <OutType> void onFinish(OutType result) {
         if (result instanceof Integer) {
@@ -247,6 +263,7 @@ public class MainActivity
                 String msg = String.format(getString(R.string.snack_loaded_help_dict),
                         languagePair.langToLearn(), languagePair.langYouKnow());
                 showSnackBar(msg, Snackbar.LENGTH_SHORT);
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
         }
     }
