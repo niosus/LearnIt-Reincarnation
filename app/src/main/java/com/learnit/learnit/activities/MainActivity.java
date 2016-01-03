@@ -69,13 +69,14 @@ public class MainActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         if (Utils.isRunFirstTime(this.getLocalClassName())) {
             Log.d(Constants.LOG_TAG, "running " + this.getLocalClassName() + " for the first time");
             // start intro activity
             startActivity(new Intent(this, IntroActivity.class));
         }
+
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
         initActionBar();
