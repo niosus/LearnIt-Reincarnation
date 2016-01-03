@@ -308,9 +308,4 @@ public class MainActivity
         Snackbar snackbar = Snackbar.make(mCoordinatorLayout, message, actualDuration);
         snackbar.show();
     }
-
-    @Override
-    public void hideSnackBar() {
-
-    }
 }
