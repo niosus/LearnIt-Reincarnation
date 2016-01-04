@@ -42,7 +42,7 @@ public class DbUserDictHandler extends DbHandler {
 
     @Override
     public List<WordBundle> queryWord(String word, Constants.QueryStyle queryStyle, Integer limit) {
-        String limitStr = (limit == null) ? "" : String.format(" limit %s ", limit);
+        String additionalParams = (limit == null) ? "" : String.format(" limit %s ", limit);
         String matchingRule;
         String[] matchingParams;
         switch (queryStyle) {
@@ -58,13 +58,19 @@ public class DbUserDictHandler extends DbHandler {
                 matchingRule = " like ? ";
                 matchingParams = new String[]{"%" + word + "%"};
                 break;
+            case RANDOM:
+                // TODO: a bit hacky, but will do for now. It will be weird if the word is not going to be null
+                matchingRule = " is not null";
+                matchingParams = null;
+                additionalParams = " order by random() " + additionalParams;
+                break;
             default:
                 return null;
         }
         return queryFromDB(
                 getDatabaseName(),
                 getReadableDatabase(),
-                WORD_COLUMN_NAME + matchingRule + limitStr,
+                WORD_COLUMN_NAME + matchingRule + additionalParams,
                 matchingParams);
     }
 

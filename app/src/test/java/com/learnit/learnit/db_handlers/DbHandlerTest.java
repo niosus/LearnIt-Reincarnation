@@ -10,10 +10,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.learnit.learnit.BuildConfig;
-import com.learnit.learnit.db_handlers.DbHandler;
-import com.learnit.learnit.db_handlers.DbUserDictHandler;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -199,5 +199,47 @@ public class DbHandlerTest extends DbUserDictHandler {
         helper.deleteWord(bundle);
         returnCode = helper.addWord(bundle);
         assertThat(returnCode, is(Constants.AddWordReturnCode.SUCCESS));
+    }
+
+    @Test
+    public void testGetRandom() {
+        DbHandler helper = new DbUserDictHandler(
+                RuntimeEnvironment.application,
+                DbHandler.DB_USER_DICT,
+                null, 1);
+        String transToExpect = "test_trans";
+        String word1 = "test1";
+        String word2 = "test2";
+        float weight1 = 0.9f;
+        float weight2 = 0.1f;
+        helper.addWord(new WordBundle.Constructor()
+                .setWord(word1)
+                .setTrans(transToExpect)
+                .setWeight(weight1)
+                .setId(666)
+                .construct());
+        helper.addWord(new WordBundle.Constructor()
+                .setWord(word2)
+                .setTrans(transToExpect)
+                .setWeight(weight2)
+                .setId(666)
+                .construct());
+
+        float counter1 = 0.0f;
+        float counter2 = 0.0f;
+        for (int i = 0; i < 1000; i++) {
+            List<WordBundle> res = helper.queryRandomWords(2);
+            assertThat(res.size(), is(2));
+            WordBundle resultBundle = res.get(0);
+            if (resultBundle.word().equals(word1)) {
+                counter1++;
+            } else if (resultBundle.word().equals(word2)) {
+                counter2++;
+            }
+        }
+
+        // ensures the data is approximately shown with 50/50 chance
+        float epsilon = 0.1f;
+        Assert.assertEquals(1.0f, counter1 / counter2, epsilon);
     }
 }

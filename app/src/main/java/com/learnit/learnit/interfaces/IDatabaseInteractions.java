@@ -12,6 +12,7 @@ public interface IDatabaseInteractions {
                                final Integer limit);
     List<WordBundle> queryWord(final String word,
                                final Constants.QueryStyle queryStyle);
+    List<WordBundle> queryRandomWords(final Integer limit);
 
     void deleteWord(final WordBundle wordBundle);
 

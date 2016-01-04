@@ -164,5 +164,10 @@ public abstract class DbHandler extends SQLiteOpenHelper
         return queryWord(word, queryStyle, null);
     }
 
+    @Override
+    public List<WordBundle> queryRandomWords(final Integer limit) {
+        return queryWord(null, Constants.QueryStyle.RANDOM, limit);
+    }
+
     abstract protected WordBundle wordBundleFromCursor(final Cursor cursor);
 }

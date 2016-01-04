@@ -39,6 +39,7 @@ public class Constants {
     public enum QueryStyle {
         EXACT,
         APPROXIMATE_ENDING,
-        APPROXIMATE_ALL
+        APPROXIMATE_ALL,
+        RANDOM
     }
 }
