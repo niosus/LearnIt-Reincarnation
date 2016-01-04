@@ -62,7 +62,7 @@ public class DbUserDictHandler extends DbHandler {
                 // TODO: a bit hacky, but will do for now. It will be weird if the word is not going to be null
                 matchingRule = " is not null";
                 matchingParams = null;
-                additionalParams = " order by random() " + additionalParams;
+                additionalParams = " order by random()" + additionalParams;
                 break;
             default:
                 return null;
