@@ -40,6 +40,8 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.DeleteWordFromUserDictTask;
 import com.learnit.learnit.async_tasks.GetUserDictWordsTask;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.IRefreshable;
+import com.learnit.learnit.interfaces.IRefreshableController;
 import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
@@ -58,7 +60,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class UserDictCardFragment extends Fragment
-        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient {
+        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient, IRefreshable {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -75,6 +77,7 @@ public class UserDictCardFragment extends Fragment
 
     private TaskSchedulerFragment mTaskScheduler;
     private IFabStateController mFabStateController;
+    private IRefreshableController mRefreshableController;
     private ISnackBarController mSnackBarController;
 
     @Override
@@ -84,6 +87,9 @@ public class UserDictCardFragment extends Fragment
         initTaskScheduler(context);
         if (context instanceof IFabStateController) {
             mFabStateController = (IFabStateController) context;
+        }
+        if (context instanceof IRefreshableController) {
+            mRefreshableController = (IRefreshableController) context;
         }
         if (context instanceof ISnackBarController) {
             mSnackBarController = (ISnackBarController) context;
@@ -124,6 +130,7 @@ public class UserDictCardFragment extends Fragment
         mEditText.setHint(String.format(getString(R.string.my_dict_word_hint),
                 langPair.langToLearn(), langPair.langYouKnow()));
         mFabStateController.addFabEventHandler(TabsPagerAdapter.USER_DICT_ITEM, this);
+        mRefreshableController.addRefreshableClient(TabsPagerAdapter.USER_DICT_ITEM, this);
         startLoadingMyDictWordsAsync();
     }
 
@@ -323,5 +330,11 @@ public class UserDictCardFragment extends Fragment
     @Override
     public void onCancelled() {
 
+    }
+
+    @Override
+    public void refresh() {
+        startLoadingMyDictWordsAsync();
+        Log.d(Constants.LOG_TAG, "refreshing fragment " + this.getClass().getSimpleName());
     }
 }

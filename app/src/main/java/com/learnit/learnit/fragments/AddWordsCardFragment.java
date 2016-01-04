@@ -40,6 +40,7 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.IRefreshableController;
 import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.interfaces.IFabEventHandler;
@@ -81,6 +82,7 @@ public class AddWordsCardFragment extends Fragment
 
     private TaskSchedulerFragment mTaskScheduler;
     private IFabStateController mFabStateController;
+    private IRefreshableController mRefreshableController;
     private ISnackBarController mSnackBarController;
 
     @Override
@@ -90,6 +92,9 @@ public class AddWordsCardFragment extends Fragment
         initTaskScheduler();
         if (context instanceof IFabStateController) {
             mFabStateController = (IFabStateController) context;
+        }
+        if (context instanceof IRefreshableController) {
+            mRefreshableController = (IRefreshableController) context;
         }
         if (context instanceof ISnackBarController) {
             mSnackBarController = (ISnackBarController) context;
@@ -368,10 +373,13 @@ public class AddWordsCardFragment extends Fragment
             if (failedWorldsCount == 0) {
                 mSnackBarController.showSnackBar(
                         getResources().getString(R.string.snack_words_saved), Snackbar.LENGTH_SHORT);
+                // we need to tell everybody that some stuff in the dict has changed
+                mRefreshableController.refreshAllClients();
             } else {
                 String msg = getResources().getString(R.string.snack_saved_some);
                 mSnackBarController.showSnackBar(
                         String.format(msg, failedWorldsCount, codes.size()), Snackbar.LENGTH_LONG);
+                mRefreshableController.refreshAllClients();
             }
         }
     }

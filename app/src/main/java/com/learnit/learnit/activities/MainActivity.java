@@ -33,6 +33,8 @@ import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
+import com.learnit.learnit.interfaces.IRefreshable;
+import com.learnit.learnit.interfaces.IRefreshableController;
 import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.TabsPagerAdapter;
@@ -46,12 +48,14 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemClick;
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 
 public class MainActivity
         extends AppCompatActivity
-        implements IAsyncTaskResultClient, IFabStateController, ISnackBarController {
+        implements IAsyncTaskResultClient,
+        IFabStateController,
+        ISnackBarController,
+        IRefreshableController {
     @Bind(R.id.toolbar)             Toolbar mToolbar;
     @Bind(R.id.tab_layout)          TabLayout mTabLayout;
     @Bind(R.id.pager)               ViewPager mPager;
@@ -65,6 +69,7 @@ public class MainActivity
     private ActionBarDrawerToggle mDrawerToggle;
     private TaskSchedulerFragment mTaskScheduler;
     private Map<Integer, IFabEventHandler> mFabEventHandlers;
+    private Map<Integer, IRefreshable> mRefreshableClients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +135,10 @@ public class MainActivity
         // I still personally think it would be better to embed fab into a fragment,
         // but google devs think differently. Well, who am I to object?
         mFabEventHandlers = new HashMap<>();
+
+        // For now our activity is the controller that tells other fragments to update when some
+        // of them triggers that the underlying data has changed
+        mRefreshableClients = new HashMap<>();
     }
 
     private void initTabbedViewPager() {
@@ -138,7 +147,7 @@ public class MainActivity
         mTabLayout.setTabsFromPagerAdapter(mPagerAdapter);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
+            @Override @SuppressWarnings("deprecated")
             public void onTabSelected(TabLayout.Tab tab) {
                 IFabEventHandler currentFabEventHandler = mFabEventHandlers.get(tab.getPosition());
                 if (currentFabEventHandler != null && currentFabEventHandler.fabNeeded()) {
@@ -272,7 +281,7 @@ public class MainActivity
     public void onCancelled() {
     }
 
-    @Override
+    @Override @SuppressWarnings("deprecated")
     public void showFab(int drawableId) {
         mFab.setImageDrawable(getResources().getDrawable(drawableId));
         mFab.show();
@@ -308,5 +317,19 @@ public class MainActivity
         }
         Snackbar snackbar = Snackbar.make(mCoordinatorLayout, message, actualDuration);
         snackbar.show();
+    }
+
+    @Override
+    public void refreshAllClients() {
+        for (IRefreshable client : mRefreshableClients.values()) {
+            client.refresh();
+        }
+    }
+
+    @Override
+    public void addRefreshableClient(int position, IRefreshable refreshable) {
+        mRefreshableClients.put(position, refreshable);
+        Log.d(Constants.LOG_TAG, "added refreshable client at pos: " + position);
+        Log.d(Constants.LOG_TAG, "there are " + mRefreshableClients.size() + " refreshable clients");
     }
 }
