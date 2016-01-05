@@ -239,7 +239,7 @@ public class DbHandlerTest extends DbUserDictHandler {
         }
 
         // ensures the data is approximately shown with 50/50 chance
-        float epsilon = 0.1f;
+        float epsilon = 0.3f;
         Assert.assertEquals(1.0f, counter1 / counter2, epsilon);
     }
 }

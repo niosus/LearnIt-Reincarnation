@@ -1,8 +1,6 @@
 package com.learnit.learnit.async_tasks;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.learnit.learnit.BuildConfig;

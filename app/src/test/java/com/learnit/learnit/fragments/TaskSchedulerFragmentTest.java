@@ -1,27 +1,23 @@
 package com.learnit.learnit.fragments;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 
 import com.learnit.learnit.BuildConfig;
-import com.learnit.learnit.activities.IntroActivity;
 import com.learnit.learnit.async_tasks.DummyTask;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.is;
-
-import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
 
 @Config(sdk = 21, constants = BuildConfig.class)
