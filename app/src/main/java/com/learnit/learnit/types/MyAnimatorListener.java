@@ -8,6 +8,7 @@ package com.learnit.learnit.types;
 
 import android.view.View;
 
+import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IUiEvents;
 
 import io.codetail.animation.SupportAnimator;
@@ -15,9 +16,9 @@ import io.codetail.animation.SupportAnimator;
 public class MyAnimatorListener implements SupportAnimator.AnimatorListener {
     int mViewId;
     int mTargetVisibility;
-    IUiEvents mCallback = null;
+    IAnimationEventListener mCallback = null;
 
-    public MyAnimatorListener(IUiEvents callback, final int viewId, final int targetVisibility) {
+    public MyAnimatorListener(IAnimationEventListener callback, final int viewId, final int targetVisibility) {
         mViewId = viewId;
         mTargetVisibility = targetVisibility;
         mCallback = callback;
@@ -25,16 +26,12 @@ public class MyAnimatorListener implements SupportAnimator.AnimatorListener {
 
     @Override
     public void onAnimationStart() {
-        if (mTargetVisibility == View.VISIBLE) {
-            mCallback.setViewVisibilityState(mViewId, mTargetVisibility);
-        }
+        mCallback.onAnimationStarted(mViewId, mTargetVisibility);
     }
 
     @Override
     public void onAnimationEnd() {
-        if (mTargetVisibility == View.INVISIBLE) {
-            mCallback.setViewVisibilityState(mViewId, mTargetVisibility);
-        }
+        mCallback.onAnimationFinished(mViewId, mTargetVisibility);
     }
 
     @Override

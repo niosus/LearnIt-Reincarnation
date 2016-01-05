@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +28,12 @@ import android.widget.TextView;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.GetRandomUserWordsTask;
+import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IRefreshable;
+import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.types.WordBundle;
+import com.learnit.learnit.utils.AnimationUtils;
 import com.learnit.learnit.utils.Constants;
 
 import java.util.List;
@@ -39,12 +43,17 @@ import butterknife.ButterKnife;
 
 public class LearnWordsCardFragment
         extends Fragment
-        implements IAsyncTaskResultClient, IRefreshable {
+        implements IAsyncTaskResultClient, IRefreshable, IAnimationEventListener {
 
     private static final String ARG_POSITION = "position";
 
     @Bind(R.id.query_word)
     TextView mQueryWord;
+
+    @Bind(R.id.query_word_card)
+    CardView mQueryWordCard;
+
+    private WordBundle mCurrentQueryWord;
 
 
     private TaskSchedulerFragment mTaskScheduler;
@@ -87,6 +96,12 @@ public class LearnWordsCardFragment
         View rootView = inflater.inflate(R.layout.fragment_learn_words, container, false);
         ButterKnife.bind(this, rootView);
         ViewCompat.setElevation(rootView, 50);
+        mQueryWordCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateWordsAsync();
+            }
+        });
         return rootView;
     }
 
@@ -101,6 +116,36 @@ public class LearnWordsCardFragment
         mTaskScheduler.newTaskForClient(
                 new GetRandomUserWordsTask(this.getContext(), numOfWords), this);
     }
+
+    private void setNewQueryWord(final WordBundle word) {
+        mCurrentQueryWord = word;
+        if (mQueryWordCard.getVisibility() == View.VISIBLE) {
+            updateWordCardVisualization(View.INVISIBLE);
+        } else {
+            updateWordCardVisualization(View.VISIBLE);
+        }
+    }
+
+    private void updateWordCardVisualization(final int visibility) {
+        try {
+            AnimationUtils.animateToVisibilityState(mQueryWordCard, visibility, this);
+        } catch (IllegalStateException e) {
+            Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
+            this.setViewVisibilityState(mQueryWordCard.getId(), visibility);
+        }
+    }
+
+    private void setViewVisibilityState(int id, int visibility) {
+        Log.d(Constants.LOG_TAG, "changing visibility of " + id + " to " + visibility);
+        switch (id) {
+            case R.id.query_word_card:
+                mQueryWordCard.setVisibility(visibility);
+                break;
+            default:
+                Log.e(Constants.LOG_TAG, "unhandled switch setViewVisibilityState");
+        }
+    }
+
 
     @Override
     public String tag() {
@@ -121,7 +166,9 @@ public class LearnWordsCardFragment
     public <OutType> void onFinish(OutType result) {
         if (result instanceof List) {
             List<WordBundle> words = (List<WordBundle>) result;
-            mQueryWord.setText(words.get(0).word());
+            if (!words.isEmpty()) {
+                setNewQueryWord(words.get(0));
+            }
         }
     }
 
@@ -133,5 +180,29 @@ public class LearnWordsCardFragment
     @Override
     public void refresh() {
         updateWordsAsync();
+    }
+
+    @Override
+    public void onAnimationStarted(int id, int targetVisibility) {
+        switch (id) {
+            case R.id.query_word_card:
+                if (targetVisibility == View.VISIBLE) {
+                    mQueryWord.setText(mCurrentQueryWord.word());
+                    this.setViewVisibilityState(id, targetVisibility);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onAnimationFinished(int id, int targetVisibility) {
+        switch (id) {
+            case R.id.query_word_card:
+                if (targetVisibility == View.INVISIBLE) {
+                    this.setViewVisibilityState(id, targetVisibility);
+                    this.updateWordCardVisualization(View.VISIBLE);
+                }
+                break;
+        }
     }
 }

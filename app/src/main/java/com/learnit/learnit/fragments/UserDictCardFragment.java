@@ -39,6 +39,7 @@ import android.widget.LinearLayout;
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.DeleteWordFromUserDictTask;
 import com.learnit.learnit.async_tasks.GetUserDictWordsTask;
+import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IRefreshable;
 import com.learnit.learnit.interfaces.IRefreshableController;
@@ -60,7 +61,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class UserDictCardFragment extends Fragment
-        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient, IRefreshable {
+        implements  IUiEvents,
+        IFabEventHandler,
+        IAsyncTaskResultClient,
+        IRefreshable,
+        IAnimationEventListener {
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -336,5 +341,19 @@ public class UserDictCardFragment extends Fragment
     public void refresh() {
         startLoadingMyDictWordsAsync();
         Log.d(Constants.LOG_TAG, "refreshing fragment " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onAnimationStarted(int id, int targetVisibility) {
+        if (targetVisibility == View.VISIBLE) {
+            this.setViewVisibilityState(id, targetVisibility);
+        }
+    }
+
+    @Override
+    public void onAnimationFinished(int id, int targetVisibility) {
+        if (targetVisibility == View.INVISIBLE) {
+            this.setViewVisibilityState(id, targetVisibility);
+        }
     }
 }

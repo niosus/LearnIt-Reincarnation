@@ -39,6 +39,7 @@ import android.widget.EditText;
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
+import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IRefreshableController;
 import com.learnit.learnit.interfaces.ISnackBarController;
@@ -63,7 +64,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class AddWordsCardFragment extends Fragment
-        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient {
+        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient, IAnimationEventListener{
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -387,5 +388,19 @@ public class AddWordsCardFragment extends Fragment
     @Override
     public void onCancelled() {
 
+    }
+
+    @Override
+    public void onAnimationStarted(int id, int targetVisibility) {
+        if (targetVisibility == View.VISIBLE) {
+            this.setViewVisibilityState(id, targetVisibility);
+        }
+    }
+
+    @Override
+    public void onAnimationFinished(int id, int targetVisibility) {
+        if (targetVisibility == View.INVISIBLE) {
+            this.setViewVisibilityState(id, targetVisibility);
+        }
     }
 }

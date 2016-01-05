@@ -3,6 +3,7 @@ package com.learnit.learnit.utils;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.types.MyAnimatorListener;
 
@@ -11,7 +12,8 @@ import io.codetail.animation.ViewAnimationUtils;
 
 public class AnimationUtils {
 
-    public static void animateToVisibilityState(View view, final int visibility, IUiEvents eventHandler) {
+    public static void animateToVisibilityState(View view, final int visibility,
+                                                IAnimationEventListener eventHandler) {
         if (view == null) {
             return;
         }
