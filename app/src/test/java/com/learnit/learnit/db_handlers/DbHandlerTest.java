@@ -233,8 +233,10 @@ public class DbHandlerTest extends DbUserDictHandler {
             WordBundle resultBundle = res.get(0);
             if (resultBundle.word().equals(word1)) {
                 counter1++;
+                assertThat(res.get(1).word(), is(word2));
             } else if (resultBundle.word().equals(word2)) {
                 counter2++;
+                assertThat(res.get(1).word(), is(word1));
             }
         }
 
