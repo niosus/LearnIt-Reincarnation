@@ -225,9 +225,9 @@ public class DbHandlerTest extends DbUserDictHandler {
                 .setId(666)
                 .construct());
 
-        float counter1 = 0.0f;
-        float counter2 = 0.0f;
-        for (int i = 0; i < 1000; i++) {
+        int counter1 = 0;
+        int counter2 = 0;
+        while (counter1 == 0 || counter2 == 0) {
             List<WordBundle> res = helper.queryRandomWords(2);
             assertThat(res.size(), is(2));
             WordBundle resultBundle = res.get(0);
@@ -238,8 +238,7 @@ public class DbHandlerTest extends DbUserDictHandler {
             }
         }
 
-        // ensures the data is approximately shown with 50/50 chance
-        float epsilon = 0.3f;
-        Assert.assertEquals(1.0f, counter1 / counter2, epsilon);
+        Assert.assertTrue(counter1 > 0);
+        Assert.assertTrue(counter2 > 0);
     }
 }
