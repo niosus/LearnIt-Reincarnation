@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.learnit.learnit.R;
@@ -36,10 +37,13 @@ import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.AnimationUtils;
 import com.learnit.learnit.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.grantland.widget.AutofitHelper;
 import me.grantland.widget.AutofitTextView;
 
 public class LearnWordsCardFragment
@@ -49,15 +53,25 @@ public class LearnWordsCardFragment
     private static final String ARG_POSITION = "position";
 
     @Bind(R.id.query_word)
-    AutofitTextView mQueryWord;
+    TextView mQueryWord;
 
     @Bind(R.id.query_word_card)
     CardView mQueryWordCard;
 
+    @Bind(R.id.left_bottom_button)
+    android.support.v7.widget.AppCompatButton mLeftBottomButton;
+    @Bind(R.id.left_top_button)
+    android.support.v7.widget.AppCompatButton mLeftTopButton;
+    @Bind(R.id.right_bottom_button)
+    android.support.v7.widget.AppCompatButton mRightBottomButton;
+    @Bind(R.id.right_top_button)
+    android.support.v7.widget.AppCompatButton mRightTopButton;
+
     private WordBundle mCurrentQueryWord;
 
-
     private TaskSchedulerFragment mTaskScheduler;
+
+    private List<android.support.v7.widget.AppCompatButton> mBtnIds;
 
     public static LearnWordsCardFragment newInstance(int position) {
         LearnWordsCardFragment f = new LearnWordsCardFragment();
@@ -103,6 +117,20 @@ public class LearnWordsCardFragment
                 updateWordsAsync();
             }
         });
+        mQueryWord.setMaxLines(3);
+        mQueryWord.setSingleLine();
+        AutofitHelper.create(mQueryWord);
+
+        AutofitHelper.create(mLeftBottomButton);
+        AutofitHelper.create(mLeftTopButton);
+        AutofitHelper.create(mRightBottomButton);
+        AutofitHelper.create(mRightTopButton);
+
+        mBtnIds = new ArrayList<>();
+        mBtnIds.add(mLeftTopButton);
+        mBtnIds.add(mRightTopButton);
+        mBtnIds.add(mLeftBottomButton);
+        mBtnIds.add(mRightBottomButton);
         return rootView;
     }
 
@@ -169,6 +197,13 @@ public class LearnWordsCardFragment
             List<WordBundle> words = (List<WordBundle>) result;
             if (!words.isEmpty()) {
                 setNewQueryWord(words.get(0));
+            }
+            Random rand = new Random();
+            for (int i = 0; i < words.size(); i++) {
+                int numOfTranslations = words.get(i).transAsArray().length;
+                Log.d(Constants.LOG_TAG, "num of translations: " + numOfTranslations);
+                String trans = words.get(i).transAsArray()[rand.nextInt(numOfTranslations)];
+                mBtnIds.get(i).setText(trans);
             }
         }
     }

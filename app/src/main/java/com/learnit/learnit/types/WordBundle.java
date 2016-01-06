@@ -92,6 +92,7 @@ public class WordBundle {
 
         public WordBundle.Constructor setTrans(final String trans, final String divider) {
             if (trans == null) { return this; }
+            Log.d(Constants.LOG_TAG, "trans to split is: " + trans);
             String[] translations = trans.split(divider);
             for (int i = 0; i < translations.length; ++i) {
                 translations[i] = translations[i].trim();

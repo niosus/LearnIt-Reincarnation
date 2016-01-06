@@ -11,6 +11,7 @@
         <item name="colorPrimary">@color/highlight</item>
         <item name="colorPrimaryDark">@color/highlight_darker</item>
         <item name="colorAccent">@color/highlight</item>
+        <item name="colorButtonNormal">@color/highlight</item>
     </style>
 
     <style name="PrefsTheme" parent="@style/Theme.AppCompat.Light">
