@@ -40,6 +40,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.grantland.widget.AutofitTextView;
 
 public class LearnWordsCardFragment
         extends Fragment
@@ -48,7 +49,7 @@ public class LearnWordsCardFragment
     private static final String ARG_POSITION = "position";
 
     @Bind(R.id.query_word)
-    TextView mQueryWord;
+    AutofitTextView mQueryWord;
 
     @Bind(R.id.query_word_card)
     CardView mQueryWordCard;

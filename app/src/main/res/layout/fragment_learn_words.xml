@@ -8,7 +8,6 @@
     android:background="@color/background_window">
 
     <io.codetail.widget.RevealFrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -22,13 +21,18 @@
             card_view:cardBackgroundColor="@android:color/white"
             card_view:cardCornerRadius="@dimen/cardview_default_radius"
             card_view:cardElevation="@dimen/cardview_default_elevation">
-            <TextView
+            <me.grantland.widget.AutofitTextView
+                xmlns:auto_fit="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/query_word"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="8dp"
-                tools:text="Card"
+                android:gravity="center"
+                android:layout_margin="8dp"
+                android:singleLine="true"
+                android:maxLines="3"
+                android:textSize="40sp"
+                auto_fit:minTextSize="16sp"
                 android:textColor="@color/black"/>
         </android.support.v7.widget.CardView>
     </io.codetail.widget.RevealFrameLayout>
