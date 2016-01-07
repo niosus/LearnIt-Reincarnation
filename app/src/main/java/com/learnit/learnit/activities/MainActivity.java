@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -63,6 +64,7 @@ public class MainActivity
     @Bind(R.id.fab)                 FloatingActionButton mFab;
     @Bind(R.id.coordinator_layout)  CoordinatorLayout mCoordinatorLayout;
     @Bind(R.id.toolbar_progress_bar) ProgressBar mProgressBar;
+    @Bind(R.id.app_bar)             AppBarLayout mAppBarLayout;
 
     @BindDrawable(R.drawable.logo_white) Drawable mLogo;
 
@@ -158,6 +160,11 @@ public class MainActivity
                     mFab.hide();
                 }
                 mPager.setCurrentItem(tab.getPosition());
+                if (tab.getPosition() == TabsPagerAdapter.LEARN_WORDS_ITEM) {
+                    mAppBarLayout.setExpanded(false);
+                } else {
+                    mAppBarLayout.setExpanded(true);
+                }
             }
 
             @Override
