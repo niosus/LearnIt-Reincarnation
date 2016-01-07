@@ -89,7 +89,7 @@ public class UserDictCardFragment extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(Constants.LOG_TAG, "fragment is attached");
-        initTaskScheduler(context);
+        initTaskScheduler();
         if (context instanceof IFabStateController) {
             mFabStateController = (IFabStateController) context;
         }
@@ -101,7 +101,7 @@ public class UserDictCardFragment extends Fragment
         }
     }
 
-    private void initTaskScheduler(Context context) {
+    private void initTaskScheduler() {
         FragmentManager fragmentManager = getFragmentManager();
         mTaskScheduler = (TaskSchedulerFragment)
                 fragmentManager.findFragmentByTag(TaskSchedulerFragment.TAG);

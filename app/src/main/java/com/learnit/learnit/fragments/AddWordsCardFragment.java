@@ -41,6 +41,7 @@ import com.learnit.learnit.async_tasks.AddUserDictWordsTask;
 import com.learnit.learnit.async_tasks.GetHelpWordsTask;
 import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
+import com.learnit.learnit.interfaces.IRefreshable;
 import com.learnit.learnit.interfaces.IRefreshableController;
 import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.interfaces.IUiEvents;
@@ -64,7 +65,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class AddWordsCardFragment extends Fragment
-        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient, IAnimationEventListener{
+        implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient, IAnimationEventListener, IRefreshable{
     private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
@@ -136,6 +137,7 @@ public class AddWordsCardFragment extends Fragment
         mEdtAddWord.setHint(String.format(getString(R.string.add_word_hint), langPair.langToLearn()));
         mEdtAddTrans.setHint(String.format(getString(R.string.add_translation_hint), langPair.langYouKnow()));
         mFabStateController.addFabEventHandler(TabsPagerAdapter.ADD_WORDS_ITEM, this);
+        mRefreshableController.addRefreshableClient(TabsPagerAdapter.ADD_WORDS_ITEM, this);
         startLoadingHelpWordsAsync();
     }
 
@@ -402,5 +404,11 @@ public class AddWordsCardFragment extends Fragment
         if (targetVisibility == View.INVISIBLE) {
             this.setViewVisibilityState(id, targetVisibility);
         }
+    }
+
+    @Override
+    public void refresh() {
+        onClearWord(EditTextType.TRANS);
+        onClearWord(EditTextType.WORD);
     }
 }
