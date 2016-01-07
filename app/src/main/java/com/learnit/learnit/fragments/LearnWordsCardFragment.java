@@ -32,8 +32,8 @@ import com.learnit.learnit.async_tasks.GetRandomUserWordsTask;
 import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IRefreshable;
-import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.types.WordBundle;
+import com.learnit.learnit.types.LearnCorrectnessValidator;
 import com.learnit.learnit.utils.AnimationUtils;
 import com.learnit.learnit.utils.Constants;
 
@@ -44,7 +44,6 @@ import java.util.Random;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.grantland.widget.AutofitHelper;
-import me.grantland.widget.AutofitTextView;
 
 public class LearnWordsCardFragment
         extends Fragment
@@ -71,7 +70,9 @@ public class LearnWordsCardFragment
 
     private TaskSchedulerFragment mTaskScheduler;
 
-    private List<android.support.v7.widget.AppCompatButton> mBtnIds;
+    private List<android.support.v7.widget.AppCompatButton> mButtons;
+
+    private LearnCorrectnessValidator mButtonOnClickListener;
 
     public static LearnWordsCardFragment newInstance(int position) {
         LearnWordsCardFragment f = new LearnWordsCardFragment();
@@ -126,11 +127,15 @@ public class LearnWordsCardFragment
         AutofitHelper.create(mRightBottomButton);
         AutofitHelper.create(mRightTopButton);
 
-        mBtnIds = new ArrayList<>();
-        mBtnIds.add(mLeftTopButton);
-        mBtnIds.add(mRightTopButton);
-        mBtnIds.add(mLeftBottomButton);
-        mBtnIds.add(mRightBottomButton);
+        mButtons = new ArrayList<>();
+        mButtons.add(mLeftTopButton);
+        mButtons.add(mRightTopButton);
+        mButtons.add(mLeftBottomButton);
+        mButtons.add(mRightBottomButton);
+        mButtonOnClickListener = new LearnCorrectnessValidator();
+        for (Button button: mButtons) {
+            button.setOnClickListener(mButtonOnClickListener);
+        }
         return rootView;
     }
 
@@ -146,8 +151,8 @@ public class LearnWordsCardFragment
                 new GetRandomUserWordsTask(this.getContext(), numOfWords), this);
     }
 
-    private void setNewQueryWord(final WordBundle word) {
-        mCurrentQueryWord = word;
+    private void setNewWord(final List<WordBundle> words, final int correctId) {
+        mCurrentQueryWord = words.get(correctId);
         if (mQueryWordCard.getVisibility() == View.VISIBLE) {
             updateWordCardVisualization(View.INVISIBLE);
         } else {
@@ -195,15 +200,15 @@ public class LearnWordsCardFragment
     public <OutType> void onFinish(OutType result) {
         if (result instanceof List) {
             List<WordBundle> words = (List<WordBundle>) result;
-            if (!words.isEmpty()) {
-                setNewQueryWord(words.get(0));
-            }
             Random rand = new Random();
+            if (!words.isEmpty()) {
+                setNewWord(words, rand.nextInt(words.size()));
+            }
             for (int i = 0; i < words.size(); i++) {
                 int numOfTranslations = words.get(i).transAsArray().length;
                 Log.d(Constants.LOG_TAG, "num of translations: " + numOfTranslations);
                 String trans = words.get(i).transAsArray()[rand.nextInt(numOfTranslations)];
-                mBtnIds.get(i).setText(trans);
+                mButtons.get(i).setText(trans);
             }
         }
     }
