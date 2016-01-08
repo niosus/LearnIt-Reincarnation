@@ -27,9 +27,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.GetRandomUserWordsTask;
 import com.learnit.learnit.interfaces.IAnimationEventListener;
+import com.learnit.learnit.interfaces.IAnswerChecker;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IRefreshable;
 import com.learnit.learnit.types.WordBundle;
@@ -47,7 +50,10 @@ import me.grantland.widget.AutofitHelper;
 
 public class LearnWordsCardFragment
         extends Fragment
-        implements IAsyncTaskResultClient, IRefreshable, IAnimationEventListener {
+        implements IAsyncTaskResultClient,
+        IRefreshable,
+        IAnimationEventListener,
+        IAnswerChecker {
 
     private static final String ARG_POSITION = "position";
 
@@ -132,7 +138,7 @@ public class LearnWordsCardFragment
         mButtons.add(mRightTopButton);
         mButtons.add(mLeftBottomButton);
         mButtons.add(mRightBottomButton);
-        mButtonOnClickListener = new LearnCorrectnessValidator();
+        mButtonOnClickListener = new LearnCorrectnessValidator(this);
         for (Button button: mButtons) {
             button.setOnClickListener(mButtonOnClickListener);
         }
@@ -201,8 +207,11 @@ public class LearnWordsCardFragment
         if (result instanceof List) {
             List<WordBundle> words = (List<WordBundle>) result;
             Random rand = new Random();
+            int correctWordIndex = rand.nextInt(words.size());
+            int correctBtnId = mButtons.get(correctWordIndex).getId();
+            mButtonOnClickListener.setCorrectAnswerId(correctBtnId);
             if (!words.isEmpty()) {
-                setNewWord(words, rand.nextInt(words.size()));
+                setNewWord(words, correctWordIndex);
             }
             for (int i = 0; i < words.size(); i++) {
                 int numOfTranslations = words.get(i).transAsArray().length;
@@ -245,5 +254,14 @@ public class LearnWordsCardFragment
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onCorrectAnswerPicked() {
+    }
+
+    @Override
+    public void onWrongAnswerPicked(View v) {
+        YoYo.with(Techniques.Shake).duration(700).playOn(v);
     }
 }
