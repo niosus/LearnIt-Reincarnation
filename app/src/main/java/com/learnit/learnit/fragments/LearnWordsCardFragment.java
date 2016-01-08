@@ -18,7 +18,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +29,8 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.learnit.learnit.R;
+import com.learnit.learnit.animators.ZoomInNoFade;
+import com.learnit.learnit.animators.ZoomOutNoFade;
 import com.learnit.learnit.async_tasks.GetRandomUserWordsTask;
 import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAnswerChecker;
@@ -212,7 +213,7 @@ public class LearnWordsCardFragment
             if (!words.isEmpty()) {
                 setNewWord(words, correctWordIndex);
             }
-            for (int i = 0; i < words.size(); i++) {
+            for (int i = 0; i < words.size(); ++i) {
                 int numOfTranslations = words.get(i).transAsArray().length;
                 String trans = words.get(i).transAsArray()[rand.nextInt(numOfTranslations)];
                 mButtons.get(i).setText(trans);
@@ -250,7 +251,7 @@ public class LearnWordsCardFragment
                     this.setViewVisibilityState(id, targetVisibility);
                     this.updateWordCardVisualization(View.VISIBLE);
                     for (Button btn: mButtons) {
-                        YoYo.with(Techniques.ZoomIn).duration(700).playOn(btn);
+                        YoYo.with(new ZoomInNoFade()).duration(300).playOn(btn);
                     }
                 }
                 break;
@@ -261,9 +262,10 @@ public class LearnWordsCardFragment
     public void onCorrectViewClicked(View v) {
         for (Button btn: mButtons) {
             if (btn.getId() == v.getId()) {
+                YoYo.with(new ZoomOutNoFade()).duration(100).delay(200).playOn(btn);
                 continue;
             }
-            YoYo.with(Techniques.ZoomOut).duration(700).playOn(btn);
+            YoYo.with(new ZoomOutNoFade()).duration(300).playOn(btn);
         }
         updateWordsAsync();
     }

@@ -88,6 +88,7 @@ public class DbUserDictHandler extends DbHandler {
                 wordBundles.add(wordBundleFromCursor(cursor));
             } while (cursor.moveToNext());
             cursor.close();
+            db.close();
             return wordBundles;
         }
     }

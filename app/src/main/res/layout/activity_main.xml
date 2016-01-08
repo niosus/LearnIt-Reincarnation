@@ -54,7 +54,7 @@
                 android:layout_gravity="end"
                 android:visibility="visible"
                 android:indeterminate="true"
-                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                style="@style/Widget.MaterialProgressBar.ProgressBar"
                 />
         </FrameLayout>
 
