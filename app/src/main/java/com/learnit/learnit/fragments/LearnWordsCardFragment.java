@@ -214,7 +214,6 @@ public class LearnWordsCardFragment
             }
             for (int i = 0; i < words.size(); i++) {
                 int numOfTranslations = words.get(i).transAsArray().length;
-                Log.d(Constants.LOG_TAG, "num of translations: " + numOfTranslations);
                 String trans = words.get(i).transAsArray()[rand.nextInt(numOfTranslations)];
                 mButtons.get(i).setText(trans);
             }
@@ -250,6 +249,9 @@ public class LearnWordsCardFragment
                 if (targetVisibility == View.INVISIBLE) {
                     this.setViewVisibilityState(id, targetVisibility);
                     this.updateWordCardVisualization(View.VISIBLE);
+                    for (Button btn: mButtons) {
+                        YoYo.with(Techniques.ZoomIn).duration(700).playOn(btn);
+                    }
                 }
                 break;
         }
@@ -257,7 +259,13 @@ public class LearnWordsCardFragment
 
     @Override
     public void onCorrectViewClicked(View v) {
-        YoYo.with(Techniques.Bounce).duration(700).playOn(v);
+        for (Button btn: mButtons) {
+            if (btn.getId() == v.getId()) {
+                continue;
+            }
+            YoYo.with(Techniques.ZoomOut).duration(700).playOn(btn);
+        }
+        updateWordsAsync();
     }
 
     @Override
