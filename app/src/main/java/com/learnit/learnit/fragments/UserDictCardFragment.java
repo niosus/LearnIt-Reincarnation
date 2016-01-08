@@ -173,7 +173,6 @@ public class UserDictCardFragment extends Fragment
             }
         });
 
-        ViewCompat.setElevation(rootView, 50);
         mEditText.addTextChangedListener(new TextChangeListener(this, mEditText.getId()));
 
         View.OnClickListener myOnClickListener = new ClearBtnOnClickListener(this);

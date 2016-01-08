@@ -117,7 +117,6 @@ public class LearnWordsCardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_learn_words, container, false);
         ButterKnife.bind(this, rootView);
-        ViewCompat.setElevation(rootView, 50);
         mQueryWordCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,11 +256,12 @@ public class LearnWordsCardFragment
     }
 
     @Override
-    public void onCorrectAnswerPicked() {
+    public void onCorrectViewClicked(View v) {
+        YoYo.with(Techniques.Bounce).duration(700).playOn(v);
     }
 
     @Override
-    public void onWrongAnswerPicked(View v) {
+    public void onWrongViewClicked(View v) {
         YoYo.with(Techniques.Shake).duration(700).playOn(v);
     }
 }

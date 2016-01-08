@@ -171,7 +171,6 @@ public class AddWordsCardFragment extends Fragment
         });
         mRecyclerView.setVisibility(View.GONE);
 
-        ViewCompat.setElevation(rootView, 50);
         mEdtAddWord.addTextChangedListener(new TextChangeListener(this, mEdtAddWord.getId()));
         mEdtAddTrans.addTextChangedListener(new TextChangeListener(this, mEdtAddTrans.getId()));
 
