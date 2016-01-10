@@ -177,7 +177,6 @@ public class LearnWordsCardFragment
     }
 
     private void setViewVisibilityState(int id, int visibility) {
-        Log.d(Constants.LOG_TAG, "changing visibility of " + id + " to " + visibility);
         switch (id) {
             case R.id.query_word_card:
                 mQueryWordCard.setVisibility(visibility);
