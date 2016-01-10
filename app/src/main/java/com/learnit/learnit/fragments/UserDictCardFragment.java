@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -193,13 +192,16 @@ public class UserDictCardFragment extends Fragment
     }
 
     private void updateDeleteButtonStateAnimate() {
+        int duration = 300;
         if (mEditText.getText().toString().isEmpty()
                 && mDeleteWordButton.getVisibility() == View.VISIBLE) {
-            AnimationUtils.animateToVisibilityState(mDeleteWordButton, View.INVISIBLE, this);
+            AnimationUtils.animateToVisibilityCircular(mDeleteWordButton, View.INVISIBLE, duration,
+                    this, AnimationUtils.MotionOrigin.CENTER);
         } else {
             if (mDeleteWordButton.getVisibility() == View.INVISIBLE
                     && !mEditText.getText().toString().isEmpty()) {
-                AnimationUtils.animateToVisibilityState(mDeleteWordButton, View.VISIBLE, this);
+                AnimationUtils.animateToVisibilityCircular(mDeleteWordButton, View.VISIBLE, duration,
+                        this, AnimationUtils.MotionOrigin.CENTER);
             }
         }
     }

@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -226,7 +225,8 @@ public class AddWordsCardFragment extends Fragment
             return;
         }
         try {
-            AnimationUtils.animateToVisibilityState(btnView, resultVisibility, this);
+            int duration = 300;
+            AnimationUtils.animateToVisibilityCircular(btnView, resultVisibility, duration, this, AnimationUtils.MotionOrigin.CENTER);
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
             setViewVisibilityState(btnView.getId(), resultVisibility);

@@ -4,7 +4,6 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.learnit.learnit.interfaces.IAnimationEventListener;
-import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.types.MyAnimatorListener;
 
 import io.codetail.animation.SupportAnimator;
@@ -12,14 +11,29 @@ import io.codetail.animation.ViewAnimationUtils;
 
 public class AnimationUtils {
 
-    public static void animateToVisibilityState(View view, final int visibility,
-                                                IAnimationEventListener eventHandler) {
+    public enum MotionOrigin {
+        CENTER, TOP_CENTER
+    }
+
+    public static void animateToVisibilityCircular(View view, final int visibility, final int duration,
+                                                   IAnimationEventListener eventHandler, MotionOrigin origin) {
         if (view == null) {
             return;
         }
-        // get the center for the clipping circle
-        int cx = (view.getLeft() + view.getRight()) / 2;
-        int cy = (view.getTop() + view.getBottom()) / 2;
+
+        // set the center for the clipping circle
+        int cx = 0, cy = 0;
+        switch (origin) {
+            case CENTER:
+                cx = (view.getLeft() + view.getRight()) / 2;
+                cy = (view.getTop() + view.getBottom()) / 2;
+                break;
+            case TOP_CENTER:
+                cx = (view.getLeft() + view.getRight()) / 2;
+                cy = view.getTop();
+                break;
+        }
+
 
         // get the final radius for the clipping circle
         int finalRadius = Math.max(view.getWidth(), view.getHeight());
@@ -35,7 +49,7 @@ public class AnimationUtils {
         SupportAnimator animator =
                 ViewAnimationUtils.createCircularReveal(view, cx, cy, start, end);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.setDuration(300);
+        animator.setDuration(duration);
         animator.addListener(new MyAnimatorListener(eventHandler, view.getId(), visibility));
         animator.start();
     }

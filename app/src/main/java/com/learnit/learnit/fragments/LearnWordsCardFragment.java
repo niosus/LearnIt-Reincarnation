@@ -1,18 +1,4 @@
-package com.learnit.learnit.fragments;/*
- * Copyright (C) 2013 Andreas Stuetz <andreas.stuetz@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.learnit.learnit.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -23,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -83,6 +68,8 @@ public class LearnWordsCardFragment
 
     private LearnCorrectnessValidator mButtonOnClickListener;
 
+    private int mAnimationDuration = 300;
+
     public static LearnWordsCardFragment newInstance(int position) {
         LearnWordsCardFragment f = new LearnWordsCardFragment();
         Bundle b = new Bundle();
@@ -120,12 +107,6 @@ public class LearnWordsCardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_learn_words, container, false);
         ButterKnife.bind(this, rootView);
-        mQueryWordCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateWordsAsync();
-            }
-        });
         mQueryWord.setMaxLines(3);
         mQueryWord.setSingleLine();
         AutofitHelper.create(mQueryWord);
@@ -143,6 +124,7 @@ public class LearnWordsCardFragment
         mButtonOnClickListener = new LearnCorrectnessValidator(this);
         for (Button button: mButtons) {
             button.setOnClickListener(mButtonOnClickListener);
+            button.setVisibility(View.INVISIBLE);
         }
         return rootView;
     }
@@ -170,7 +152,7 @@ public class LearnWordsCardFragment
 
     private void updateWordCardVisualization(final int visibility) {
         try {
-            AnimationUtils.animateToVisibilityState(mQueryWordCard, visibility, this);
+            AnimationUtils.animateToVisibilityCircular(mQueryWordCard, visibility, mAnimationDuration, this, AnimationUtils.MotionOrigin.TOP_CENTER);
         } catch (IllegalStateException e) {
             Log.w(Constants.LOG_TAG, "trying to run animation on a detached view. Not sure what exactly causes it.");
             this.setViewVisibilityState(mQueryWordCard.getId(), visibility);
@@ -243,13 +225,17 @@ public class LearnWordsCardFragment
                 if (targetVisibility == View.INVISIBLE) {
                     this.setViewVisibilityState(id, targetVisibility);
                     this.updateWordCardVisualization(View.VISIBLE);
-                    for (int i = 0; i < mWordsOnButtons.size(); ++i) {
+                    int i = 0;
+                    for (; i < mWordsOnButtons.size(); ++i) {
                         int numOfTranslations = mWordsOnButtons.get(i).transAsArray().length;
                         String trans = mWordsOnButtons.get(i).transAsArray()[rand.nextInt(numOfTranslations)];
-                        mButtons.get(i).setText(trans);
+                        Button btn = mButtons.get(i);
+                        btn.setText(trans);
+                        YoYo.with(new ZoomInNoFade()).duration(mAnimationDuration).playOn(btn);
+                        btn.setVisibility(View.VISIBLE);
                     }
-                    for (Button btn: mButtons) {
-                        YoYo.with(new ZoomInNoFade()).duration(300).playOn(btn);
+                    for (; i < mButtons.size(); ++i) {
+                        mButtons.get(i).setVisibility(View.INVISIBLE);
                     }
                 }
                 break;
@@ -260,16 +246,16 @@ public class LearnWordsCardFragment
     public void onCorrectViewClicked(View v) {
         int delay;
         int duration;
-        int maxDuration = 300;
+        int maxDuration = mAnimationDuration;
         Random random = new Random();
-        for (Button btn: mButtons) {
+        for (int i = 0; i < mWordsOnButtons.size(); ++i) {
+            Button btn = mButtons.get(i);
             if (btn.getId() == v.getId()) {
                 delay = 200;
-                duration = 100;
             } else {
                 delay = random.nextInt(mButtons.size()) * 50;
-                duration = maxDuration - delay;
             }
+            duration = maxDuration - delay;
             YoYo.with(new ZoomOutNoFade()).duration(duration).delay(delay).playOn(btn);
         }
         updateWordsAsync();
@@ -277,6 +263,6 @@ public class LearnWordsCardFragment
 
     @Override
     public void onWrongViewClicked(View v) {
-        YoYo.with(Techniques.Shake).duration(700).playOn(v);
+        YoYo.with(Techniques.Shake).duration(3 * mAnimationDuration).playOn(v);
     }
 }
