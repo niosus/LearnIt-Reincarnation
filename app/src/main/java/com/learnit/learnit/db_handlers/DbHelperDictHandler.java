@@ -68,6 +68,7 @@ public class DbHelperDictHandler extends DbHandler {
                 null, null, null);
         if (!cursor.moveToFirst()) {
             cursor.close();
+            db.close();
             return null;
         } else {
             ArrayList<WordBundle> wordBundles = new ArrayList<>();

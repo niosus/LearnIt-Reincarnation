@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -260,12 +261,19 @@ public class LearnWordsCardFragment
 
     @Override
     public void onCorrectViewClicked(View v) {
+        int delay;
+        int duration;
+        int maxDuration = 300;
+        Random random = new Random();
         for (Button btn: mButtons) {
             if (btn.getId() == v.getId()) {
-                YoYo.with(new ZoomOutNoFade()).duration(100).delay(200).playOn(btn);
-                continue;
+                delay = 200;
+                duration = 100;
+            } else {
+                delay = random.nextInt(mButtons.size()) * 50;
+                duration = maxDuration - delay;
             }
-            YoYo.with(new ZoomOutNoFade()).duration(300).playOn(btn);
+            YoYo.with(new ZoomOutNoFade()).duration(duration).delay(delay).playOn(btn);
         }
         updateWordsAsync();
     }
