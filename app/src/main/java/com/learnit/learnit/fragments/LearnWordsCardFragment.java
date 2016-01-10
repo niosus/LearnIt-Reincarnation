@@ -79,6 +79,7 @@ public class LearnWordsCardFragment
     private TaskSchedulerFragment mTaskScheduler;
 
     private List<android.support.v7.widget.AppCompatButton> mButtons;
+    private List<WordBundle> mWordsOnButtons;
 
     private LearnCorrectnessValidator mButtonOnClickListener;
 
@@ -193,30 +194,21 @@ public class LearnWordsCardFragment
     }
 
     @Override
-    public void onPreExecute() {
-
-    }
+    public void onPreExecute() {}
 
     @Override
-    public void onProgressUpdate(Float progress) {
-
-    }
+    public void onProgressUpdate(Float progress) {}
 
     @Override @SuppressWarnings("unchecked")
     public <OutType> void onFinish(OutType result) {
         if (result instanceof List) {
-            List<WordBundle> words = (List<WordBundle>) result;
+            mWordsOnButtons = (List<WordBundle>) result;
             Random rand = new Random();
-            int correctWordIndex = rand.nextInt(words.size());
+            int correctWordIndex = rand.nextInt(mWordsOnButtons.size());
             int correctBtnId = mButtons.get(correctWordIndex).getId();
             mButtonOnClickListener.setCorrectAnswerId(correctBtnId);
-            if (!words.isEmpty()) {
-                setNewWord(words, correctWordIndex);
-            }
-            for (int i = 0; i < words.size(); ++i) {
-                int numOfTranslations = words.get(i).transAsArray().length;
-                String trans = words.get(i).transAsArray()[rand.nextInt(numOfTranslations)];
-                mButtons.get(i).setText(trans);
+            if (!mWordsOnButtons.isEmpty()) {
+                setNewWord(mWordsOnButtons, correctWordIndex);
             }
         }
     }
@@ -245,11 +237,17 @@ public class LearnWordsCardFragment
 
     @Override
     public void onAnimationFinished(int id, int targetVisibility) {
+        Random rand = new Random();
         switch (id) {
             case R.id.query_word_card:
                 if (targetVisibility == View.INVISIBLE) {
                     this.setViewVisibilityState(id, targetVisibility);
                     this.updateWordCardVisualization(View.VISIBLE);
+                    for (int i = 0; i < mWordsOnButtons.size(); ++i) {
+                        int numOfTranslations = mWordsOnButtons.get(i).transAsArray().length;
+                        String trans = mWordsOnButtons.get(i).transAsArray()[rand.nextInt(numOfTranslations)];
+                        mButtons.get(i).setText(trans);
+                    }
                     for (Button btn: mButtons) {
                         YoYo.with(new ZoomInNoFade()).duration(300).playOn(btn);
                     }
