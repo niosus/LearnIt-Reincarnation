@@ -19,6 +19,7 @@
     </com.jenzz.materialpreference.PreferenceCategory>
     <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_notifications">
         <com.learnit.learnit.preferences.MySwitchPreference
+            android:key="@string/key_pref_notifications_active"
             android:summaryOff="@string/pref_notifications_disabled"
             android:summaryOn="@string/pref_notifications_enabled"
             android:title="@string/pref_notifications"/>

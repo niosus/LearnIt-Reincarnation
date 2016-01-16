@@ -17,7 +17,7 @@
     <!--keys-->
     <string name="key_first_run">first_run</string>
     <string name="key_pref_use_online_dict">use_online_dict</string>
-    <string name="key_pref_notif_active">notification_enabled</string>
+    <string name="key_pref_notifications_active">notification_enabled</string>
     <string name="key_notification_frequency">notification_frequency</string>
     <string name="key_way_to_learn">way_to_learn</string>
     <string name="key_num_of_words">num_of_words</string>
