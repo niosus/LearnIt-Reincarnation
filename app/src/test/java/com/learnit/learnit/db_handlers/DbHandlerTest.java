@@ -32,6 +32,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(RobolectricGradleTestRunner.class)
 public class DbHandlerTest extends DbUserDictHandler {
     SQLiteDatabase database;
+    String filePath;
 
     public DbHandlerTest() {
         super(null, null, null, 100);
@@ -44,7 +45,6 @@ public class DbHandlerTest extends DbUserDictHandler {
         if (context == null) {
             return;
         }
-        String filePath;
         filePath = context.getPackageResourcePath() + "/src/test/res/sample.db";
         database = SQLiteDatabase.openDatabase(
                 (new File(filePath)).getAbsolutePath(),
@@ -127,6 +127,10 @@ public class DbHandlerTest extends DbUserDictHandler {
                 .construct();
         String queryRule = WORD_COLUMN_NAME + " = ?";
         String[] queryParams = new String[]{wordToQuery};
+        database = SQLiteDatabase.openDatabase(
+                (new File(filePath)).getAbsolutePath(),
+                null,
+                SQLiteDatabase.OPEN_READONLY);
         List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
         assertThat(res == null, is(false));
         if (res == null) {
@@ -150,6 +154,10 @@ public class DbHandlerTest extends DbUserDictHandler {
                 .construct();
         queryRule = WORD_COLUMN_NAME + " = ?";
         queryParams = new String[]{wordToQuery};
+        database = SQLiteDatabase.openDatabase(
+                (new File(filePath)).getAbsolutePath(),
+                null,
+                SQLiteDatabase.OPEN_READONLY);
         res = queryFromDB("test_words", database, queryRule, queryParams);
         assertThat(res == null, is(false));
         if (res == null) {
