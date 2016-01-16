@@ -6,7 +6,8 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_general">
+    <com.jenzz.materialpreference.PreferenceCategory
+        android:title="@string/pref_header_general">
         <com.learnit.learnit.preferences.ListPrefWithSummary
             android:key="@string/key_language_to_learn"
             android:title="@string/pref_language_to_learn"
@@ -16,8 +17,24 @@
             android:title="@string/pref_language_you_know"
             app:array="@array/entries_languages_you_know"
             app:defaultValueIndex="9" />
+        <com.learnit.learnit.preferences.ListPrefWithSummary
+            android:key="@string/key_way_to_learn"
+            android:title="@string/pref_way_to_learn"
+            app:array="@array/entries_way_to_learn"
+            app:defaultValueIndex="2" />
+        <com.learnit.learnit.preferences.ListPrefWithSummary
+            android:key="@string/key_direction_of_trans"
+            android:title="@string/pref_direction_of_trans"
+            app:array="@array/entries_direction_of_trans"
+            app:defaultValueIndex="2" />
+        <com.learnit.learnit.preferences.ListPrefWithSummary
+            android:key="@string/key_num_of_words"
+            android:title="@string/pref_num_of_words"
+            app:array="@array/array_num_of_notifications"
+            app:defaultValueIndex="9" />
     </com.jenzz.materialpreference.PreferenceCategory>
-    <com.jenzz.materialpreference.PreferenceCategory android:title="@string/pref_header_notifications">
+    <com.jenzz.materialpreference.PreferenceCategory
+        android:title="@string/pref_header_notifications">
         <com.learnit.learnit.preferences.MySwitchPreference
             android:key="@string/key_pref_notifications_active"
             android:summaryOff="@string/pref_notifications_disabled"

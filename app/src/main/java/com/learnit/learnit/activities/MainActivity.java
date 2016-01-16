@@ -107,7 +107,7 @@ public class MainActivity
         }
     }
 
-    @OnItemClick(R.id.nav_drawer_list)
+    @OnItemClick(R.id.nav_drawer_list) @SuppressWarnings("unused")
     public void navDrawerOnSelected(int position) {
         Log.d(Constants.LOG_TAG, "selected " + position);
         mDrawerLayout.closeDrawers();

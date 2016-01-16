@@ -7,25 +7,33 @@
 package com.learnit.learnit.utils;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Environment;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
 import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.db_handlers.DbHandler;
+import com.learnit.learnit.services.NotificationService;
 import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.WordBundle;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
@@ -232,5 +240,74 @@ public class Utils {
                 return R.string.word_type_preposition;
         }
         return R.string.word_type_none;
+    }
+
+    public static <T extends Enum<T>> T enumValueFromKey(int key, Class<T> enumType) {
+        for (T type: enumType.getEnumConstants()) {
+            if (type.ordinal() == key) {
+                return type;
+            }
+        }
+        Log.e(Constants.LOG_TAG, "cannot find a enum value with key " + key);
+        return null;
+    }
+
+    public static <T extends Enum<T>> int keyFromEnumValue(T queryValue, Class<T> enumType) {
+        for (T type: enumType.getEnumConstants()) {
+            if (type == queryValue) {
+                return type.ordinal();
+            }
+        }
+        Log.e(Constants.LOG_TAG, "cannot find a enum value " + queryValue.name());
+        return Constants.UNDEFINED_INDEX;
+    }
+
+    public static int getIconForWordNumber(int wordNum)
+    {
+        switch (wordNum) {
+            case 1:
+                return R.drawable.ic_content_save;
+            case 2:
+                return R.drawable.ic_content_save;
+            case 3:
+                return R.drawable.ic_content_save;
+            case 4:
+                return R.drawable.ic_content_save;
+            case 5:
+                return R.drawable.ic_content_save;
+            case 6:
+                return R.drawable.ic_content_save;
+            case 7:
+                return R.drawable.ic_content_save;
+            case 8:
+                return R.drawable.ic_content_save;
+            case 9:
+                return R.drawable.ic_content_save;
+            case 10:
+                return R.drawable.ic_content_save;
+        }
+        return -1;
+    }
+
+    public static void startRepeatingTimer(Context context) {
+//        long timeInMs = Prefs.getLong(context.getString(R.string.key_time_to_start), 0);
+        long timeInMs = System.currentTimeMillis();
+//        String frequency_id = sp.getString(context.getString(R.string.key_notification_frequency), "-1");
+//        long frequency = Utils.getFreqFromId(frequency_id);
+        long frequency = TimeUnit.SECONDS.toMillis(2);
+        while (timeInMs < System.currentTimeMillis()) { timeInMs+=frequency; }
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(context, NotificationService.class);
+        PendingIntent pi = PendingIntent.getService(context.getApplicationContext(), 0, i, Intent.FLAG_ACTIVITY_NEW_TASK);
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, timeInMs, frequency, pi);
+        Toast.makeText(context, context.getString(R.string.toast_notif_start_text), Toast.LENGTH_LONG).show();
+    }
+
+    public static void cancelRepeatingTimer(Context context) {
+        Intent intent = new Intent(context, NotificationService.class);
+        PendingIntent sender = PendingIntent.getService(context, 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(sender);
+        Toast.makeText(context, context.getString(R.string.toast_notif_stop_text), Toast.LENGTH_LONG).show();
     }
 }

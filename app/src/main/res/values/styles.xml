@@ -19,6 +19,7 @@
         <item name="colorPrimary">@color/highlight</item>
         <item name="colorPrimaryDark">@color/highlight_darker</item>
         <item name="colorAccent">@color/highlight</item>
+        <item name="android:textColor">@color/cardview_light_background</item>
         <item name="android:actionBarStyle">@style/ToolbarStyle</item>
     </style>
 

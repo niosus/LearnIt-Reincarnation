@@ -130,7 +130,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
 //        // if this word is currently shown - remove it from notifications
 //        NotificationManager mNotificationManager
 //                = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-//        mNotificationManager.cancel(id + NotificationBuilder.idModificator);
+//        mNotificationManager.cancel(id + NotificationBuilder.mIdStartingValue);
     }
 
     @Override

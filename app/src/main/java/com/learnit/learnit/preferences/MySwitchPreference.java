@@ -8,25 +8,24 @@ import com.jenzz.materialpreference.SwitchPreference;
 import com.learnit.learnit.utils.Constants;
 import com.pixplicity.easyprefs.library.Prefs;
 
-/**
- * Created by igor on 24/10/15.
- */
 public class MySwitchPreference extends SwitchPreference {
+    @SuppressWarnings("unused")
     public MySwitchPreference(Context context) {
         super(context);
         init();
     }
 
+    @SuppressWarnings("unused")
     public MySwitchPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
-
+    @SuppressWarnings("unused")
     public MySwitchPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
-
+    @SuppressWarnings("unused")
     public MySwitchPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();

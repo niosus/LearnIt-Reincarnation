@@ -43,6 +43,7 @@ public class LearnWordsCardFragment
         IAnswerChecker {
 
     private static final String ARG_POSITION = "position";
+    public static final String TAG = LearnWordsCardFragment.class.getSimpleName();
 
     @Bind(R.id.query_word)
     TextView mQueryWord;

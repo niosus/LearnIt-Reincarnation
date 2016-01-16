@@ -24,6 +24,18 @@ public class Constants {
         GERMAN, ENGLISH
     }
 
+    public enum LearnType {
+        TRANSLATIONS,
+        ARTICLES,
+        MIXED
+    }
+
+    public enum DirectionOfTranslation {
+        NEW_TO_KNOWN,
+        KNOWN_TO_NEW,
+        MIXED
+    }
+
     public enum AddWordReturnCode {
         SUCCESS,
         WORD_UPDATED,
