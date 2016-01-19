@@ -244,14 +244,14 @@ public class LearnWordsCardFragment
     }
 
     @Override
-    public void onCorrectViewClicked(View v) {
+    public void onCorrectViewClicked(View correctView) {
         int delay;
         int duration;
         int maxDuration = mAnimationDuration;
         Random random = new Random();
         for (int i = 0; i < mWordsOnButtons.size(); ++i) {
             Button btn = mButtons.get(i);
-            if (btn.getId() == v.getId()) {
+            if (btn.getId() == correctView.getId()) {
                 delay = 200;
             } else {
                 delay = random.nextInt(mButtons.size()) * 50;
