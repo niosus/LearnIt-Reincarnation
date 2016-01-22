@@ -85,11 +85,11 @@ public class MainActivity
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
         initActionBar();
         initTabbedViewPager();
         initTaskScheduler();
         initFab();
+        mProgressBar.bringToFront();
     }
 
     @Override
