@@ -22,12 +22,8 @@ public class DummyCardFragment extends Fragment {
 
     private int position;
 
-    public static DummyCardFragment newInstance(int position) {
-        DummyCardFragment f = new DummyCardFragment();
-        Bundle b = new Bundle();
-        b.putInt(ARG_POSITION, position);
-        f.setArguments(b);
-        return f;
+    public static DummyCardFragment newInstance() {
+        return new DummyCardFragment();
     }
 
     @Override

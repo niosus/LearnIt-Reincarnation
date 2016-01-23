@@ -2,63 +2,64 @@ package com.learnit.learnit.activities;
 
 
 import android.app.ActionBar;
-import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
+import com.learnit.learnit.fragments.AbstractLearnFragment;
 import com.learnit.learnit.fragments.LearnWordsCardFragment;
 import com.learnit.learnit.fragments.TaskSchedulerFragment;
+import com.learnit.learnit.interfaces.ILearnFragmentUiEventHandler;
 import com.learnit.learnit.types.NotificationBuilder;
 import com.learnit.learnit.utils.Constants;
+import com.learnit.learnit.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class HomeworkActivity extends AppCompatActivity {
-    Fragment _uiTranslationsFragment;
-    Fragment _uiArticlesFragment;
-    private TaskSchedulerFragment mTaskScheduler;
-    private FragmentManager mFragmentManager;
+public class HomeworkActivity
+        extends AppCompatActivity
+        implements ILearnFragmentUiEventHandler {
+    private List<Integer> mHomeworkTypes;
+    private List<Integer> mLearnWordIds;
+
+    // TODO: this should be saved when the activity is killed (e.g. when rotating the screen)
+    private int mCurrentFragmentNumber = -1;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = this.getActionBar();
         if (actionBar != null) { actionBar.setTitle(""); }
-        mFragmentManager = getSupportFragmentManager();
 
-        initTaskScheduler();
-
-        _uiTranslationsFragment = new LearnWordsCardFragment();
-        // extras contain words, translations and so on that we need to show
-        // the data in the homework fragment. We pass them on to the fragment.
-        _uiTranslationsFragment.setArguments(getIntent().getExtras());
-
-        ArrayList<Integer> types = getIntent().getIntegerArrayListExtra(NotificationBuilder.HOMEWORK_TYPE_TAG);
-        if (types == null || types.isEmpty()) return;
-        // TODO: decide how to pick homework
-        mFragmentManager.beginTransaction()
-                .replace(android.R.id.content, _uiTranslationsFragment, _uiTranslationsFragment.getTag())
-                .commit();
-    }
-
-    private void initTaskScheduler() {
-        mFragmentManager.findFragmentByTag(TaskSchedulerFragment.TAG);
-        if (mTaskScheduler == null) {
-            mTaskScheduler = new TaskSchedulerFragment();
-            mFragmentManager.beginTransaction()
-                    .add(mTaskScheduler, TaskSchedulerFragment.TAG)
-                    .commit();
+        mHomeworkTypes = getIntent().getIntegerArrayListExtra(NotificationBuilder.HOMEWORK_TYPE_TAG);
+        mLearnWordIds = getIntent().getIntegerArrayListExtra(NotificationBuilder.IDS_TAG);
+        if (mHomeworkTypes == null || mHomeworkTypes.isEmpty()) {
+            this.finish();
+            return;
         }
+
+        // we have just created this fragment so show the first word
+        showNextFragment(Utils.enumValueFromKey(
+                mHomeworkTypes.get(++mCurrentFragmentNumber),
+                Constants.LearnType.class));
     }
 
-    public void replaceFragment(Constants.LearnType learnType) {
+    public void showNextFragment(Constants.LearnType learnType) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (learnType) {
             case TRANSLATIONS:
+            case MIXED:
+                AbstractLearnFragment fragment = LearnWordsCardFragment.newInstance(this);
+                // TODO: do not pass all the extras to the fragment.
+                // TODO: each fragment should know only about itself and not everyone in the world.
+                fragment.setArguments(getIntent().getExtras());
                 fragmentManager
                         .beginTransaction()
-                        .replace(android.R.id.content, _uiTranslationsFragment, LearnWordsCardFragment.TAG)
+                        .replace(android.R.id.content, fragment, LearnWordsCardFragment.TAG)
                         .commit();
                 break;
             case ARTICLES:
@@ -70,4 +71,21 @@ public class HomeworkActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onAllViewsHidden() {
+        Log.d(Constants.LOG_TAG, "activity received on all views hidden");
+        // we want to cancel the appropriate notification
+        NotificationManager notificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(mLearnWordIds.get(mCurrentFragmentNumber));
+        // check if there are any new words to show and stop it none are present
+        if (mCurrentFragmentNumber + 1 >= mHomeworkTypes.size()) {
+            this.finish();
+            return;
+        }
+        // in case there are other words to show - "Do it! Just. Do. It." (c)
+        showNextFragment(Utils.enumValueFromKey(
+                mHomeworkTypes.get(++mCurrentFragmentNumber),
+                Constants.LearnType.class));
+    }
 }

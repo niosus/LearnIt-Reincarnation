@@ -35,6 +35,12 @@ public class TaskSchedulerFragment
         mClients.put(client.tag(), client);
     }
 
+    private void initEverything() {
+        mClients = new HashMap<>();
+        mTasks = new HashMap<>();
+        mTaskClientBinder = new HashMap<>();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -44,9 +50,7 @@ public class TaskSchedulerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mClients = new HashMap<>();
-        mTasks = new HashMap<>();
-        mTaskClientBinder = new HashMap<>();
+        initEverything();
     }
 
     @Override
@@ -58,6 +62,10 @@ public class TaskSchedulerFragment
     @Override
     public void newTaskForClient(MySmartAsyncTask task, IAsyncTaskResultClient client) {
         // kill the task pending for current fragment
+        if (mClients == null) {
+            // I guess sometimes the fragment does not have just enough time to be created
+            initEverything();
+        }
         IAsyncTaskResultClient currentClient = mClients.get(client.tag());
         if (currentClient != null) {
             // this client is already registered

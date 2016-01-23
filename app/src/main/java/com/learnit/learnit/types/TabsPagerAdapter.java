@@ -43,12 +43,12 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         Log.d(Constants.LOG_TAG, "asking frag at pos " + position);
         switch (position) {
             case ADD_WORDS_ITEM:
-                return AddWordsCardFragment.newInstance(position);
+                return AddWordsCardFragment.newInstance();
             case USER_DICT_ITEM:
-                return UserDictCardFragment.newInstance(position);
+                return UserDictCardFragment.newInstance();
             case LEARN_WORDS_ITEM:
-                return LearnWordsCardFragment.newInstance(position);
+                return LearnWordsCardFragment.newInstance();
         }
-        return DummyCardFragment.newInstance(position);
+        return DummyCardFragment.newInstance();
     }
 }

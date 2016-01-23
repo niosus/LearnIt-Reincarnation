@@ -65,7 +65,6 @@ import butterknife.ButterKnife;
 
 public class AddWordsCardFragment extends Fragment
         implements IUiEvents, IFabEventHandler, IAsyncTaskResultClient, IAnimationEventListener, IRefreshable{
-    private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
     private static String TAG = "add_words_card_fragment";
@@ -114,13 +113,8 @@ public class AddWordsCardFragment extends Fragment
         }
     }
 
-    public static AddWordsCardFragment newInstance(int position) {
-        Log.d(Constants.LOG_TAG, "creating new instance of fragment");
-        AddWordsCardFragment f = new AddWordsCardFragment();
-        Bundle b = new Bundle();
-        b.putInt(ARG_POSITION, position);
-        f.setArguments(b);
-        return f;
+    public static AddWordsCardFragment newInstance() {
+        return new AddWordsCardFragment();
     }
 
     @Override

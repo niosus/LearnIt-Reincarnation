@@ -65,10 +65,9 @@ public class UserDictCardFragment extends Fragment
         IAsyncTaskResultClient,
         IRefreshable,
         IAnimationEventListener {
-    private static final String ARG_POSITION = "position";
     private WordBundleAdapter mAdapter;
 
-    private static String TAG = "dict_card_fragment";
+    private static String TAG = "user_dict_card_fragment";
 
     @Bind(R.id.lst_my_words)
     RecyclerView mRecyclerView;
@@ -112,13 +111,8 @@ public class UserDictCardFragment extends Fragment
         }
     }
 
-    public static UserDictCardFragment newInstance(int position) {
-        Log.d(Constants.LOG_TAG, "creating new instance of fragment");
-        UserDictCardFragment f = new UserDictCardFragment();
-        Bundle b = new Bundle();
-        b.putInt(ARG_POSITION, position);
-        f.setArguments(b);
-        return f;
+    public static UserDictCardFragment newInstance() {
+        return new UserDictCardFragment();
     }
 
     @Override

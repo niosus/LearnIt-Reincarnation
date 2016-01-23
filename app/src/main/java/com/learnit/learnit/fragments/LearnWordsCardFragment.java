@@ -29,7 +29,6 @@ public class LearnWordsCardFragment
         IRefreshable,
         ILearnFragmentUiEventHandler {
 
-    private static final String ARG_POSITION = "position";
     public static final String TAG = LearnWordsCardFragment.class.getSimpleName();
 
     @Bind(R.id.query_word)
@@ -42,14 +41,6 @@ public class LearnWordsCardFragment
     Button mRightBottomButton;
     @Bind(R.id.right_top_button)
     Button mRightTopButton;
-
-    public static LearnWordsCardFragment newInstance(int position) {
-        LearnWordsCardFragment f = new LearnWordsCardFragment();
-        Bundle b = new Bundle();
-        b.putInt(ARG_POSITION, position);
-        f.setArguments(b);
-        return f;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,11 +69,6 @@ public class LearnWordsCardFragment
             button.setOnClickListener(mButtonOnClickListener);
             button.setVisibility(View.INVISIBLE);
         }
-
-        // this should be the right way to achieve what I want, but looks strange.
-        // I need to set the event handler and I want to be able to set an activity as one.
-        // But this fragment  can handle everything on his own. He is smart :)
-        this.setLearnFragmentUiEventHandler(this);
 
         return rootView;
     }

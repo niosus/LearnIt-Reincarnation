@@ -41,10 +41,15 @@ public abstract class AbstractLearnFragment extends Fragment
     private int mAnimationDuration = 300;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initTaskScheduler();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(Constants.LOG_TAG, "fragment is attached");
-        initTaskScheduler();
+        Log.d(Constants.LOG_TAG, "Learn Fragment is attached");
     }
 
     @Override
@@ -85,6 +90,19 @@ public abstract class AbstractLearnFragment extends Fragment
                 }
                 break;
         }
+    }
+
+    public static AbstractLearnFragment newInstance(
+            ILearnFragmentUiEventHandler learnFragmentUiEventHandler) {
+        AbstractLearnFragment fragment = new LearnWordsCardFragment();
+        fragment.setLearnFragmentUiEventHandler(learnFragmentUiEventHandler);
+        return fragment;
+    }
+
+    public static AbstractLearnFragment newInstance() {
+        AbstractLearnFragment fragment = new LearnWordsCardFragment();
+        fragment.setLearnFragmentUiEventHandler((ILearnFragmentUiEventHandler) fragment);
+        return fragment;
     }
 
     public void setLearnFragmentUiEventHandler(ILearnFragmentUiEventHandler handler) {
