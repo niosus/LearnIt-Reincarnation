@@ -1,4 +1,4 @@
-package com.learnit.learnit.fragments;
+package com.learnit.learnit.fragments.learn_fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.animators.ZoomInNoFade;
 import com.learnit.learnit.animators.ZoomOutNoFade;
 import com.learnit.learnit.async_tasks.GetRandomUserWordsTask;
+import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAnswerChecker;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
@@ -35,27 +36,32 @@ public abstract class AbstractLearnFragment extends Fragment
     protected List<WordBundle> mWordsOnButtons;
     protected LearnCorrectnessValidator mButtonOnClickListener;
     protected CardView mQueryWordCard;
+    protected WordBundle mQueryWordBundle;
 
     protected TaskSchedulerFragment mTaskScheduler;
     private ILearnFragmentUiEventHandler mUiEventHandler;
     private int mAnimationDuration = 300;
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Bundle arguments = getArguments();
+        if (arguments == null) {
+            Log.d(Constants.LOG_TAG, "arguments are null, nothing to get from them");
+            return;
+        }
+        mQueryWordBundle = arguments.getParcelable(Constants.QUERY_WORD_KEY);
+        if (mQueryWordBundle == null) {
+            Log.e(Constants.LOG_TAG, "fragment received word that is null. Not reading extras then.");
+            return;
+        }
+        Log.d(Constants.LOG_TAG, "trying to show word " + mQueryWordBundle.word());
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initTaskScheduler();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.d(Constants.LOG_TAG, "Learn Fragment is attached");
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        fetchNewRandomWordsAsync();
     }
 
     @Override
@@ -92,25 +98,16 @@ public abstract class AbstractLearnFragment extends Fragment
         }
     }
 
-    public static AbstractLearnFragment newInstance(
-            ILearnFragmentUiEventHandler learnFragmentUiEventHandler) {
-        AbstractLearnFragment fragment = new LearnWordsCardFragment();
-        fragment.setLearnFragmentUiEventHandler(learnFragmentUiEventHandler);
-        return fragment;
-    }
-
-    public static AbstractLearnFragment newInstance() {
-        AbstractLearnFragment fragment = new LearnWordsCardFragment();
-        fragment.setLearnFragmentUiEventHandler((ILearnFragmentUiEventHandler) fragment);
-        return fragment;
-    }
-
     public void setLearnFragmentUiEventHandler(ILearnFragmentUiEventHandler handler) {
         mUiEventHandler = handler;
     }
 
-    protected void fetchNewRandomWordsAsync() {
-        int numOfWords = 4;
+    protected void fetchNewRandomWordsAsync(int numOfWords, int avoidId) {
+        mTaskScheduler.newTaskForClient(
+                new GetRandomUserWordsTask(this.getContext(), numOfWords, avoidId), this);
+    }
+
+    protected void fetchNewRandomWordsAsync(int numOfWords) {
         mTaskScheduler.newTaskForClient(
                 new GetRandomUserWordsTask(this.getContext(), numOfWords), this);
     }

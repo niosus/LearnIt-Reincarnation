@@ -236,7 +236,7 @@ public class DbHandlerTest extends DbUserDictHandler {
         int counter1 = 0;
         int counter2 = 0;
         while (counter1 == 0 || counter2 == 0) {
-            List<WordBundle> res = helper.queryRandomWords(2);
+            List<WordBundle> res = helper.queryRandomWords(2, null);
             assertThat(res.size(), is(2));
             WordBundle resultBundle = res.get(0);
             if (resultBundle.word().equals(word1)) {

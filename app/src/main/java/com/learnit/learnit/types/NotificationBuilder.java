@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -24,14 +23,12 @@ import java.util.Random;
 public class NotificationBuilder {
     public static final String LOG_TAG = "my_logs";
 
-    public static final String IDS_TAG = "ids";
     public static final String WORDS_TAG = "words";
-    public static final String ARTICLES_TAG = "articles";
-    public static final String PREFIXES_TAG = "prefixes";
-    public static final String TRANSLATIONS_TAG = "translations";
     public static final String HOMEWORK_TYPE_TAG = "homework_type";
     public static final String DIRECTIONS_OF_TRANS_TAG = "directions_of_trans";
-    public static final String CURRENT_NOTIFICATION_INDEX = "current_index";
+    public static final String CURRENT_NOTIFICATION_INDEX_TAG = "notification_index";
+
+    public static final String CURRENT_IDS_TAG = "current_ids";
 
     static String currentIds = "";
 
@@ -50,10 +47,14 @@ public class NotificationBuilder {
         }
     }
 
+    public static int notificationIdFromWordId(final int wordId) {
+        return mIdStartingValue + wordId;
+    }
+
 
     public static void show(Context context) {
         Log.d(LOG_TAG, "context class = " + context.getClass().getName());
-        String old_ids = Prefs.getString("current_ids", "");
+        String old_ids = Prefs.getString(CURRENT_IDS_TAG, "");
         deleteOldNotifications(context, old_ids);
         Constants.LearnType wayToLearn = getWayToLearn(context);
         Log.d(Constants.LOG_TAG, "got learn type: " + wayToLearn.name());
@@ -65,9 +66,9 @@ public class NotificationBuilder {
             Log.e(Constants.LOG_TAG, "cannot build notification. No connection to database");
             return;
         }
-        List<WordBundle> randWords = dbHandler.queryRandomWords(4);
+        List<WordBundle> randWords = dbHandler.queryRandomWords(numberOfWords, null);
         CreateNotifications(randWords, context, wayToLearn);
-        Prefs.putString("current_ids", currentIds);
+        Prefs.putString(CURRENT_IDS_TAG, currentIds);
     }
 
     private static Constants.LearnType getHomeworkType() {
@@ -84,20 +85,20 @@ public class NotificationBuilder {
         if (homeworkActivityType==Constants.LearnType.ARTICLES) {
             return Constants.DirectionOfTranslation.NEW_TO_KNOWN;
         }
-        int currentDirectionKey = Prefs.getInt(context.getString(R.string.key_direction_of_trans), 2);
+        int currentDirectionValueIndex = Prefs.getInt(context.getString(R.string.key_direction_of_trans), 2);
         Constants.DirectionOfTranslation directionOfTranslation = Utils.enumValueFromKey(
-                currentDirectionKey, Constants.DirectionOfTranslation.class);
+                currentDirectionValueIndex, Constants.DirectionOfTranslation.class);
         if (directionOfTranslation == Constants.DirectionOfTranslation.MIXED) {
             Random rand = new Random();
-            currentDirectionKey = rand.nextInt(2);
+            currentDirectionValueIndex = rand.nextInt(2);
             directionOfTranslation = Utils.enumValueFromKey(
-                    currentDirectionKey, Constants.DirectionOfTranslation.class);
+                    currentDirectionValueIndex, Constants.DirectionOfTranslation.class);
         }
         return directionOfTranslation;
     }
 
     private static Constants.LearnType getWayToLearn(Context context) {
-        int wayToLearn = Prefs.getInt(context.getString(R.string.key_way_to_learn), 3);
+        int wayToLearn = Prefs.getInt(context.getString(R.string.key_way_to_learn), 2);
         return Utils.enumValueFromKey(wayToLearn, Constants.LearnType.class);
     }
 
@@ -125,54 +126,42 @@ public class NotificationBuilder {
             Context context,
             Constants.LearnType wayToLearn) {
         ArrayList<Intent> intents = new ArrayList<>();
-        ArrayList<Integer> ids = new ArrayList<>();
-        ArrayList<String> words = new ArrayList<>();
-        ArrayList<String> articles = new ArrayList<>();
-        ArrayList<String> translations = new ArrayList<>();
-        ArrayList<String> prefixes = new ArrayList<>();
+        ArrayList<WordBundle> words = new ArrayList<>();
         ArrayList<Integer> directionsOfTrans = new ArrayList<>();
         ArrayList<Integer> typesOfHomework = new ArrayList<>();
-        ArrayList<Class> classes = new ArrayList<>();
-        for (WordBundle wordBundle: randWords)
-        {
+        for (WordBundle wordBundle: randWords) {
             Constants.LearnType homeworkActivityType = getHomeworkType();
             Constants.DirectionOfTranslation directionOfTranslation = getDirectionOfTranslation(
                     context, homeworkActivityType);
-            ids.add(wordBundle.id() + mIdStartingValue);
-            words.add(wordBundle.word());
-            articles.add(wordBundle.article());
-            translations.add(wordBundle.transAsHumanString());
-            prefixes.add(wordBundle.prefix());
+            words.add(wordBundle);
             intents.add(new Intent(context, HomeworkActivity.class));
-            classes.add(HomeworkActivity.class);
 
             directionsOfTrans.add(Utils.keyFromEnumValue(
                     directionOfTranslation, Constants.DirectionOfTranslation.class));
             typesOfHomework.add(Utils.keyFromEnumValue(
                     homeworkActivityType, Constants.LearnType.class));
         }
-        for (int i=0; i<intents.size(); ++i)
-        {
+        for (int i=0; i<intents.size(); ++i) {
             Intent intent = intents.get(i);
-            intent.putExtra(IDS_TAG, ids);
-            intent.putExtra(WORDS_TAG, words);
-            intent.putExtra(TRANSLATIONS_TAG, translations);
-            intent.putExtra(ARTICLES_TAG, articles);
-            intent.putExtra(PREFIXES_TAG, prefixes);
+            intent.putParcelableArrayListExtra(WORDS_TAG, words);
             intent.putExtra(DIRECTIONS_OF_TRANS_TAG, directionsOfTrans);
             intent.putExtra(HOMEWORK_TYPE_TAG, typesOfHomework);
-            intent.putExtra(CURRENT_NOTIFICATION_INDEX, i);
-            intent.setAction(ids.get(i) + " " + words.get(i) + " " + System.currentTimeMillis());
+            intent.putExtra(CURRENT_NOTIFICATION_INDEX_TAG, i);
+            intent.setAction(notificationIdFromWordId(words.get(i).id())
+                    + " " + words.get(i)
+                    + " " + System.currentTimeMillis());
+            Constants.DirectionOfTranslation directionOfTranslation = Utils.enumValueFromKey(
+                    directionsOfTrans.get(i), Constants.DirectionOfTranslation.class);
             NotificationCompat.Builder mBuilder;
-            mBuilder = getBuilder(
-                    context,
-                    Utils.enumValueFromKey(directionsOfTrans.get(i), Constants.DirectionOfTranslation.class),
-                    randWords.get(i));
+            mBuilder = getBuilder(context, directionOfTranslation, randWords.get(i));
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            stackBuilder.addParentStack(classes.get(i));
             stackBuilder.addNextIntent(intent);
-            PendingIntent pendInt = PendingIntent.getActivity(context, ids.get(i), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendInt = PendingIntent.getActivity(
+                    context,
+                    notificationIdFromWordId(words.get(i).id()),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
             if (null != mBuilder)
             {
                 mBuilder.setSmallIcon(Utils.getIconForWordNumber(i+1));
@@ -180,8 +169,8 @@ public class NotificationBuilder {
                 mBuilder.setPriority(Notification.PRIORITY_MAX);
                 mBuilder.setOngoing(true);
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(ids.get(i), mBuilder.build());
-                currentIds = currentIds + ids.get(i) + " ";
+                mNotificationManager.notify(notificationIdFromWordId(words.get(i).id()), mBuilder.build());
+                currentIds = currentIds + notificationIdFromWordId(words.get(i).id()) + " ";
             }
             else
                 return false;

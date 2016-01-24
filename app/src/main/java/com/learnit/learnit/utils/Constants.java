@@ -12,6 +12,8 @@ import java.util.HashSet;
 public class Constants {
     public static final int UNDEFINED_INDEX = -666;
     public static final String LOG_TAG = "learn_it_logs";
+    public static final String QUERY_WORD_KEY = "query_word";
+    public static final String TRANS_DIRECTION_KEY = "trans_direction";
     public static final HashSet<String> GERMAN_ARTICLES = new HashSet<String>() {{
         add("der"); add("die"); add("das");
     }};

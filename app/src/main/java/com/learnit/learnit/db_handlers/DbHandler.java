@@ -165,9 +165,10 @@ public abstract class DbHandler extends SQLiteOpenHelper
     }
 
     @Override
-    public List<WordBundle> queryRandomWords(final Integer limit) {
+    public List<WordBundle> queryRandomWords(final Integer limit, final Integer omitId) {
         // TODO: get all ids and weights and then pick 'limit' random words according to weights
         // query the words by id after we have a list of ids
+        // TODO: take care to omit the word we should omit
         return queryWord(null, Constants.QueryStyle.RANDOM, limit);
     }
 

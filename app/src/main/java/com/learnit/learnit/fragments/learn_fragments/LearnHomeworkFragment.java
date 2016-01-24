@@ -1,7 +1,9 @@
-package com.learnit.learnit.fragments;
+package com.learnit.learnit.fragments.learn_fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,9 @@ import com.learnit.learnit.R;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.ILearnFragmentUiEventHandler;
 import com.learnit.learnit.interfaces.IRefreshable;
-import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.types.LearnCorrectnessValidator;
+import com.learnit.learnit.types.WordBundle;
+import com.learnit.learnit.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +26,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.grantland.widget.AutofitHelper;
 
-public class LearnWordsCardFragment
+public class LearnHomeworkFragment
         extends AbstractLearnFragment
         implements IAsyncTaskResultClient,
-        IRefreshable,
-        ILearnFragmentUiEventHandler {
+        IRefreshable {
 
-    public static final String TAG = LearnWordsCardFragment.class.getSimpleName();
+    public static final String TAG = LearnHomeworkFragment.class.getSimpleName();
 
     @Bind(R.id.query_word)
     TextView mQueryWord;
@@ -41,6 +43,13 @@ public class LearnWordsCardFragment
     Button mRightBottomButton;
     @Bind(R.id.right_top_button)
     Button mRightTopButton;
+
+    public static AbstractLearnFragment newInstance(
+            ILearnFragmentUiEventHandler learnFragmentUiEventHandler) {
+        AbstractLearnFragment fragment = new LearnHomeworkFragment();
+        fragment.setLearnFragmentUiEventHandler(learnFragmentUiEventHandler);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,6 +83,12 @@ public class LearnWordsCardFragment
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fetchNewRandomWordsAsync(3, mQueryWordBundle.id());
+    }
+
+    @Override
     public String tag() {
         return "learn_words_fragment";
     }
@@ -89,12 +104,13 @@ public class LearnWordsCardFragment
         if (result instanceof List) {
             mWordsOnButtons = (List<WordBundle>) result;
             Random rand = new Random();
-            int correctWordIndex = rand.nextInt(mWordsOnButtons.size());
+            int correctWordIndex = rand.nextInt(mButtons.size());
+            mWordsOnButtons.add(correctWordIndex, mQueryWordBundle);
             int correctBtnId = mButtons.get(correctWordIndex).getId();
             mButtonOnClickListener.setCorrectAnswerId(correctBtnId);
             if (!mWordsOnButtons.isEmpty()) {
                 // set and show the query word
-                updateQueryWordCaption(mWordsOnButtons.get(correctWordIndex), mQueryWord);
+                updateQueryWordCaption(mQueryWordBundle, mQueryWord);
                 circularRevealToVisibility(mQueryWordCard, View.VISIBLE);
                 // set and show buttons
                 updateButtonCaptions(mWordsOnButtons, mButtons);
@@ -110,12 +126,6 @@ public class LearnWordsCardFragment
 
     @Override
     public void refresh() {
-        fetchNewRandomWordsAsync();
-    }
-
-    @Override
-    public void onAllViewsHidden() {
-        // all view have been hidden, so we generate a new word to learn
-        fetchNewRandomWordsAsync();
+        fetchNewRandomWordsAsync(3, mQueryWordBundle.id());
     }
 }

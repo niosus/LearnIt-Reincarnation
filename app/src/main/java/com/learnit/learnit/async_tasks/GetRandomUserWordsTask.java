@@ -18,10 +18,18 @@ import java.util.List;
 public class GetRandomUserWordsTask extends MySmartAsyncTask<Integer, List<WordBundle>> {
 
     protected String TAG = "get_random_words_task";
+    protected Integer mOmitId = null;
 
     public GetRandomUserWordsTask(Context context,
                                   Integer numberOfWords) {
         super(context, numberOfWords);
+    }
+
+    public GetRandomUserWordsTask(Context context,
+                                  Integer numberOfWords,
+                                  Integer omitId) {
+        super(context, numberOfWords);
+        mOmitId = omitId;
     }
 
     @Override
@@ -46,6 +54,6 @@ public class GetRandomUserWordsTask extends MySmartAsyncTask<Integer, List<WordB
             Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting random words from user dict");
             return null;
         }
-        return dbHandler.queryRandomWords(num);
+        return dbHandler.queryRandomWords(num, mOmitId);
     }
 }

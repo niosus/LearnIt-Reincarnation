@@ -1,6 +1,8 @@
 package com.learnit.learnit.types;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.learnit.learnit.utils.Constants;
@@ -13,7 +15,7 @@ import java.util.regex.Pattern;
 
 import butterknife.internal.ListenerClass;
 
-public class WordBundle {
+public class WordBundle implements Parcelable {
     public static final String TRANS_DIVIDER = "___,___";
     public static final String HUMAN_TRANS_DIVIDER = "; ";
     private int mId;
@@ -23,6 +25,44 @@ public class WordBundle {
     private String mWord;
     private String[] mTrans;
     private float mWeight;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeInt(mWordType);
+        dest.writeString(mArticle);
+        dest.writeString(mPrefix);
+        dest.writeString(mWord);
+        dest.writeStringArray(mTrans);
+        dest.writeFloat(mWeight);
+    }
+
+    public static final Parcelable.Creator<WordBundle> CREATOR
+            = new Parcelable.Creator<WordBundle>() {
+        public WordBundle createFromParcel(Parcel in) {
+            return new WordBundle(in);
+        }
+
+        public WordBundle[] newArray(int size) {
+            return new WordBundle[size];
+        }
+    };
+
+    private WordBundle(Parcel in) {
+        mId = in.readInt();
+        mWordType = in.readInt();
+        mArticle = in.readString();
+        mPrefix = in.readString();
+        mWord = in.readString();
+        mTrans = in.createStringArray();
+        mWeight = in.readFloat();
+    }
+
 
     public enum ParseStyle {
         BABYLON,
