@@ -1,5 +1,6 @@
 package com.learnit.learnit.db_handlers;
 
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.util.Log;
 
 import com.learnit.learnit.interfaces.IDatabaseInteractions;
 import com.learnit.learnit.types.LanguagePair;
+import com.learnit.learnit.types.NotificationBuilder;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
@@ -40,6 +42,8 @@ public abstract class DbHandler extends SQLiteOpenHelper
             WORD_TYPE_COLUMN_NAME
     };
 
+    protected Context mContext;
+
     final public static String[] ALL_COLUMNS_HELP_DICT = new String[] {
             ID_COLUMN_NAME,
             WORD_COLUMN_NAME,
@@ -50,6 +54,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
                         SQLiteDatabase.CursorFactory factory,
                         int version) {
         super(context, name, factory, version);
+        mContext = context;
     }
 
     public static class Factory {
@@ -126,11 +131,10 @@ public abstract class DbHandler extends SQLiteOpenHelper
                 ID_COLUMN_NAME + "= ?", new String[]{Integer.toString(wordBundle.id())});
         db.close();
 
-        // TODO: when we will have notifications someone has to know that one needs to be removed
-//        // if this word is currently shown - remove it from notifications
-//        NotificationManager mNotificationManager
-//                = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-//        mNotificationManager.cancel(id + NotificationBuilder.mIdStartingValue);
+        // if this word is currently shown - remove it from notifications
+        NotificationManager mNotificationManager
+                = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(NotificationBuilder.notificationIdFromWordId(wordBundle.id()));
     }
 
     @Override
