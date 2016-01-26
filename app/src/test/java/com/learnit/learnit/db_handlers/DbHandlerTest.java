@@ -7,6 +7,7 @@
 package com.learnit.learnit.db_handlers;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.learnit.learnit.BuildConfig;
@@ -96,7 +97,8 @@ public class DbHandlerTest extends DbUserDictHandler {
         String wordToQuery = "apfel";
         String queryRule = WORD_COLUMN_NAME + " = ?";
         String[] queryParams = new String[]{wordToQuery};
-        List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
+        Cursor c = queryFromDB(database, "test_words", ALL_COLUMNS_USER, queryRule, queryParams, null);
+        List<WordBundle> res = bundlesFromCursor(c, database);
         assertThat(res == null, is(true));
     }
 
@@ -105,7 +107,8 @@ public class DbHandlerTest extends DbUserDictHandler {
         String wordToQuery = "gut";
         String queryRule = WORD_COLUMN_NAME + " like ?";
         String[] queryParams = new String[]{wordToQuery + "%"};
-        List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
+        Cursor c = queryFromDB(database, "test_words", ALL_COLUMNS_USER, queryRule, queryParams, null);
+        List<WordBundle> res = bundlesFromCursor(c, database);
         assertThat(res == null, is(false));
         assertThat(res.size(), is(3));
         assertThat(res.get(0).word(), is("Gutachter"));
@@ -131,7 +134,8 @@ public class DbHandlerTest extends DbUserDictHandler {
                 (new File(filePath)).getAbsolutePath(),
                 null,
                 SQLiteDatabase.OPEN_READONLY);
-        List<WordBundle> res = queryFromDB("test_words", database, queryRule, queryParams);
+        Cursor c = queryFromDB(database, "test_words", ALL_COLUMNS_USER, queryRule, queryParams, null);
+        List<WordBundle> res = bundlesFromCursor(c, database);
         assertThat(res == null, is(false));
         if (res == null) {
             return;
@@ -158,7 +162,8 @@ public class DbHandlerTest extends DbUserDictHandler {
                 (new File(filePath)).getAbsolutePath(),
                 null,
                 SQLiteDatabase.OPEN_READONLY);
-        res = queryFromDB("test_words", database, queryRule, queryParams);
+        c = queryFromDB(database, "test_words", ALL_COLUMNS_USER, queryRule, queryParams, null);
+        res = bundlesFromCursor(c, database);
         assertThat(res == null, is(false));
         if (res == null) {
             return;
@@ -236,15 +241,13 @@ public class DbHandlerTest extends DbUserDictHandler {
         int counter1 = 0;
         int counter2 = 0;
         while (counter1 == 0 || counter2 == 0) {
-            List<WordBundle> res = helper.queryRandomWords(2, null);
-            assertThat(res.size(), is(2));
+            List<WordBundle> res = helper.queryRandomWords(1, null);
+            assertThat(res.size(), is(1));
             WordBundle resultBundle = res.get(0);
             if (resultBundle.word().equals(word1)) {
                 counter1++;
-                assertThat(res.get(1).word(), is(word2));
             } else if (resultBundle.word().equals(word2)) {
                 counter2++;
-                assertThat(res.get(1).word(), is(word1));
             }
         }
 

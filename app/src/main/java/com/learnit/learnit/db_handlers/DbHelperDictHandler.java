@@ -34,51 +34,33 @@ public class DbHelperDictHandler extends DbHandler {
 
     @Override
     public List<WordBundle> queryWord(String word, Constants.QueryStyle queryStyle, Integer limit) {
-        String limitStr = (limit == null) ? "" : String.format(" limit %s ", limit);
-        String matchingRule;
+        String limitStr = (limit == null) ? null : String.valueOf(limit);
+        String matchingRule = WORD_COLUMN_NAME;
         String[] matchingParams;
         switch (queryStyle) {
             case EXACT:
-                matchingRule = " = ? ";
+                matchingRule += " = ? ";
                 matchingParams = new String[]{word};
                 break;
             case APPROXIMATE_ENDING:
-                matchingRule = " like ? ";
+                matchingRule += " like ? ";
                 matchingParams = new String[]{word + "%"};
                 break;
             case APPROXIMATE_ALL:
-                matchingRule = " like ? ";
+                matchingRule += " like ? ";
                 matchingParams = new String[]{"%" + word + "%"};
                 break;
             default:
                 return null;
         }
-        return queryFromDB(
-                getDatabaseName(),
+        Cursor c = queryFromDB(
                 getReadableDatabase(),
-                WORD_COLUMN_NAME + matchingRule + limitStr,
-                matchingParams);
-    }
-
-    protected List<WordBundle> queryFromDB(final String dbName,
-                                           final SQLiteDatabase db,
-                                           final String matchingRule,
-                                           final String[] matchingParams) {
-        Cursor cursor = db.query(dbName, ALL_COLUMNS_HELP_DICT, matchingRule, matchingParams,
-                null, null, null);
-        if (!cursor.moveToFirst()) {
-            cursor.close();
-            db.close();
-            return null;
-        } else {
-            ArrayList<WordBundle> wordBundles = new ArrayList<>();
-            do {
-                wordBundles.add(wordBundleFromCursor(cursor));
-            } while (cursor.moveToNext());
-            cursor.close();
-            db.close();
-            return wordBundles;
-        }
+                getDatabaseName(),
+                ALL_COLUMNS_HELP_DICT,
+                matchingRule,
+                matchingParams,
+                limitStr);
+        return bundlesFromCursor(c, getReadableDatabase());
     }
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {

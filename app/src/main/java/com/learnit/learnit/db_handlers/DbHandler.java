@@ -14,9 +14,15 @@ import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.NotificationBuilder;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
+import com.learnit.learnit.utils.IdWeightPair;
 import com.learnit.learnit.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
+import javax.xml.transform.stream.StreamSource;
 
 public abstract class DbHandler extends SQLiteOpenHelper
     implements IDatabaseInteractions {
@@ -40,6 +46,11 @@ public abstract class DbHandler extends SQLiteOpenHelper
             PREFIX_COLUMN_NAME,
             WEIGHT_COLUMN_NAME,
             WORD_TYPE_COLUMN_NAME
+    };
+
+    final public static String[] ID_WEIGHT_COLUMNS = new String[] {
+            ID_COLUMN_NAME,
+            WEIGHT_COLUMN_NAME,
     };
 
     protected Context mContext;
@@ -158,10 +169,17 @@ public abstract class DbHandler extends SQLiteOpenHelper
 
     abstract protected void executeDbCreation(SQLiteDatabase sqLiteDatabase);
 
-    abstract protected List<WordBundle> queryFromDB(final String dbName,
-                                           final SQLiteDatabase db,
-                                           final String matchingRule,
-                                           final String[] matchingParams);
+    protected Cursor queryFromDB(final SQLiteDatabase db,
+                                 final String dbName,
+                                 final String[] columns,
+                                 final String matchingRule,
+                                 final String[] matchingParams,
+                                 final String limit) {
+        return db.query(
+                dbName, columns, matchingRule, matchingParams,
+                null /*groupBy*/, null /*having*/, null /*orderBy*/,
+                limit);
+    }
 
     @Override
     public List<WordBundle> queryWord(final String word, final Constants.QueryStyle queryStyle) {
@@ -170,10 +188,78 @@ public abstract class DbHandler extends SQLiteOpenHelper
 
     @Override
     public List<WordBundle> queryRandomWords(final Integer limit, final Integer omitId) {
-        // TODO: get all ids and weights and then pick 'limit' random words according to weights
+        // get all ids and weights and then pick 'limit' random words according to weights
+        Cursor c = queryFromDB(
+                getReadableDatabase(),
+                getDatabaseName(),
+                ID_WEIGHT_COLUMNS,
+                null, null, null);
+        List<IdWeightPair> idWeightPairs = idWeightPairsFromCursor(c);
+        float weightsSum = 0;
+        for (IdWeightPair idWeightPair: idWeightPairs) {
+            weightsSum += idWeightPair.weight();
+        }
+        Random rand = new Random();
+        List<String> ids = new ArrayList<>();
+        while (ids.size() < limit) {
+            float randNum = rand.nextFloat() * weightsSum;
+            float runningSum = 0;
+            for (IdWeightPair idWeightPair: idWeightPairs) {
+                runningSum += idWeightPair.weight();
+                while (runningSum > weightsSum) { runningSum -= weightsSum; }
+                if (runningSum > randNum) {
+                    String idStr = String.valueOf(idWeightPair.id());
+                    if (!ids.contains(idStr)) {
+                        ids.add(idStr);
+                    }
+                    break;
+                }
+            }
+        }
         // query the words by id after we have a list of ids
         // TODO: take care to omit the word we should omit
-        return queryWord(null, Constants.QueryStyle.RANDOM, limit);
+        String queryString = ID_COLUMN_NAME + " = ?";
+        for (int i = 1; i < limit; ++i) {
+            queryString += " OR " + ID_COLUMN_NAME + " = ? ";
+        }
+        String[] idsStrArray = ids.toArray(new String[ids.size()]);
+        c = queryFromDB(
+                getReadableDatabase(),
+                getDatabaseName(),
+                ALL_COLUMNS_USER,
+                queryString,
+                idsStrArray,
+                null);
+        return bundlesFromCursor(c, getReadableDatabase());
+    }
+
+    protected List<WordBundle> bundlesFromCursor(Cursor cursor, SQLiteDatabase db) {
+        ArrayList<WordBundle> wordBundles = null;
+        if (cursor.moveToFirst()) {
+            wordBundles = new ArrayList<>();
+            do { wordBundles.add(wordBundleFromCursor(cursor)); }
+            while (cursor.moveToNext());
+        }
+        db.close();
+        cursor.close();
+        return wordBundles;
+    }
+
+    protected List<IdWeightPair> idWeightPairsFromCursor(Cursor cursor) {
+        ArrayList<IdWeightPair> idWeightPairs = null;
+        if (cursor.moveToFirst()) {
+            idWeightPairs = new ArrayList<>();
+            do { idWeightPairs.add(idWeightPairFromCursor(cursor)); }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        return idWeightPairs;
+    }
+
+    protected IdWeightPair idWeightPairFromCursor(final Cursor cursor) {
+        return new IdWeightPair(
+                cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)),
+                cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)));
     }
 
     abstract protected WordBundle wordBundleFromCursor(final Cursor cursor);
