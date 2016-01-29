@@ -195,6 +195,9 @@ public abstract class DbHandler extends SQLiteOpenHelper
                 ID_WEIGHT_COLUMNS,
                 null, null, null);
         List<IdWeightPair> idWeightPairs = idWeightPairsFromCursor(c);
+        if (idWeightPairs == null) {
+            return null;
+        }
         float weightsSum = 0;
         for (IdWeightPair idWeightPair: idWeightPairs) {
             weightsSum += idWeightPair.weight();

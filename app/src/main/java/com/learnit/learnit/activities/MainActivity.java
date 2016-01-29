@@ -81,6 +81,7 @@ public class MainActivity
             Log.d(Constants.LOG_TAG, "running " + this.getLocalClassName() + " for the first time");
             // start intro activity
             startActivity(new Intent(this, IntroActivity.class));
+            return;
         }
 
         setContentView(R.layout.activity_main);
