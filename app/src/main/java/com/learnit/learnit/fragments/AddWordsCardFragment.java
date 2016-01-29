@@ -324,6 +324,7 @@ public class AddWordsCardFragment extends Fragment
                         .setWord(mEdtAddWord.getText().toString())
                         .setTrans(mEdtAddTrans.getText().toString())
                         .construct());
+                Log.d(Constants.LOG_TAG, "trying to add a word with weight: " + bundles.get(0).weight());
                 mTaskScheduler.newTaskForClient(
                         new AddUserDictWordsTask(this.getContext(), bundles), this);
             }

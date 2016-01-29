@@ -1,6 +1,5 @@
 package com.learnit.learnit.types;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -9,15 +8,14 @@ import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.StringUtils;
 import com.learnit.learnit.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import butterknife.internal.ListenerClass;
 
 public class WordBundle implements Parcelable {
     public static final String TRANS_DIVIDER = "___,___";
     public static final String HUMAN_TRANS_DIVIDER = "; ";
+    public static final float MAX_WEIGHT = 1.0f;
+    public static final float DEFAULT_WEIGHT = 0.5f;
     private int mId;
     private int mWordType;
     private String mArticle;
@@ -70,21 +68,25 @@ public class WordBundle implements Parcelable {
     }
 
     public static class Constructor {
-        private int mNestedId = -1;
-        private int mNestedWordType = WordType.NONE;
-        private String mNestedArticle = null;
-        private String mNestedPrefix = null;
-        private String mNestedWord = null;
-        private String[] mNestedTrans = null;
-        private float mNestedWeight = -1;
+        private int mNestedId;
+        private int mNestedWordType;
+        private String mNestedArticle;
+        private String mNestedPrefix;
+        private String mNestedWord;
+        private String[] mNestedTrans;
+        private float mNestedWeight;
 
-        private void resetNestedValues() {
+        public Constructor() {
+            setDefaultValues();
+        }
+
+        private void setDefaultValues() {
             mNestedId = -1;
             mNestedArticle = null;
             mNestedPrefix = null;
             mNestedWord = null;
             mNestedTrans = null;
-            mNestedWeight = -1;
+            mNestedWeight = DEFAULT_WEIGHT;
             mNestedWordType = WordType.NONE;
         }
 
@@ -97,7 +99,7 @@ public class WordBundle implements Parcelable {
             tempBundle.setWordType(mNestedWordType);
             tempBundle.setId(mNestedId);
             tempBundle.setWeight(mNestedWeight);
-            resetNestedValues();
+            setDefaultValues();
             return tempBundle;
         }
 
@@ -185,7 +187,7 @@ public class WordBundle implements Parcelable {
         mPrefix = null;
         mWord = null;
         mTrans = null;
-        mWeight = -1;
+        mWeight = DEFAULT_WEIGHT;
         mWordType = WordType.NONE;
     }
 
@@ -202,6 +204,9 @@ public class WordBundle implements Parcelable {
     }
 
     public void setWeight(final float weight) {
+        if (weight > DEFAULT_WEIGHT) {
+            throw new RuntimeException("weight cannot be higher than 1.0");
+        }
         this.mWeight = weight;
     }
 

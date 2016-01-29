@@ -195,21 +195,33 @@ public abstract class DbHandler extends SQLiteOpenHelper
                 ID_WEIGHT_COLUMNS,
                 null, null, null);
         List<IdWeightPair> idWeightPairs = idWeightPairsFromCursor(c);
-        if (idWeightPairs == null) {
+        if (idWeightPairs == null || idWeightPairs.isEmpty()) {
+            Log.d(Constants.LOG_TAG, "there are no words in the dict");
             return null;
         }
+
+        int numberOfWordsToOmit = 0;
+        if (omitId != null) { numberOfWordsToOmit = 1; }
         float weightsSum = 0;
         for (IdWeightPair idWeightPair: idWeightPairs) {
             weightsSum += idWeightPair.weight();
         }
+        if (weightsSum < 0.01) {
+            Log.e(Constants.LOG_TAG, "there are some words, but all have 0 weight. This is wrong");
+            return null;
+        }
         Random rand = new Random();
         List<String> ids = new ArrayList<>();
-        while (ids.size() < limit) {
+        while (ids.size() < limit && ids.size() < idWeightPairs.size() - numberOfWordsToOmit) {
+            Log.d(Constants.LOG_TAG, "in while");
             float randNum = rand.nextFloat() * weightsSum;
             float runningSum = 0;
             for (IdWeightPair idWeightPair: idWeightPairs) {
                 runningSum += idWeightPair.weight();
-                while (runningSum > weightsSum) { runningSum -= weightsSum; }
+                while (runningSum > weightsSum) {
+                    Log.d(Constants.LOG_TAG, "updating inner sum");
+                    runningSum -= weightsSum;
+                }
                 if (runningSum > randNum) {
                     String idStr = String.valueOf(idWeightPair.id());
                     if (!ids.contains(idStr)) {
