@@ -32,8 +32,7 @@ public class SettingsActivity
         }
     }
 
-    public static class SettingsFragment extends PreferenceFragment
-    implements Preference.OnPreferenceChangeListener{
+    public static class SettingsFragment extends PreferenceFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -41,19 +40,31 @@ public class SettingsActivity
             addPreferencesFromResource(R.xml.prefs);
 
             MySwitchPreference notificationsSwitch = (MySwitchPreference) findPreference(getString(R.string.key_pref_notifications_active));
-            notificationsSwitch.setOnPreferenceChangeListener(this);
+            notificationsSwitch.setOnPreferenceChangeListener(new MyOnPrefChangeListener(getActivity()));
         }
 
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(Constants.LOG_TAG, "pref changes to " + newValue);
-            if ((boolean) newValue) {
-                Utils.startRepeatingTimer(getActivity());
-                return true;
-            } else {
-                Utils.cancelRepeatingTimer(getActivity());
-                return true;
+        public static class MyOnPrefChangeListener implements Preference.OnPreferenceChangeListener {
+            Context mContext;
+
+            public MyOnPrefChangeListener(Context context) {
+                mContext = context;
             }
+
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (preference.getKey().equals(mContext.getString(R.string.key_pref_notifications_active))) {
+                    Log.d(Constants.LOG_TAG, "pref changes to " + newValue);
+                    if ((boolean) newValue) {
+                        Utils.startRepeatingTimer(mContext);
+                        return true;
+                    } else {
+                        Utils.cancelRepeatingTimer(mContext);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         }
     }
 }

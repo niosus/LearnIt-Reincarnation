@@ -116,12 +116,15 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
                     .items(mEntriesArrayId)
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int pickedLangIndex, CharSequence text) {
-                            Log.d(Constants.LOG_TAG, "checked list item with index " + pickedLangIndex);
+                        public boolean onSelection(MaterialDialog dialog, View view, int pickedIndex, CharSequence text) {
+                            Log.d(Constants.LOG_TAG, "checked list item with index " + pickedIndex);
                             setSummary(text);
-                            pickedLangIndex = Utils.updateLangIndexIfNeeded(getContext(), pickedLangIndex);
+                            if (getKey().equals(getContext().getString(R.string.key_language_to_learn))
+                                    || getKey().equals(getContext().getString(R.string.key_language_you_know))) {
+                                pickedIndex = Utils.updateLangIndexIfNeeded(getContext(), pickedIndex);
+                            }
                             // put the appropriate index into shared prefs
-                            Prefs.putInt(getKey(), pickedLangIndex);
+                            Prefs.putInt(getKey(), pickedIndex);
                             return true;
                         }
                     })

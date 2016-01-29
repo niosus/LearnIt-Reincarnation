@@ -58,7 +58,7 @@ public class NotificationBuilder {
         deleteOldNotifications(context, old_ids);
         Constants.LearnType wayToLearn = getWayToLearn(context);
         Log.d(Constants.LOG_TAG, "got learn type: " + wayToLearn.name());
-        int numberOfWords = setNumberOfWords(context);
+        int numberOfWords = getNumberOfWords(context);
         Log.d(LOG_TAG, "number of notifications = " + numberOfWords);
 
         DbHandler dbHandler = DbHandler.Factory.createLocalizedHelper(context, DbHandler.DB_USER_DICT);
@@ -75,7 +75,7 @@ public class NotificationBuilder {
          return Constants.LearnType.TRANSLATIONS;
     }
 
-    private static int setNumberOfWords(Context context) {
+    private static int getNumberOfWords(Context context) {
         return Prefs.getInt(context.getString(R.string.key_num_of_words), 9);
     }
 
