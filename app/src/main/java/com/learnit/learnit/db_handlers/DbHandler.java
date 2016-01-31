@@ -188,6 +188,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
 
     @Override
     public List<WordBundle> queryRandomWords(final Integer limit, final Integer omitId) {
+        // TODO: this weighted random implementation is not optimal and cen be done a lot better
         // get all ids and weights and then pick 'limit' random words according to weights
         Cursor c = queryFromDB(
                 getReadableDatabase(),
