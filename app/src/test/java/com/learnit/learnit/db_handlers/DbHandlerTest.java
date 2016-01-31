@@ -254,4 +254,46 @@ public class DbHandlerTest extends DbUserDictHandler {
         Assert.assertTrue(counter1 > 0);
         Assert.assertTrue(counter2 > 0);
     }
+
+    @Test
+    public void testWeightedRandom() {
+        DbHandler helper = new DbUserDictHandler(
+                RuntimeEnvironment.application,
+                DbHandler.DB_USER_DICT,
+                null, 1);
+        String transToExpect = "test_trans";
+        String word1 = "test1";
+        String word2 = "test2";
+        float weight1 = 0.9f;
+        float weight2 = 0.1f;
+        helper.addWord(new WordBundle.Constructor()
+                .setWord(word1)
+                .setTrans(transToExpect)
+                .setWeight(weight1)
+                .setId(666)
+                .construct());
+        helper.addWord(new WordBundle.Constructor()
+                .setWord(word2)
+                .setTrans(transToExpect)
+                .setWeight(weight2)
+                .setId(666)
+                .construct());
+
+        int counter1 = 0;
+        int counter2 = 0;
+        for (int i = 0; i < 1000; ++i) {
+            List<WordBundle> res = helper.queryRandomWords(1, null);
+            assertThat(res.size(), is(1));
+            WordBundle resultBundle = res.get(0);
+            if (resultBundle.word().equals(word1)) {
+                counter1++;
+            } else if (resultBundle.word().equals(word2)) {
+                counter2++;
+            }
+        }
+
+        Assert.assertTrue(counter1 > 0);
+        Assert.assertTrue(counter2 > 0);
+        Assert.assertEquals(weight1 / weight2, (float)counter1 / counter2, 2.0);
+    }
 }
