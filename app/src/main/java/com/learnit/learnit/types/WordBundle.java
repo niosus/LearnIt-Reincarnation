@@ -204,7 +204,7 @@ public class WordBundle implements Parcelable {
     }
 
     public void setWeight(final float weight) {
-        if (weight > DEFAULT_WEIGHT) {
+        if (weight > MAX_WEIGHT) {
             throw new RuntimeException("weight cannot be higher than 1.0");
         }
         this.mWeight = weight;
