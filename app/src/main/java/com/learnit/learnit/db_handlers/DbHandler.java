@@ -206,9 +206,8 @@ public abstract class DbHandler extends SQLiteOpenHelper
         for (IdWeightPair idWeightPair: idWeightPairs) {
             weightsSum += idWeightPair.weight();
         }
-        if (weightsSum < 0.01) {
-            Log.e(Constants.LOG_TAG, "there are some words, but all have 0 weight. This is wrong");
-            return null;
+        if (weightsSum < 0.0001) {
+            throw new RuntimeException("Error: All random words have weight 0.");
         }
         Random rand = new Random();
         List<String> ids = new ArrayList<>();
@@ -223,6 +222,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
                     runningSum -= weightsSum;
                 }
                 if (runningSum > randNum) {
+                    if (omitId != null && idWeightPair.id() == omitId) { break; }
                     String idStr = String.valueOf(idWeightPair.id());
                     if (!ids.contains(idStr)) {
                         ids.add(idStr);
@@ -232,7 +232,6 @@ public abstract class DbHandler extends SQLiteOpenHelper
             }
         }
         // query the words by id after we have a list of ids
-        // TODO: take care to omit the word we should omit
         String queryString = ID_COLUMN_NAME + " = ?";
         for (int i = 1; i < limit; ++i) {
             queryString += " OR " + ID_COLUMN_NAME + " = ? ";
