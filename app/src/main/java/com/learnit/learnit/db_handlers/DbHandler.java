@@ -18,11 +18,8 @@ import com.learnit.learnit.utils.IdWeightPair;
 import com.learnit.learnit.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import javax.xml.transform.stream.StreamSource;
 
 public abstract class DbHandler extends SQLiteOpenHelper
     implements IDatabaseInteractions {
@@ -124,7 +121,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
             }
         }
         if (differenceCounter == nowInDb.size()) {
-            // there were no bundles that are of the same type as the query
+            // there were no bundles that are of the same type as the rule
             SQLiteDatabase db = this.getWritableDatabase();
             db.insert(this.getDatabaseName(), null, cv);
             db.close();
@@ -232,7 +229,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
                 }
             }
         }
-        // query the words by id after we have a list of ids
+        // rule the words by id after we have a list of ids
         String queryString = ID_COLUMN_NAME + " = ?";
         for (int i = 1; i < limit; ++i) {
             queryString += " OR " + ID_COLUMN_NAME + " = ? ";
@@ -277,5 +274,49 @@ public abstract class DbHandler extends SQLiteOpenHelper
                 cursor.getFloat(cursor.getColumnIndex(WEIGHT_COLUMN_NAME)));
     }
 
+    protected static SqlMatcher getMatcherForQuery(final String query, final Constants.QueryStyle style) {
+        String matchingRule;
+        String[] matchingParams;
+        switch (style) {
+            case EXACT:
+                matchingRule = WORD_COLUMN_NAME + " = ? ";
+                matchingParams = new String[]{"%" + query + "%"};
+                break;
+            case APPROXIMATE_WORD_ENDING:
+                matchingRule = WORD_COLUMN_NAME + " like ? ";
+                matchingParams = new String[]{"%" + query + "%"};
+                break;
+            case APPROXIMATE_WORD:
+                matchingRule = WORD_COLUMN_NAME + " like ? ";
+                matchingParams = new String[]{"%" + query + "%"};
+                break;
+            case APPROXIMATE_WORD_TRANS:
+                matchingRule = WORD_COLUMN_NAME + " like ? or " + TRANSLATION_COLUMN_NAME + " like ? ";
+                matchingParams = new String[]{"%" + query + "%", "%" + query + "%"};
+                break;
+            default:
+                throw new RuntimeException("unhandled rule style");
+        }
+        return new SqlMatcher(matchingRule, matchingParams);
+    }
+
     abstract protected WordBundle wordBundleFromCursor(final Cursor cursor);
+
+    protected static class SqlMatcher {
+        SqlMatcher(String matchingRule, String[] matchingParams) {
+            mMatchingRule = matchingRule;
+            mMatchingParams = matchingParams;
+        }
+
+        public String rule() {
+            return mMatchingRule;
+        }
+
+        public String[] params() {
+            return mMatchingParams;
+        }
+
+        private String mMatchingRule;
+        private String[] mMatchingParams;
+    }
 }

@@ -46,6 +46,6 @@ public class GetUserDictWordsTask extends MySmartAsyncTask<String, List<WordBund
             Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting words from user dict");
             return null;
         }
-        return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ALL);
+        return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_WORD_TRANS);
     }
 }

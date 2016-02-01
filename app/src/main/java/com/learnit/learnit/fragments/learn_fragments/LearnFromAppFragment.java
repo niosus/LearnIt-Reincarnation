@@ -105,7 +105,7 @@ public class LearnFromAppFragment
             int correctBtnId = mButtons.get(correctWordIndex).getId();
             mButtonOnClickListener.setCorrectAnswerId(correctBtnId);
             if (!mWordsOnButtons.isEmpty()) {
-                // set and show the query word
+                // set and show the rule word
                 updateQueryWordCaption(mWordsOnButtons.get(correctWordIndex), mQueryWord);
                 circularRevealToVisibility(mQueryWordCard, View.VISIBLE);
                 // set and show buttons

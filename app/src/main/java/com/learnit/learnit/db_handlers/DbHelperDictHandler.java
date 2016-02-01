@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DbHelperDictHandler extends DbHandler {
@@ -33,32 +32,15 @@ public class DbHelperDictHandler extends DbHandler {
     }
 
     @Override
-    public List<WordBundle> queryWord(String word, Constants.QueryStyle queryStyle, Integer limit) {
+    public List<WordBundle> queryWord(String query, Constants.QueryStyle queryStyle, Integer limit) {
         String limitStr = (limit == null) ? null : String.valueOf(limit);
-        String matchingRule = WORD_COLUMN_NAME;
-        String[] matchingParams;
-        switch (queryStyle) {
-            case EXACT:
-                matchingRule += " = ? ";
-                matchingParams = new String[]{word};
-                break;
-            case APPROXIMATE_ENDING:
-                matchingRule += " like ? ";
-                matchingParams = new String[]{word + "%"};
-                break;
-            case APPROXIMATE_ALL:
-                matchingRule += " like ? ";
-                matchingParams = new String[]{"%" + word + "%"};
-                break;
-            default:
-                return null;
-        }
+        SqlMatcher matcher = getMatcherForQuery(query, queryStyle);
         Cursor c = queryFromDB(
                 getReadableDatabase(),
                 getDatabaseName(),
                 ALL_COLUMNS_HELP_DICT,
-                matchingRule,
-                matchingParams,
+                matcher.rule(),
+                matcher.params(),
                 limitStr);
         return bundlesFromCursor(c, getReadableDatabase());
     }

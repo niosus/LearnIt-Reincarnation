@@ -52,8 +52,8 @@ public class Constants {
 
     public enum QueryStyle {
         EXACT,
-        APPROXIMATE_ENDING,
-        APPROXIMATE_ALL,
-        RANDOM
+        APPROXIMATE_WORD_ENDING,
+        APPROXIMATE_WORD,
+        APPROXIMATE_WORD_TRANS,
     }
 }

@@ -54,6 +54,6 @@ public class GetHelpWordsTask extends MySmartAsyncTask<String, List<WordBundle>>
             Log.e(Constants.LOG_TAG, "db handler is suddenly null while getting help words");
             return null;
         }
-        return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_ENDING, mLimit);
+        return dbHandler.queryWord(queryWord, Constants.QueryStyle.APPROXIMATE_WORD_ENDING, mLimit);
     }
 }
