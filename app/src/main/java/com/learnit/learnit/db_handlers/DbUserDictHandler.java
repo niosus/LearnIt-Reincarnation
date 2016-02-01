@@ -55,8 +55,9 @@ public class DbUserDictHandler extends DbHandler {
                 matchingParams = new String[]{word + "%"};
                 break;
             case APPROXIMATE_ALL:
-                matchingRule += " like ? ";
-                matchingParams = new String[]{"%" + word + "%"};
+                // TODO: this is a hack to be able to search also by translation
+                matchingRule = WORD_COLUMN_NAME + " like ? or " + TRANSLATION_COLUMN_NAME + " like ? ";
+                matchingParams = new String[]{"%" + word + "%", "%" + word + "%"};
                 break;
             default:
                 return null;
