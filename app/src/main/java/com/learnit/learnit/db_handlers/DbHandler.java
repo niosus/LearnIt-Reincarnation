@@ -280,11 +280,11 @@ public abstract class DbHandler extends SQLiteOpenHelper
         switch (style) {
             case EXACT:
                 matchingRule = WORD_COLUMN_NAME + " = ? ";
-                matchingParams = new String[]{"%" + query + "%"};
+                matchingParams = new String[]{query};
                 break;
             case APPROXIMATE_WORD_ENDING:
                 matchingRule = WORD_COLUMN_NAME + " like ? ";
-                matchingParams = new String[]{"%" + query + "%"};
+                matchingParams = new String[]{query + "%"};
                 break;
             case APPROXIMATE_WORD:
                 matchingRule = WORD_COLUMN_NAME + " like ? ";
