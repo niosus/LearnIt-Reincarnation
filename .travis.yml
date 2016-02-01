@@ -23,4 +23,4 @@ android:
     # - sys-img-x86-android-17
 
   script:
-    ./gradlew --info --stacktrace build connectedCheck
+    ./gradlew test --info
