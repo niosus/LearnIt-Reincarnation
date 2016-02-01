@@ -23,4 +23,4 @@ android:
     # - sys-img-x86-android-17
 
   script:
-    ./gradlew test --info
+    - ./gradlew test --info -s
