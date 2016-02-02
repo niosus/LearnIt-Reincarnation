@@ -9,4 +9,4 @@ test:
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-    - cp /home/ubuntu/LearnIt-Reincarnation/app/build/reports/tests/debug/* $CIRCLE_ARTIFACTS
+    - cp -r /home/ubuntu/LearnIt-Reincarnation/app/build/reports/tests/debug/* $CIRCLE_ARTIFACTS
