@@ -295,7 +295,7 @@ public abstract class DbHandler extends SQLiteOpenHelper
                 matchingParams = new String[]{"%" + query + "%", "%" + query + "%"};
                 break;
             default:
-                throw new RuntimeException("unhandled rule style");
+                throw new RuntimeException("unhandled query style");
         }
         return new SqlMatcher(matchingRule, matchingParams);
     }
