@@ -2,9 +2,6 @@ machine:
   environment:
     _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
-general:
-  artifacts:
-    - home/ubuntu/LearnIt-Reincarnation/app/build/reports/tests/debug
 test:
   override:
     # run tests  against the emulator.
@@ -12,3 +9,4 @@ test:
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - cp home/ubuntu/LearnIt-Reincarnation/app/build/reports/tests/debug/* $CIRCLE_ARTIFACTS
