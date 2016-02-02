@@ -1,3 +1,6 @@
+general:
+  artifacts:
+    - home/ubuntu/LearnIt-Reincarnation/app/build/reports/tests/debug
 test:
   override:
     # run tests  against the emulator.
