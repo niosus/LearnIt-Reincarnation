@@ -4,7 +4,7 @@ general:
 test:
   override:
     # run tests  against the emulator.
-    - ./gradlew test --info -s
+    - ./gradlew test --continue
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
