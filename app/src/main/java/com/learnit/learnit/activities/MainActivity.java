@@ -72,6 +72,7 @@ public class MainActivity
     private TaskSchedulerFragment mTaskScheduler;
     private Map<Integer, IFabEventHandler> mFabEventHandlers;
     private Map<Integer, IRefreshable> mRefreshableClients;
+    private Snackbar mSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,6 +292,9 @@ public class MainActivity
 
     @Override @SuppressWarnings("deprecated")
     public void showFab(int drawableId) {
+        if (mSnackbar == null || !mSnackbar.isShown()) {
+            mFab.setTranslationY(0);
+        }
         mFab.setImageDrawable(getResources().getDrawable(drawableId));
         mFab.show();
     }
@@ -323,8 +327,8 @@ public class MainActivity
                 Log.e(Constants.LOG_TAG, "wrong duration for snack bar");
                 return;
         }
-        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, message, actualDuration);
-        snackbar.show();
+        mSnackbar = Snackbar.make(mCoordinatorLayout, message, actualDuration);
+        mSnackbar.show();
     }
 
     @Override
