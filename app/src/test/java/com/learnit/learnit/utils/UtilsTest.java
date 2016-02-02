@@ -29,7 +29,7 @@ public class UtilsTest {
     public void testAreBothNull() throws Exception {
         assertThat(Utils.areBothNull(null, null), is(true));
         String a = "test";
-        assertThat(Utils.areBothNull(a, null), is(true));
+        assertThat(Utils.areBothNull(a, null), is(false));
     }
 
     @Test
