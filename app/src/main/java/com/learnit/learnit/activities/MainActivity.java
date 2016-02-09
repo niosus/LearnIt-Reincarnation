@@ -29,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.async_tasks.ExportTask;
+import com.learnit.learnit.async_tasks.ImportTask;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
 import com.learnit.learnit.fragments.TaskSchedulerFragment;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
@@ -116,6 +118,12 @@ public class MainActivity
         switch (position) {
             case 0:
                 startSettingsActivity();
+                break;
+            case 1:
+                mTaskScheduler.newTaskForClient(new ExportTask(this, null), this);
+                break;
+            case 2:
+                mTaskScheduler.newTaskForClient(new ImportTask(this, null), this);
                 break;
         }
     }
@@ -276,15 +284,29 @@ public class MainActivity
     @Override
     public <OutType> void onFinish(OutType result) {
         if (result instanceof Integer) {
-            if (result == PopulateHelpDictTask.SUCCESS) {
-                Log.d(Constants.LOG_TAG, "loaded help dictionary");
-                LanguagePair.Names languagePair = Utils.getCurrentLanguageNames(this);
-                String msg = String.format(getString(R.string.snack_loaded_help_dict),
-                        languagePair.langToLearn(), languagePair.langYouKnow());
-                showSnackBar(msg, Snackbar.LENGTH_SHORT);
-                mProgressBar.setVisibility(View.INVISIBLE);
+            switch ((Integer) result) {
+                case PopulateHelpDictTask.SUCCESS:
+                    Log.d(Constants.LOG_TAG, "loaded help dictionary");
+                    LanguagePair.Names languagePair = Utils.getCurrentLanguageNames(this);
+                    String msg = String.format(getString(R.string.snack_loaded_help_dict),
+                            languagePair.langToLearn(), languagePair.langYouKnow());
+                    showSnackBar(msg, Snackbar.LENGTH_SHORT);
+                    break;
+                case ExportTask.SUCCESS:
+                    showSnackBar(getString(R.string.toast_db_exported), Snackbar.LENGTH_SHORT);
+                    break;
+                case ExportTask.FAILURE:
+                    showSnackBar(getString(R.string.toast_db_export_error), Snackbar.LENGTH_SHORT);
+                    break;
+                case ImportTask.SUCCESS:
+                    showSnackBar(getString(R.string.toast_db_imported), Snackbar.LENGTH_SHORT);
+                    break;
+                case ImportTask.FAILURE:
+                    showSnackBar(getString(R.string.toast_db_import_error), Snackbar.LENGTH_SHORT);
+                    break;
             }
         }
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
     @Override
     public void onCancelled() {

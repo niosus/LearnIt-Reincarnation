@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 
 import com.learnit.learnit.interfaces.IDatabaseInteractions;
@@ -17,6 +18,11 @@ import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.IdWeightPair;
 import com.learnit.learnit.utils.Utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -93,6 +99,18 @@ public abstract class DbHandler extends SQLiteOpenHelper
 
     }
 
+    private boolean idInDb(int id, SQLiteDatabase db, String dbName) {
+        Cursor c = db.query(dbName,
+                new String[]{ID_COLUMN_NAME}, ID_COLUMN_NAME + " = ?", new String[]{Integer.toString(id)},
+                null /*groupBy*/, null /*having*/, null /*orderBy*/, null /*limit*/);
+        boolean idIsInDb = false;
+        if (c.getCount() > 0) {
+            idIsInDb = true;
+        }
+        c.close();
+        return idIsInDb;
+    }
+
     @Override
     public Constants.AddWordReturnCode addWord(WordBundle wordBundle) {
         Log.d(Constants.LOG_TAG, "DbHandler: adding word '" + wordBundle.word() + "'");
@@ -111,21 +129,11 @@ public abstract class DbHandler extends SQLiteOpenHelper
         // if we reach this place - there is something similar in the db, but not the same.
         // Requires investigation and update.
         // TODO: actually implement the logic behind the word updated
-        int differenceCounter = 0;
         for (WordBundle inDbBundle: nowInDb) {
             if (inDbBundle.wordType() == wordBundle.wordType()) {
                 Log.e(Constants.LOG_TAG, "reached unimplemented behaviour. Please decide how to update the words.");
                 return Constants.AddWordReturnCode.WORD_UPDATED;
-            } else {
-                differenceCounter++;
             }
-        }
-        if (differenceCounter == nowInDb.size()) {
-            // there were no bundles that are of the same type as the rule
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.insert(this.getDatabaseName(), null, cv);
-            db.close();
-            return Constants.AddWordReturnCode.SUCCESS;
         }
         Log.e(Constants.LOG_TAG, "something unpredicted happened, so we have just failed. Congrats.");
         return Constants.AddWordReturnCode.FAILURE;
@@ -318,5 +326,67 @@ public abstract class DbHandler extends SQLiteOpenHelper
 
         private String mMatchingRule;
         private String[] mMatchingParams;
+    }
+
+    public boolean importDB() {
+        File sd = Environment.getExternalStorageDirectory();
+        sd = new File(sd, "LearnIt");
+        String backupDBPath = "DB_Backup.db";
+        File databaseFile = new File(sd, backupDBPath);
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+        Cursor c_name = db.rawQuery("SELECT name FROM sqlite_sequence", null);
+        String name = null;
+        if (c_name.moveToFirst()) {
+            int name_index = c_name.getColumnIndex("name");
+            name = c_name.getString(name_index);
+            Log.d(Constants.LOG_TAG, name);
+        }
+        c_name.close();
+        Cursor c = db.rawQuery("select * from " + name, null);
+        SQLiteDatabase db_local = getWritableDatabase();
+        if (c.moveToFirst()) {
+            do {
+                WordBundle wordBundle = wordBundleFromCursor(c);
+                if (idInDb(wordBundle.id(), getReadableDatabase(), getDatabaseName())) {
+                    // something is wrong while importing. There should be no duplicates
+                    continue;
+                }
+                this.addWord(wordBundle);
+            } while (c.moveToNext());
+        }
+        c.close();
+        db_local.close();
+        db.close();
+        return true;
+    }
+
+    public boolean exportDB() throws IOException {
+        File sd = Environment.getExternalStorageDirectory();
+        sd = new File(sd, "LearnIt");
+        if (sd.mkdirs()) {
+            Log.d(Constants.LOG_TAG, "creating new folder LearnIt");
+        }
+        Log.d(Constants.LOG_TAG, "searching file in " + sd.getPath());
+        if (sd.canWrite()) {
+            String backupDBPath = "DB_Backup.db";
+            File currentDB = mContext.getDatabasePath(getDatabaseName());
+            Log.d(Constants.LOG_TAG, "current _database path = " + currentDB.getPath());
+            File backupDB = new File(sd, backupDBPath);
+
+            if (currentDB.exists()) {
+                FileChannel src = new FileInputStream(currentDB).getChannel();
+                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+            } else {
+                Log.e(Constants.LOG_TAG, "database does not exist");
+                return false;
+            }
+        } else {
+            Log.e(Constants.LOG_TAG, "cannot write to sd. Permissions?");
+            return false;
+        }
+        return true;
     }
 }

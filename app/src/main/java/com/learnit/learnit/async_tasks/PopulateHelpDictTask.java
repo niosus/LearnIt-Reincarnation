@@ -23,8 +23,8 @@ import java.io.IOException;
 public class PopulateHelpDictTask extends MySmartAsyncTask<String, Integer> {
 
     protected String TAG = "populate_dict";
-    public static final Integer SUCCESS = 0;
-    public static final Integer FAILURE = -1;
+    public static final int SUCCESS = 0;
+    public static final int FAILURE = -1;
 
     public PopulateHelpDictTask(Context context,
                                 String data) {

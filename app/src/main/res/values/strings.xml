@@ -49,8 +49,9 @@
     <!-- toast texts -->
     <string name="toast_notif_start_text">LearnIt notification timer started. \nThe notifications will appear in scheduled time.</string>
     <string name="toast_notif_stop_text">Notification timer stopped.</string>
-    <string name="toast_db_exported">Dictionary was exported to \n%s</string>
-    <string name="toast_db_imported">Dictionary was imported from \n%s</string>
+    <string name="toast_db_exported">Dictionary was exported</string>
+    <string name="toast_db_export_error">Error occurred while exporting</string>
+    <string name="toast_db_imported">Dictionary was imported</string>
     <string name="toast_db_import_error">Error occurred while importing</string>
 
     <!-- Dialog strings -->

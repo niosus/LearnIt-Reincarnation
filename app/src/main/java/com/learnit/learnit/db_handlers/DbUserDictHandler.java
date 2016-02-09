@@ -4,10 +4,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.util.Log;
+import android.view.Gravity;
 
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 public class DbUserDictHandler extends DbHandler {
@@ -66,4 +74,5 @@ public class DbUserDictHandler extends DbHandler {
                 .construct();
         return wordBundle;
     }
+
 }
