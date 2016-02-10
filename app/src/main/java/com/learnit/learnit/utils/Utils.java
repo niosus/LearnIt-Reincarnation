@@ -266,25 +266,25 @@ public class Utils {
     {
         switch (wordNum) {
             case 1:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_1;
             case 2:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_2;
             case 3:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_3;
             case 4:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_4;
             case 5:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_5;
             case 6:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_6;
             case 7:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_7;
             case 8:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_8;
             case 9:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_9;
             case 10:
-                return R.drawable.ic_content_save;
+                return R.drawable.ic_word_10;
         }
         return -1;
     }
