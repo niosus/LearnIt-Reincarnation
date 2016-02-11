@@ -9,11 +9,14 @@ package com.learnit.learnit.activities;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
 
+import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFragment;
 import com.learnit.learnit.R;
 import com.learnit.learnit.preferences.MySwitchPreference;
+import com.learnit.learnit.preferences.TimePickerPref;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
@@ -30,7 +33,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class SettingsFragment extends PreferenceFragmentCompat
+        implements RadialTimePickerDialogFragment.OnTimeSetListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,23 @@ public class SettingsActivity extends AppCompatActivity {
 
             MySwitchPreference notificationsSwitch = (MySwitchPreference) findPreference(getString(R.string.key_pref_notifications_active));
             notificationsSwitch.setOnPreferenceChangeListener(new MyOnPrefChangeListener(getActivity()));
+
+            TimePickerPref timePickerPref = (TimePickerPref) findPreference("time_picker_pref_key");
+            timePickerPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
+                            .setOnTimeSetListener(SettingsFragment.this)
+                            .setStartTime(10, 10);
+                    rtpd.show(getActivity().getSupportFragmentManager(), "time_picker_frag");
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
+            Log.d(Constants.LOG_TAG, "time set: hours " + hourOfDay + " mins " + minute);
         }
 
         public static class MyOnPrefChangeListener implements android.support.v7.preference.Preference.OnPreferenceChangeListener {

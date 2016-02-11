@@ -4,9 +4,10 @@
   ~ it please contact me via email: igor.bogoslavskyi@gmail.com
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.jenzz.materialpreference.PreferenceCategory
+    <android.support.v7.preference.PreferenceCategory
         android:title="@string/pref_header_general">
         <com.learnit.learnit.preferences.ListPrefWithSummary
             android:key="@string/key_language_to_learn"
@@ -32,14 +33,18 @@
             android:title="@string/pref_num_of_words"
             app:array="@array/array_num_of_notifications"
             app:defaultValueIndex="9" />
-    </com.jenzz.materialpreference.PreferenceCategory>
-    <com.jenzz.materialpreference.PreferenceCategory
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
         android:title="@string/pref_header_notifications">
         <com.learnit.learnit.preferences.MySwitchPreference
             android:key="@string/key_pref_notifications_active"
             android:summaryOff="@string/pref_notifications_disabled"
             android:summaryOn="@string/pref_notifications_enabled"
-            android:title="@string/pref_notifications"/>
-    </com.jenzz.materialpreference.PreferenceCategory>
+            android:title="@string/pref_notifications" />
+        <com.learnit.learnit.preferences.TimePickerPref
+            android:key="time_picker_pref_key"
+            android:title="hello world"
+            />
+    </android.support.v7.preference.PreferenceCategory>
 
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

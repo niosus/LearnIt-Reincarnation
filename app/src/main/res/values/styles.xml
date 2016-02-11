@@ -6,21 +6,24 @@
 
 <resources>
 
-    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.NoActionBar">
+    <style name="AppBaseTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- ...and here we setting appcompat’s color theming attrs -->
         <item name="colorPrimary">@color/highlight</item>
         <item name="colorPrimaryDark">@color/highlight_darker</item>
         <item name="colorAccent">@color/highlight</item>
         <item name="colorButtonNormal">@color/highlight</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="preferenceTheme">@style/PrefsTheme</item>
     </style>
 
-    <style name="PrefsTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="PrefsTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- ...and here we setting appcompat’s color theming attrs -->
         <item name="colorPrimary">@color/highlight</item>
         <item name="colorPrimaryDark">@color/highlight_darker</item>
         <item name="colorAccent">@color/highlight</item>
         <item name="android:textColor">@color/cardview_light_background</item>
         <item name="android:actionBarStyle">@style/ToolbarStyle</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="ToolbarStyle" parent="@style/Widget.AppCompat.ActionBar">
@@ -33,8 +36,8 @@
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="ProgressBarStyle" parent="Widget.AppCompat.ProgressBar.Horizontal" />
 
-    </style>
+    <style name="AppTheme" parent="AppBaseTheme" />
 
 </resources>
