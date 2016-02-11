@@ -1,14 +1,12 @@
 package com.learnit.learnit.preferences;
 
 import android.content.Context;
+import android.support.v7.preference.SwitchPreferenceCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 
-import com.jenzz.materialpreference.SwitchPreference;
-import com.learnit.learnit.utils.Constants;
 import com.pixplicity.easyprefs.library.Prefs;
 
-public class MySwitchPreference extends SwitchPreference {
+public class MySwitchPreference extends SwitchPreferenceCompat {
     @SuppressWarnings("unused")
     public MySwitchPreference(Context context) {
         super(context);

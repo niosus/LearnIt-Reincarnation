@@ -20,12 +20,12 @@ import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 import com.pixplicity.easyprefs.library.Prefs;
 
-public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference {
+public class ListPrefWithSummary extends android.support.v7.preference.Preference {
     private final static int NONE = -1;
     protected int mDefaultEntryIndex = NONE;
     int mEntriesArrayId = NONE;
     Context mContext = null;
-    Preference.OnPreferenceClickListener mOnClickListener = null;
+    OnPreferenceClickListener mOnClickListener = null;
 
     @SuppressWarnings("unused")
     public ListPrefWithSummary(Context context) {
@@ -103,16 +103,16 @@ public class ListPrefWithSummary extends com.jenzz.materialpreference.Preference
         setSummary(defaultStr);
     }
 
-    public class MyOnPreferenceClickListener implements Preference.OnPreferenceClickListener {
+    public class MyOnPreferenceClickListener implements OnPreferenceClickListener {
 
         @Override
-        public boolean onPreferenceClick(Preference preference) {
+        public boolean onPreferenceClick(android.support.v7.preference.Preference preference) {
             if (mEntriesArrayId == NONE) {
                 Log.e(Constants.LOG_TAG, "no array defined for list preference '" + getKey() + "'");
                 return false;
             }
             new MaterialDialog.Builder(mContext)
-                    .title(getTitleRes())
+                    .title("test")
                     .items(mEntriesArrayId)
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override
