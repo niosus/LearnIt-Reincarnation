@@ -43,8 +43,7 @@
             android:title="@string/pref_notifications" />
         <com.learnit.learnit.preferences.TimePickerPref
             android:key="time_picker_pref_key"
-            android:title="hello world"
-            />
+            android:title="@string/pref_time_to_start" />
     </android.support.v7.preference.PreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>

@@ -9,6 +9,7 @@ package com.learnit.learnit.preferences;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.support.v7.preference.Preference;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +21,10 @@ import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 import com.pixplicity.easyprefs.library.Prefs;
 
-public class TimePickerPref extends android.support.v7.preference.Preference {
+import java.util.Calendar;
+
+public class TimePickerPref extends android.support.v7.preference.Preference
+ implements RadialTimePickerDialogFragment.OnTimeSetListener {
     private final static int NONE = -1;
     protected int mDefaultEntryIndex = NONE;
     int mEntriesArrayId = NONE;
@@ -51,5 +55,10 @@ public class TimePickerPref extends android.support.v7.preference.Preference {
         mContext = context;
     }
 
-
+    @Override
+    public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
+        Log.d(Constants.LOG_TAG, "changed time " + hourOfDay + ":" + minute);
+        setSummary(String.format(mContext.getString(R.string.pref_time_to_start_summary),
+                hourOfDay, minute));
+    }
 }
