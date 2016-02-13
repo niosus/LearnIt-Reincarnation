@@ -112,7 +112,7 @@ public class ListPrefWithSummary extends android.support.v7.preference.Preferenc
                 return false;
             }
             new MaterialDialog.Builder(mContext)
-                    .title("test")
+                    .title(getTitle())
                     .items(mEntriesArrayId)
                     .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                         @Override

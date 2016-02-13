@@ -47,8 +47,8 @@
     <string name="learn_no_words">No words to display yet.</string>
 
     <!-- toast texts -->
-    <string name="toast_notif_start_text">LearnIt notification timer started. \nThe notifications will appear in scheduled time.</string>
-    <string name="toast_notif_stop_text">Notification timer stopped.</string>
+    <string name="toast_notification_start_text">LearnIt words will appear at %s</string>
+    <string name="toast_notification_stop_text">Notification timer stopped.</string>
     <string name="toast_db_exported">Dictionary was exported</string>
     <string name="toast_db_export_error">Error occurred while exporting</string>
     <string name="toast_db_imported">Dictionary was imported</string>
@@ -82,7 +82,7 @@
     <string name="pref_language_to_learn">Language to learn</string>
     <string name="pref_language_you_know">Language you know</string>
     <string name="pref_time_to_start">Time to start notifications</string>
-    <string name="pref_time_to_start_summary">Starting at %1$s:%2$s</string>
+    <string name="pref_time_to_start_summary">Starting at %s</string>
     <string name="pref_num_of_words">Number of words in session</string>
     <string name="pref_way_to_learn">Way to learn words</string>
     <string name="pref_notifications">Notifications</string>
@@ -183,7 +183,7 @@
 
     <string name="lang_undefined">Undefined</string>
 
-    <string-array name="time_entries">
+    <string-array name="array_frequencies_entries">
         <item>Hour</item>
         <item>Two Hours</item>
         <item>Four Hours</item>

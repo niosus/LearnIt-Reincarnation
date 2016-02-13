@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Environment;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -29,11 +28,15 @@ import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.WordBundle;
 import com.pixplicity.easyprefs.library.Prefs;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.io.File;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
@@ -289,18 +292,56 @@ public class Utils {
         return -1;
     }
 
+    public static Period getPeriodFromFrequencyIndex(int freqIndex) {
+        Period period;
+        switch (freqIndex) {
+            case 0:
+                period = Period.hours(1);
+                break;
+            case 1:
+                period = Period.hours(2);
+                break;
+            case 2:
+                period = Period.hours(4);
+                break;
+            case 3:
+                period = Period.hours(12);
+                break;
+            case 4:
+                period = Period.days(1);
+                break;
+            default:
+                period = Period.hours(12);
+        }
+        return period;
+    }
+
     public static void startRepeatingTimer(Context context) {
-//        long timeInMs = Prefs.getLong(context.getString(R.string.key_time_to_start), 0);
-        long timeInMs = System.currentTimeMillis();
-//        String frequency_id = sp.getString(context.getString(R.string.key_notification_frequency), "-1");
-//        long frequency = Utils.getFreqFromId(frequency_id);
-        long frequency = TimeUnit.SECONDS.toMillis(2);
-        while (timeInMs < System.currentTimeMillis()) { timeInMs+=frequency; }
+        Log.d(Constants.LOG_TAG, "starting timer");
+        int timeInMs = Prefs.getInt(context.getString(R.string.key_time_to_start), -1);
+        int frequencyIndex = Prefs.getInt(context.getString(R.string.key_notification_frequency), -1);
+        Log.d(Constants.LOG_TAG, "time in millis:" + timeInMs + " , freqIdx:" + frequencyIndex);
+        LocalTime localStartTime;
+        if (timeInMs > 0) {
+            localStartTime = LocalTime.fromMillisOfDay(timeInMs);
+        } else {
+            localStartTime = new LocalTime();
+        }
+        DateTime actualStartTime = DateTime.now().withTime(localStartTime);
+        Period frequency = Utils.getPeriodFromFrequencyIndex(frequencyIndex);
+        while (actualStartTime.getMillis() < System.currentTimeMillis()) {
+            actualStartTime = actualStartTime.plus(frequency);
+        }
+        Log.d(Constants.LOG_TAG, "after while");
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, NotificationService.class);
-        PendingIntent pi = PendingIntent.getService(context.getApplicationContext(), 0, i, Intent.FLAG_ACTIVITY_NEW_TASK);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, timeInMs, frequency, pi);
-        Toast.makeText(context, context.getString(R.string.toast_notif_start_text), Toast.LENGTH_LONG).show();
+        PendingIntent pi = PendingIntent.getService(context.getApplicationContext(), 0, i, PendingIntent.FLAG_ONE_SHOT);
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, actualStartTime.getMillis(), frequency.getMillis(), pi);
+        DateTimeFormatter pattern = DateTimeFormat.forPattern("HH:mm");
+        String timeStr = pattern.print(actualStartTime);
+        Toast.makeText(context,
+                String.format(context.getString(R.string.toast_notification_start_text), timeStr),
+                Toast.LENGTH_LONG).show();
     }
 
     public static void cancelRepeatingTimer(Context context) {
@@ -308,6 +349,6 @@ public class Utils {
         PendingIntent sender = PendingIntent.getService(context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
-        Toast.makeText(context, context.getString(R.string.toast_notif_stop_text), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.toast_notification_stop_text), Toast.LENGTH_LONG).show();
     }
 }

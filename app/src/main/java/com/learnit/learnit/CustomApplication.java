@@ -11,7 +11,9 @@ import android.content.ContextWrapper;
 
 import com.pixplicity.easyprefs.library.Prefs;
 
-public class PrefsApplication extends Application {
+import net.danlew.android.joda.JodaTimeAndroid;
+
+public class CustomApplication extends Application {
 
     @Override
     public void onCreate() {
@@ -23,5 +25,6 @@ public class PrefsApplication extends Application {
                 .setPrefsName(getPackageName())
                 .setUseDefaultSharedPreference(true)
                 .build();
+        JodaTimeAndroid.init(this);
     }
 }

@@ -41,6 +41,11 @@
             android:summaryOff="@string/pref_notifications_disabled"
             android:summaryOn="@string/pref_notifications_enabled"
             android:title="@string/pref_notifications" />
+        <com.learnit.learnit.preferences.ListPrefWithSummary
+            android:key="@string/key_notification_frequency"
+            android:title="@string/pref_reminder_freq"
+            app:array="@array/array_frequencies_entries"
+            app:defaultValueIndex="3" />
         <com.learnit.learnit.preferences.TimePickerPref
             android:key="time_picker_pref_key"
             android:title="@string/pref_time_to_start" />
