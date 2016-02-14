@@ -9,6 +9,7 @@ package com.learnit.learnit.activities;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
 
@@ -44,11 +45,14 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(R.xml.prefs);
 
-            MySwitchPreference notificationsSwitch = (MySwitchPreference) findPreference(getString(R.string.key_pref_notifications_active));
-            notificationsSwitch.setOnPreferenceChangeListener(new MyOnPrefChangeListener(getActivity()));
+            Preference.OnPreferenceChangeListener changeListener = new MyOnPrefChangeListener(getActivity());
 
-            timePickerPref = (TimePickerPref) findPreference("time_picker_pref_key");
+            MySwitchPreference notificationsSwitch = (MySwitchPreference) findPreference(getString(R.string.key_pref_notifications_active));
+            notificationsSwitch.setOnPreferenceChangeListener(changeListener);
+
+            timePickerPref = (TimePickerPref) findPreference(getString(R.string.key_time_to_start));
             timePickerPref.setFragmentManager(getFragmentManager());
+            timePickerPref.setOnPreferenceChangeListener(changeListener);
         }
 
         public static class MyOnPrefChangeListener implements android.support.v7.preference.Preference.OnPreferenceChangeListener {
@@ -67,9 +71,13 @@ public class SettingsActivity extends AppCompatActivity {
                         Utils.startRepeatingTimer(mContext);
                         return true;
                     } else {
-                        Utils.cancelRepeatingTimer(mContext);
+                        Utils.cancelRepeatingTimer(mContext, true);
                         return true;
                     }
+                } else if (preference.getKey().equals(mContext.getString(R.string.key_time_to_start))) {
+                    Log.d(Constants.LOG_TAG, "start time preference changed");
+                    Utils.cancelRepeatingTimer(mContext, false);
+                    Utils.startRepeatingTimer(mContext);
                 }
                 return false;
             }

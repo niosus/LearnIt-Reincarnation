@@ -335,7 +335,7 @@ public class Utils {
         Log.d(Constants.LOG_TAG, "after while");
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, NotificationService.class);
-        PendingIntent pi = PendingIntent.getService(context.getApplicationContext(), 0, i, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pi = PendingIntent.getService(context.getApplicationContext(), 0, i, PendingIntent.FLAG_NO_CREATE);
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, actualStartTime.getMillis(), frequency.getMillis(), pi);
         DateTimeFormatter pattern = DateTimeFormat.forPattern("HH:mm");
         String timeStr = pattern.print(actualStartTime);
@@ -344,11 +344,13 @@ public class Utils {
                 Toast.LENGTH_LONG).show();
     }
 
-    public static void cancelRepeatingTimer(Context context) {
+    public static void cancelRepeatingTimer(Context context, boolean showToast) {
         Intent intent = new Intent(context, NotificationService.class);
         PendingIntent sender = PendingIntent.getService(context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
-        Toast.makeText(context, context.getString(R.string.toast_notification_stop_text), Toast.LENGTH_LONG).show();
+        if (showToast) {
+            Toast.makeText(context, context.getString(R.string.toast_notification_stop_text), Toast.LENGTH_LONG).show();
+        }
     }
 }

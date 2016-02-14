@@ -47,7 +47,7 @@
             app:array="@array/array_frequencies_entries"
             app:defaultValueIndex="3" />
         <com.learnit.learnit.preferences.TimePickerPref
-            android:key="time_picker_pref_key"
+            android:key="@string/key_time_to_start"
             android:title="@string/pref_time_to_start" />
     </android.support.v7.preference.PreferenceCategory>
 

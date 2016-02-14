@@ -84,6 +84,13 @@ public class TimePickerPref extends android.support.v7.preference.Preference
         LocalTime time = new LocalTime(hourOfDay, minuteOfHour);
         Prefs.putInt(mContext.getString(R.string.key_time_to_start), time.getMillisOfDay());
         setTimeSummary(time);
+        OnPreferenceChangeListener listener = this.getOnPreferenceChangeListener();
+        if (listener != null) {
+            Log.d(Constants.LOG_TAG, "listener: " + listener.toString());
+            listener.onPreferenceChange(this, null);
+        } else {
+            Log.e(Constants.LOG_TAG, "pref changed, but nobody cares");
+        }
     }
 
     @Override
