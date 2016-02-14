@@ -16,17 +16,16 @@
         <item name="preferenceTheme">@style/PrefsTheme</item>
     </style>
 
-    <style name="PrefsTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="PrefsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- ...and here we setting appcompat’s color theming attrs -->
         <item name="colorPrimary">@color/highlight</item>
         <item name="colorPrimaryDark">@color/highlight_darker</item>
         <item name="colorAccent">@color/highlight</item>
-        <item name="android:textColor">@color/cardview_light_background</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorSecondary">@color/bpDark_gray</item>
         <item name="android:actionBarStyle">@style/ToolbarStyle</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="android:windowBackground">@color/background_material_light</item>
         <item name="android:textColorPrimary">@android:color/primary_text_light</item>
-        <item name="android:textColorSecondary">@color/material_grey_850</item>
         <item name="android:textColorSecondaryInverse">@android:color/secondary_text_light</item>
     </style>
 

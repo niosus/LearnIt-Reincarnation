@@ -14,9 +14,10 @@
         <style name="ProgressBarStyle" parent="Widget.AppCompat.ProgressBar.Horizontal">
                 <item name="android:paddingTop">0dp</item>
                 <item name="android:layout_marginTop">0dp</item>
+                <item name="android:color">@android:color/holo_orange_light</item>
         </style>
 
-    <style name="PrefsTheme" parent="AppBaseTheme">
+    <style name="PrefsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- ...and here we setting appcompat’s color theming attrs -->
         <item name="android:colorAccent">@color/highlight</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
@@ -24,7 +25,10 @@
         <item name="android:textColorPrimary">@android:color/primary_text_light</item>
         <item name="android:textColorSecondary">@color/material_grey_850</item>
         <item name="android:textColorSecondaryInverse">@android:color/secondary_text_light</item>
+        <item name="android:statusBarColor">@color/highlight</item>
+        <item name="colorAccent">@color/highlight</item>
+        <item name="colorPrimary">@color/highlight</item>
     </style>
 
-        <style name="AppTheme" parent="AppBaseTheme" />
+    <style name="AppTheme" parent="AppBaseTheme" />
 </resources>

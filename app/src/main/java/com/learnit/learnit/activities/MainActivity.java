@@ -94,6 +94,7 @@ public class MainActivity
         initTaskScheduler();
         initFab();
         mProgressBar.bringToFront();
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -251,6 +252,7 @@ public class MainActivity
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        if (mDrawerToggle == null) { return; }
         mDrawerToggle.syncState();
     }
 
