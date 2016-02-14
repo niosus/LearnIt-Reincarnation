@@ -4,10 +4,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.learnit.learnit.BuildConfig;
+import com.learnit.learnit.CustomRobolectricRunner;
 import com.learnit.learnit.db_handlers.DbHandler;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
+
+import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +25,10 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
-@RunWith(RobolectricTestRunner.class)
+@Config(manifest = "src/test/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
+@RunWith(CustomRobolectricRunner.class)
 public class AddUserDictWordsTaskTest implements IAsyncTaskResultClient {
+
     @Before
     public void setUp() throws Exception {
         Context context = RuntimeEnvironment.application;
