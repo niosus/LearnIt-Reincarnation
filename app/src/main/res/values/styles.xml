@@ -24,6 +24,10 @@
         <item name="android:textColor">@color/cardview_light_background</item>
         <item name="android:actionBarStyle">@style/ToolbarStyle</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:windowBackground">@color/background_material_light</item>
+        <item name="android:textColorPrimary">@android:color/primary_text_light</item>
+        <item name="android:textColorSecondary">@color/material_grey_850</item>
+        <item name="android:textColorSecondaryInverse">@android:color/secondary_text_light</item>
     </style>
 
     <style name="ToolbarStyle" parent="@style/Widget.AppCompat.ActionBar">
