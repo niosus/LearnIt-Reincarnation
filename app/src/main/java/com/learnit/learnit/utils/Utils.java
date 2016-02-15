@@ -36,6 +36,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class Utils {
@@ -292,27 +293,27 @@ public class Utils {
         return -1;
     }
 
-    public static Period getPeriodFromFrequencyIndex(int freqIndex) {
-        Period period;
+    public static long getMillisecondsFromFrequencyIndex(int freqIndex) {
+        long period = AlarmManager.INTERVAL_HOUR * 12;
+        Log.d(Constants.LOG_TAG, "picking period index " + freqIndex);
         switch (freqIndex) {
             case 0:
-                period = Period.hours(1);
+                period = AlarmManager.INTERVAL_HOUR;
                 break;
             case 1:
-                period = Period.hours(2);
+                period = AlarmManager.INTERVAL_HOUR * 2;
                 break;
             case 2:
-                period = Period.hours(4);
+                period = AlarmManager.INTERVAL_HOUR * 4;
                 break;
             case 3:
-                period = Period.hours(12);
+                period = AlarmManager.INTERVAL_HOUR * 12;
                 break;
             case 4:
-                period = Period.days(1);
+                period = AlarmManager.INTERVAL_HOUR * 24;
                 break;
-            default:
-                period = Period.hours(12);
         }
+        Log.d(Constants.LOG_TAG, "period length is: " + period);
         return period;
     }
 
@@ -328,15 +329,14 @@ public class Utils {
             localStartTime = new LocalTime();
         }
         DateTime actualStartTime = DateTime.now().withTime(localStartTime);
-        Period frequency = Utils.getPeriodFromFrequencyIndex(frequencyIndex);
+        long frequency = Utils.getMillisecondsFromFrequencyIndex(frequencyIndex);
         while (actualStartTime.getMillis() < System.currentTimeMillis()) {
             actualStartTime = actualStartTime.plus(frequency);
         }
-        Log.d(Constants.LOG_TAG, "after while");
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, NotificationService.class);
-        PendingIntent pi = PendingIntent.getService(context.getApplicationContext(), 0, i, PendingIntent.FLAG_NO_CREATE);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, actualStartTime.getMillis(), frequency.getMillis(), pi);
+        PendingIntent pi = PendingIntent.getService(context.getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, actualStartTime.getMillis(), frequency, pi);
         DateTimeFormatter pattern = DateTimeFormat.forPattern("HH:mm");
         String timeStr = pattern.print(actualStartTime);
         Toast.makeText(context,

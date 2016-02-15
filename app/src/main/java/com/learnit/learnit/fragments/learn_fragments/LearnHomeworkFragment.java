@@ -104,7 +104,7 @@ public class LearnHomeworkFragment
         if (result instanceof List) {
             mWordsOnButtons = (List<WordBundle>) result;
             Random rand = new Random();
-            int correctWordIndex = rand.nextInt(mButtons.size());
+            int correctWordIndex = rand.nextInt(mWordsOnButtons.size());
             mWordsOnButtons.add(correctWordIndex, mQueryWordBundle);
             int correctBtnId = mButtons.get(correctWordIndex).getId();
             mButtonOnClickListener.setCorrectAnswerId(correctBtnId);

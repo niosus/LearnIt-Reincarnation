@@ -35,6 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat {
 
         TimePickerPref timePickerPref;
+        MySwitchPreference mNotificationSwitchPref;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -47,15 +48,19 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference.OnPreferenceChangeListener changeListener = new MyOnPrefChangeListener(getActivity());
 
-            MySwitchPreference notificationsSwitch = (MySwitchPreference) findPreference(getString(R.string.key_pref_notifications_active));
-            notificationsSwitch.setOnPreferenceChangeListener(changeListener);
+            mNotificationSwitchPref = (MySwitchPreference) findPreference(getString(R.string.key_pref_notifications_active));
+            mNotificationSwitchPref.setOnPreferenceChangeListener(changeListener);
 
             timePickerPref = (TimePickerPref) findPreference(getString(R.string.key_time_to_start));
             timePickerPref.setFragmentManager(getFragmentManager());
             timePickerPref.setOnPreferenceChangeListener(changeListener);
         }
 
-        public static class MyOnPrefChangeListener implements android.support.v7.preference.Preference.OnPreferenceChangeListener {
+        private boolean notificationsOn() {
+            return mNotificationSwitchPref.isChecked();
+        }
+
+        public class MyOnPrefChangeListener implements android.support.v7.preference.Preference.OnPreferenceChangeListener {
             Context mContext;
 
             public MyOnPrefChangeListener(Context context) {
@@ -76,8 +81,10 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 } else if (preference.getKey().equals(mContext.getString(R.string.key_time_to_start))) {
                     Log.d(Constants.LOG_TAG, "start time preference changed");
-                    Utils.cancelRepeatingTimer(mContext, false);
-                    Utils.startRepeatingTimer(mContext);
+                    if (mNotificationSwitchPref.isChecked()) {
+                        Utils.cancelRepeatingTimer(mContext, false);
+                        Utils.startRepeatingTimer(mContext);
+                    }
                 }
                 return false;
             }
