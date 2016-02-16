@@ -47,8 +47,12 @@ public class DbHelperDictHandler extends DbHandler {
 
     protected WordBundle wordBundleFromCursor(final Cursor cursor) {
         // TODO: we need to check what dictionary are we using to set the correct parse style
-        return new WordBundle.Constructor().setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
-                .parseTrans(cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)), WordBundle.ParseStyle.BABYLON)
-                .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME))).construct();
+        return new WordBundle.Constructor(mContext)
+                .setWord(cursor.getString(cursor.getColumnIndex(WORD_COLUMN_NAME)))
+                .parseTrans(
+                        cursor.getString(cursor.getColumnIndex(TRANSLATION_COLUMN_NAME)),
+                        WordBundle.ParseStyle.BABYLON)
+                .setId(cursor.getInt(cursor.getColumnIndex(ID_COLUMN_NAME)))
+                .construct();
     }
 }

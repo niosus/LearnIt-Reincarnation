@@ -6,6 +6,8 @@
 
 package com.learnit.learnit.utils;
 
+import android.content.Context;
+
 import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.types.WordBundleAdapter;
 
@@ -54,5 +56,11 @@ public class StringUtils {
             default:
                 return WordBundle.WordType.NONE;
         }
+    }
+
+    public static String articleFromString(Context context, final String sex) {
+        String learnLangTag = Utils.getCurrentLanguageTags(context).langToLearnTag();
+        if (learnLangTag == null) { return null; }
+        return Constants.ARTICLES.get(learnLangTag).get(sex);
     }
 }

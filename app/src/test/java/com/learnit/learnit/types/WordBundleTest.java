@@ -1,13 +1,44 @@
 package com.learnit.learnit.types;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.test.AndroidTestCase;
+
+import com.learnit.learnit.BuildConfig;
+import com.learnit.learnit.R;
+import com.pixplicity.easyprefs.library.Prefs;
+
 import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
+
+import java.io.File;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class WordBundleTest extends TestCase {
+@Config(manifest = "src/main/AndroidManifest.xml", sdk = 21, constants = BuildConfig.class)
+@RunWith(RobolectricTestRunner.class)
+public class WordBundleTest {
+    Context mContext;
 
+    @Before
+    public void setUp() throws Exception {
+        Context context = RuntimeEnvironment.application;
+        assertThat(context == null, is(false));
+        mContext = context;
+        if (context == null) { return; }
+        Prefs.putInt(context.getString(R.string.previously_stored_lang_to_learn), 0);
+        Prefs.putInt(context.getString(R.string.previously_stored_lang_you_know), 1);
+    }
+
+    @Test
     public void testTransFromString() throws Exception {
         WordBundle testWordBundle = new WordBundle();
         String trans1 = "trans1.1, trans1.2";
@@ -18,24 +49,28 @@ public class WordBundleTest extends TestCase {
         assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
+    @Test
     public void testTransFromStringNull() throws Exception {
         WordBundle testWordBundle = new WordBundle();
         testWordBundle.setTrans((String) null);
         assertThat(testWordBundle.transAsString(), is(""));
     }
 
+    @Test
     public void testTransFromStringNullArray() throws Exception {
         WordBundle testWordBundle = new WordBundle();
         testWordBundle.setTrans((String[]) null);
         assertThat(testWordBundle.transAsString(), is(""));
     }
 
+    @Test
     public void testTransFromStringCustomDivider() throws Exception {
         WordBundle testWordBundle = new WordBundle();
         testWordBundle.setTrans((String[]) null);
         assertThat(testWordBundle.transAsString(), is(""));
     }
 
+    @Test
     public void testTrans() throws Exception {
         String trans = "trans2.1, trans2.2; trans2.3";
         String trans1 = "trans2.1, trans2.2";
@@ -45,11 +80,13 @@ public class WordBundleTest extends TestCase {
         assertThat(testWordBundle.transAsArray(), is(fullTrans));
     }
 
+    @Test
     public void testEmptyTrans() throws Exception {
         WordBundle testWordBundle = new WordBundle();
         assertThat(testWordBundle.transAsString().isEmpty(), is(true));
     }
 
+    @Test
     public void testEquals() throws Exception {
         WordBundle bundle;
         WordBundle.Constructor constructor = new WordBundle.Constructor();
@@ -82,6 +119,7 @@ public class WordBundleTest extends TestCase {
         assertThat(bundle.equals(bundle_diff), is(false));
     }
 
+    @Test
     public void testParser() throws Exception {
         String trans = "(v) анулювати; зменшитися; зменшуватися; знижувати; знизити; ослабити; ослабляти; припинити; припиняти; скасовувати; скасувати";
         WordBundle bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
@@ -112,5 +150,14 @@ public class WordBundleTest extends TestCase {
         bundle = new WordBundle.Constructor().parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
         assertThat(bundle.wordType(), is(WordBundle.WordType.PREPOSITION));
         assertThat(bundle.transAsArray()[0], is("на"));
+    }
+
+    @Test
+    public void testParserArticle() throws Exception {
+        String trans = "(n) (m) test, examination, exam, series of questions designed to gauge a person's knowledge of a particular subject (esp. in school)";
+        WordBundle bundle = new WordBundle.Constructor(mContext).parseTrans(trans, WordBundle.ParseStyle.BABYLON).construct();
+        assertThat(bundle.wordType(), is(WordBundle.WordType.NOUN));
+        assertThat(bundle.article(), is("der"));
+        assertThat(bundle.transAsArray()[0], is("test, examination, exam, series of questions designed to gauge a person's knowledge of a particular subject (esp. in school)"));
     }
 }

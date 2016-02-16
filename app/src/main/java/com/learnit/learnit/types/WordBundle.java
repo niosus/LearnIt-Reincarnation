@@ -1,5 +1,6 @@
 package com.learnit.learnit.types;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -75,9 +76,15 @@ public class WordBundle implements Parcelable {
         private String mNestedWord;
         private String[] mNestedTrans;
         private float mNestedWeight;
+        Context mContext;
 
         public Constructor() {
             setDefaultValues();
+        }
+
+        public Constructor(Context context) {
+            setDefaultValues();
+            mContext = context;
         }
 
         private void setDefaultValues() {
@@ -88,6 +95,8 @@ public class WordBundle implements Parcelable {
             mNestedTrans = null;
             mNestedWeight = DEFAULT_WEIGHT;
             mNestedWordType = WordType.NONE;
+
+            mContext = null;
         }
 
         public WordBundle construct() {
@@ -146,14 +155,21 @@ public class WordBundle implements Parcelable {
             switch (style) {
                 case BABYLON:
                     // parse word type
+                    Log.d(Constants.LOG_TAG, "parsing translation: " + trans);
                     Pattern wordTypePattern = Pattern.compile("\\(.\\)");
                     Matcher wordTypeMatcher = wordTypePattern.matcher(trans);
                     if (wordTypeMatcher.find()) {
                         String wordType = wordTypeMatcher.group();
                         mNestedWordType = StringUtils.wordTypeFromString(wordType);
                     }
+                    if (wordTypeMatcher.find()) {
+                        // heeey, we also have an article over here!
+                        String sex = wordTypeMatcher.group();
+                        mNestedArticle = StringUtils.articleFromString(mContext, sex);
+                        Log.d(Constants.LOG_TAG, "nested article is: " + mNestedArticle);
+                    }
                     // parse translations
-                    Pattern translationsPattern = Pattern.compile("\\s\\p{L}[\\p{L}\\s,]*");
+                    Pattern translationsPattern = Pattern.compile("\\s\\p{L}[\\p{L}\\s,()'.]*");
                     Matcher translationsMatcher = translationsPattern.matcher(trans);
                     String tempTrans = "";
                     while (translationsMatcher.find()) {

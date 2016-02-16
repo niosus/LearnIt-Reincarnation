@@ -6,25 +6,38 @@
 
 package com.learnit.learnit.utils;
 
+import com.learnit.learnit.types.LanguagePair;
+
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class Constants {
     public static final int UNDEFINED_INDEX = -666;
     public static final String LOG_TAG = "learn_it_logs";
     public static final String QUERY_WORD_KEY = "query_word";
     public static final String TRANS_DIRECTION_KEY = "trans_direction";
-    public static final HashSet<String> GERMAN_ARTICLES = new HashSet<String>() {{
-        add("der"); add("die"); add("das");
-    }};
-    public static final HashMap<LanguageName, HashSet<String>> ARTICLES
-            = new HashMap<LanguageName, HashSet<String>>() {{
-        put(LanguageName.GERMAN, GERMAN_ARTICLES);
+
+    public static final String GERMAN_TAG = "de";
+    public static final String ENGLISH_TAG = "en";
+
+    public static final Map<String, String> GERMAN_ARTICLES = new HashMap<String, String>() {{
+        put("(n)", "das");
+        put("(f)", "die");
+        put("(m)", "der");
     }};
 
-    enum LanguageName {
-        GERMAN, ENGLISH
-    }
+    public static final Map<String, String> ENGLISH_ARTICLES = new HashMap<String, String>() {{
+        put("(n)", "the");
+        put("(f)", "the");
+        put("(m)", "the");
+    }};
+
+    public static final Map<String, Map<String, String>> ARTICLES
+            = new HashMap<String, Map<String, String>>() {{
+        put(GERMAN_TAG, GERMAN_ARTICLES);
+        put(ENGLISH_TAG, ENGLISH_ARTICLES);
+    }};
 
     public enum LearnType {
         TRANSLATIONS,

@@ -139,7 +139,8 @@ public class WordBundleAdapter
         }
 
         private void updateViewFromWordBundle(final WordBundle wordBundle) {
-            mWordText.setText(wordBundle.word());
+            String articleString = wordBundle.article() == null ? "" : wordBundle.article() + " ";
+            mWordText.setText(articleString + wordBundle.word());
             mTransText.setText(wordBundle.transAsHumanString());
             mWordTypeText.setText(Utils.localizedStringResForWordType(wordBundle.wordType()));
         }

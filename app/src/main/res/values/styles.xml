@@ -39,7 +39,10 @@
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
-    <style name="ProgressBarStyle" parent="Widget.AppCompat.ProgressBar.Horizontal" />
+    <style name="ProgressBarStyle" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="colorAccent">@android:color/white</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
 
     <style name="AppTheme" parent="AppBaseTheme" />
 

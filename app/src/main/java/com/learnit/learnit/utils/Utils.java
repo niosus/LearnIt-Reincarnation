@@ -51,10 +51,10 @@ public class Utils {
         return false;
     }
 
-    public static boolean isArticle(final String article, final Constants.LanguageName languageName) {
+    public static boolean isArticle(final String article, final String languageName) {
 
         return Constants.ARTICLES.containsKey(languageName)
-                && (Constants.ARTICLES.get(languageName).contains(article.toLowerCase()));
+                && (Constants.ARTICLES.get(languageName).containsValue(article.toLowerCase()));
     }
 
     public static boolean areBothNull(final Object obj1, final Object obj2) {
@@ -106,12 +106,16 @@ public class Utils {
     }
 
     public static LanguagePair.Tags getCurrentLanguageTags(Context context) {
+        if (context == null) {
+            Log.e(Constants.LOG_TAG, "context is null, can't get lang tags. Returning empty tags.");
+            return new LanguagePair.Tags();
+        }
         LanguagePair.Tags result = new LanguagePair.Tags();
         int langToLearnIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_to_learn), -1);
         int langYouKnowIndex = Prefs.getInt(context.getString(R.string.previously_stored_lang_you_know), -1);
         if (langToLearnIndex < 0 || langYouKnowIndex < 0) {
             // return some dummy result
-            result.setLangToLearnTag("undefined").setLangYouKnowTag("undefined");
+            Log.e(Constants.LOG_TAG, "wrong lang tag indexes. Returning empty tags.");
             return result;
         }
         Resources res = context.getResources();

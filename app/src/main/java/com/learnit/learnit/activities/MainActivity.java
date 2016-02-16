@@ -107,7 +107,7 @@ public class MainActivity
         } else {
             boolean updating = Utils.updateHelpDictIfNeeded(this, mTaskScheduler, this);
             if (updating) {
-                showSnackBar(getString(R.string.snack_loading_help_dict), Snackbar.LENGTH_SHORT);
+                showSnackBar(getString(R.string.snack_loading_help_dict), Snackbar.LENGTH_INDEFINITE);
             }
         }
     }

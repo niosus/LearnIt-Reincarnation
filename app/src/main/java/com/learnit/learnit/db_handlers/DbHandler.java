@@ -129,11 +129,19 @@ public abstract class DbHandler extends SQLiteOpenHelper
         // if we reach this place - there is something similar in the db, but not the same.
         // Requires investigation and update.
         // TODO: actually implement the logic behind the word updated
+        int differentTypeCounter = 0;
         for (WordBundle inDbBundle: nowInDb) {
             if (inDbBundle.wordType() == wordBundle.wordType()) {
                 Log.e(Constants.LOG_TAG, "reached unimplemented behaviour. Please decide how to update the words.");
                 return Constants.AddWordReturnCode.WORD_UPDATED;
-            }
+            } else { differentTypeCounter++; }
+        }
+        if (differentTypeCounter == nowInDb.size()) {
+            // all the words now id db have different type, so it's fine to add the new word.
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.insert(this.getDatabaseName(), null, cv);
+            db.close();
+            return Constants.AddWordReturnCode.SUCCESS;
         }
         Log.e(Constants.LOG_TAG, "something unpredicted happened, so we have just failed. Congrats.");
         return Constants.AddWordReturnCode.FAILURE;

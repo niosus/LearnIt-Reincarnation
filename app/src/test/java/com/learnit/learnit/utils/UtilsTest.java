@@ -34,8 +34,8 @@ public class UtilsTest {
 
     @Test
     public void testIsArticle() throws Exception {
-        Constants.LanguageName langEn = Constants.LanguageName.ENGLISH;
-        Constants.LanguageName langDe = Constants.LanguageName.GERMAN;
+        String langEn = Constants.ENGLISH_TAG;
+        String langDe = Constants.GERMAN_TAG;
         assertThat(Utils.isArticle("der", langDe), is(true));
         assertThat(Utils.isArticle("die", langDe), is(true));
         assertThat(Utils.isArticle("das", langDe), is(true));
