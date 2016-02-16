@@ -141,7 +141,9 @@ public class NotificationBuilder {
             typesOfHomework.add(Utils.keyFromEnumValue(
                     homeworkActivityType, Constants.LearnType.class));
         }
-        for (int i=0; i<intents.size(); ++i) {
+        NotificationManager mNotificationManager
+                = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        for (int i = intents.size() - 1; i >=0; --i) {
             Intent intent = intents.get(i);
             intent.putParcelableArrayListExtra(WORDS_TAG, words);
             intent.putExtra(DIRECTIONS_OF_TRANS_TAG, directionsOfTrans);
@@ -152,10 +154,12 @@ public class NotificationBuilder {
                     + " " + System.currentTimeMillis());
             Constants.DirectionOfTranslation directionOfTranslation = Utils.enumValueFromKey(
                     directionsOfTrans.get(i), Constants.DirectionOfTranslation.class);
-            NotificationCompat.Builder mBuilder;
-            mBuilder = getBuilder(context, directionOfTranslation, randWords.get(i));
+            NotificationCompat.Builder mBuilder = getBuilder(
+                    context, directionOfTranslation, randWords.get(i));
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             stackBuilder.addNextIntent(intent);
             PendingIntent pendInt = PendingIntent.getActivity(
                     context,
@@ -168,7 +172,6 @@ public class NotificationBuilder {
                 mBuilder.setContentIntent(pendInt);
                 mBuilder.setPriority(Notification.PRIORITY_MAX);
                 mBuilder.setOngoing(true);
-                NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(notificationIdFromWordId(words.get(i).id()), mBuilder.build());
                 currentIds = currentIds + notificationIdFromWordId(words.get(i).id()) + " ";
             }
