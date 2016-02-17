@@ -68,12 +68,9 @@
             android:id="@+id/my_progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:indeterminate="true"
-            android:minHeight="3.6dp"
-            android:maxHeight="3.6dp"
-            android:foregroundTint="@color/bpWhite"
-            android:foreground="@color/bpWhite"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+            style="@style/ProgressBarStyle"/>
     </RelativeLayout>
     <!--The navigation drawer-->
     <ListView
