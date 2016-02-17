@@ -51,6 +51,7 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemClick;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 
 public class MainActivity
@@ -65,7 +66,7 @@ public class MainActivity
     @Bind(R.id.drawer_layout)       DrawerLayout mDrawerLayout;
     @Bind(R.id.fab)                 FloatingActionButton mFab;
     @Bind(R.id.coordinator_layout)  CoordinatorLayout mCoordinatorLayout;
-    @Bind(R.id.toolbar_progress_bar) ProgressBar mProgressBar;
+    @Bind(R.id.my_progress_bar)     ProgressBar mProgressBar;
     @Bind(R.id.app_bar)             AppBarLayout mAppBarLayout;
 
     @BindDrawable(R.drawable.logo_white) Drawable mLogo;
