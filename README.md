@@ -4,3 +4,5 @@ LearnIt. Reincarnation.
 
 This is a written nearly from scratch version of Learnit. Hope it will become much better than its predecessor. 
 Further documentation will follow.
+
+For now refer to LearnIt for functionality.
