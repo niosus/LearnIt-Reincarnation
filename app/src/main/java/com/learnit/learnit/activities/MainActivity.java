@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -96,6 +98,21 @@ public class MainActivity
         initFab();
         mProgressBar.bringToFront();
         mProgressBar.setVisibility(View.INVISIBLE);
+
+//        // The View with the BottomSheetBehavior
+//        View bottomSheet = mCoordinatorLayout.findViewById(R.id.bottom_sheet);
+//        BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+//        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//                // React to state change
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//                // React to dragging events
+//            }
+//        });
     }
 
     @Override
@@ -158,7 +175,7 @@ public class MainActivity
     private void initTabbedViewPager() {
         FragmentPagerAdapter mPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(), this);
         mPager.setAdapter(mPagerAdapter);
-        mTabLayout.setTabsFromPagerAdapter(mPagerAdapter);
+        mTabLayout.setupWithViewPager(mPager);
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override @SuppressWarnings("deprecated")
@@ -215,7 +232,7 @@ public class MainActivity
                 invalidateOptionsMenu();
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
 
