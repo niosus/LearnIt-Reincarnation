@@ -146,7 +146,7 @@ public class AddWordsCardFragment extends Fragment
 
         mAdapter = new WordBundleAdapter(null,
                 R.layout.word_bundle_layout,
-                this);
+                this, null);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

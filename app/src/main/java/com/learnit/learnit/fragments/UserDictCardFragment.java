@@ -38,6 +38,7 @@ import android.widget.LinearLayout;
 import com.learnit.learnit.R;
 import com.learnit.learnit.async_tasks.DeleteWordFromUserDictTask;
 import com.learnit.learnit.async_tasks.GetUserDictWordsTask;
+import com.learnit.learnit.interfaces.IActionModeController;
 import com.learnit.learnit.interfaces.IAnimationEventListener;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IRefreshable;
@@ -149,7 +150,15 @@ public class UserDictCardFragment extends Fragment
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new WordBundleAdapter(null, R.layout.word_bundle_layout, this);
+        if (this.getActivity() instanceof IActionModeController) {
+            mAdapter = new WordBundleAdapter(null,
+                    R.layout.word_bundle_layout,
+                    this,
+                    (IActionModeController) this.getActivity());
+        } else {
+            Log.e(Constants.LOG_TAG, "activity should be able to handle action mode events");
+            return null;
+        }
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

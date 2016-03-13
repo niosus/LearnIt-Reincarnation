@@ -9,8 +9,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.learnit.learnit.R;
+import com.learnit.learnit.interfaces.IActionModeController;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
-import com.learnit.learnit.interfaces.IFabStateController;
 import com.learnit.learnit.interfaces.IUiEvents;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
@@ -30,6 +30,7 @@ public class WordBundleAdapter
     private int mRowLayout;
     private SparseBooleanArray mSelectedItems;
     private IUiEvents mUiEventsController;
+    private IActionModeController mActionModeController;
 
     private void refreshSelectedMarkers() {
         mSelectedItems = new SparseBooleanArray(getItemCount());
@@ -53,13 +54,18 @@ public class WordBundleAdapter
     public WordBundleAdapter(
             List<WordBundle> wordBundles,
             int rowLayout,
-            IUiEvents uiEventsController) {
+            IUiEvents uiEventsController,
+            IActionModeController actionModeController) {
         mWordBundles = wordBundles;
         mRowLayout = rowLayout;
         mUiEventsController = uiEventsController;
+        mActionModeController = actionModeController;
         refreshSelectedMarkers();
         if (getItemCount() > 0) {
             mUiEventsController.onWordsSelected();
+            if (mActionModeController != null) {
+                mActionModeController.showSelected(getSelectedItems());
+            }
         } else {
             mUiEventsController.onNoWordsSelected();
         }
@@ -158,6 +164,10 @@ public class WordBundleAdapter
                 mSelectedItems.put(getAdapterPosition(), true);
                 mLayout.setSelected(true);
                 mUiEventsController.onWordsSelected();
+                Log.d(Constants.LOG_TAG, "action mode controller " + mActionModeController);
+                if (mActionModeController != null) {
+                    mActionModeController.showSelected(getSelectedItems());
+                }
             }
             Log.d(Constants.LOG_TAG, "item clicked. Word is: " + mWordBundle.word());
         }

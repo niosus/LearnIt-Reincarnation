@@ -14,6 +14,7 @@
         <item name="colorButtonNormal">@color/highlight</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="preferenceTheme">@style/PrefsTheme</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="PrefsTheme" parent="Theme.AppCompat.Light.DarkActionBar">

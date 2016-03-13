@@ -6,8 +6,10 @@
 
 package com.learnit.learnit.interfaces;
 
-public interface IActionBarEvents {
-    void hideActionBar(int actionBarHeight);
+import com.learnit.learnit.types.WordBundle;
 
-    void showActionBar();
+import java.util.List;
+
+public interface IActionModeController {
+    void showSelected(List<WordBundle> selectedItems);
 }

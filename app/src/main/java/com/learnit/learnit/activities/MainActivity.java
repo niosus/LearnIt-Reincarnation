@@ -10,9 +10,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,8 +22,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -35,6 +36,7 @@ import com.learnit.learnit.async_tasks.ExportTask;
 import com.learnit.learnit.async_tasks.ImportTask;
 import com.learnit.learnit.async_tasks.PopulateHelpDictTask;
 import com.learnit.learnit.fragments.TaskSchedulerFragment;
+import com.learnit.learnit.interfaces.IActionModeController;
 import com.learnit.learnit.interfaces.IAsyncTaskResultClient;
 import com.learnit.learnit.interfaces.IFabEventHandler;
 import com.learnit.learnit.interfaces.IFabStateController;
@@ -43,17 +45,18 @@ import com.learnit.learnit.interfaces.IRefreshableController;
 import com.learnit.learnit.interfaces.ISnackBarController;
 import com.learnit.learnit.types.LanguagePair;
 import com.learnit.learnit.types.TabsPagerAdapter;
+import com.learnit.learnit.types.WordBundle;
 import com.learnit.learnit.utils.Constants;
 import com.learnit.learnit.utils.Utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemClick;
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 
 public class MainActivity
@@ -61,7 +64,8 @@ public class MainActivity
         implements IAsyncTaskResultClient,
         IFabStateController,
         ISnackBarController,
-        IRefreshableController {
+        IRefreshableController,
+        IActionModeController {
     @Bind(R.id.toolbar)             Toolbar mToolbar;
     @Bind(R.id.tab_layout)          TabLayout mTabLayout;
     @Bind(R.id.pager)               ViewPager mPager;
@@ -78,6 +82,7 @@ public class MainActivity
     private Map<Integer, IFabEventHandler> mFabEventHandlers;
     private Map<Integer, IRefreshable> mRefreshableClients;
     private Snackbar mSnackbar;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +103,7 @@ public class MainActivity
         initFab();
         mProgressBar.bringToFront();
         mProgressBar.setVisibility(View.INVISIBLE);
+
 
 //        // The View with the BottomSheetBehavior
 //        View bottomSheet = mCoordinatorLayout.findViewById(R.id.bottom_sheet);
@@ -210,13 +216,13 @@ public class MainActivity
 
     private void initActionBar() {
         setSupportActionBar(mToolbar);
-        ActionBar supportActionBar = getSupportActionBar();
-        if (supportActionBar == null) {
+        mActionBar = getSupportActionBar();
+        if (mActionBar == null) {
             Log.e(Constants.LOG_TAG, "support action bar is null.");
             return;
         }
-        supportActionBar.setDisplayHomeAsUpEnabled(true);
-        supportActionBar.setDisplayShowTitleEnabled(false);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setDisplayShowTitleEnabled(false);
         adjustLogoSize();
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 mToolbar, R.string.hello_world,
@@ -385,5 +391,43 @@ public class MainActivity
         mRefreshableClients.put(position, refreshable);
         Log.d(Constants.LOG_TAG, "added refreshable client at pos: " + position);
         Log.d(Constants.LOG_TAG, "there are " + mRefreshableClients.size() + " refreshable clients");
+    }
+
+    @Override
+    public void showSelected(final List<WordBundle> selectedItems) {
+        Log.d(Constants.LOG_TAG, "trying to start action mode");
+        startSupportActionMode(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // TODO: add edit menu if there is only single word selected
+                mode.getMenuInflater().inflate(R.menu.action_mode, menu);
+                mode.setTitle("selected " + selectedItems.size());
+                Log.d(Constants.LOG_TAG, "starting action mode");
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                // Similar to menu handling in Activity.onOptionsItemSelected()
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
+                        //TODO: add real functionality hear
+                        // Some remove functionality
+                        return true;
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+
+            }
+        });
     }
 }
